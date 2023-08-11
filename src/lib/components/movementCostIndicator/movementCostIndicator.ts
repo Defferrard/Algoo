@@ -1,0 +1,43 @@
+import MovementTooltip from "./MovementTooltip.svelte";
+import type {ActionReturn} from "svelte/action";
+import {writable} from "svelte/store";
+import type {Writable} from "svelte/store";
+
+export const movementCost: Writable<number> = writable(0);
+let tooltipComponent: MovementTooltip;
+
+export const display: Writable<boolean> = writable(false)
+
+export function movementCostIndicator(node: HTMLElement, value: number): ActionReturn {
+    if (!tooltipComponent) {
+        tooltipComponent = new MovementTooltip({
+            props: {
+                x: 0,
+                y: 0,
+            },
+            target: document.body,
+        });
+    }
+
+    function mouseOver(event: any) {
+        const rect = node.getBoundingClientRect();
+        tooltipComponent.$set({
+            x: rect.left + rect.width / 2,
+            y: rect.bottom
+        })
+    }
+
+    function mouseLeave() {
+        display.set(false)
+    }
+
+    node.addEventListener('mouseover', mouseOver);
+    node.addEventListener('mouseleave', mouseLeave);
+
+    return {
+        destroy() {
+            node.removeEventListener('mouseover', mouseOver);
+            node.removeEventListener('mouseleave', mouseLeave);
+        }
+    }
+}

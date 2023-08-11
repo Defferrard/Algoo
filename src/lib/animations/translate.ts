@@ -1,0 +1,18 @@
+import { crossfade } from 'svelte/transition';
+
+export const [send, receive] = crossfade({
+    duration: (d) => Math.sqrt(d * 100),
+
+    fallback(node, params) {
+        const style = getComputedStyle(node);
+        const transform = style.transform === 'none' ? '' : style.transform;
+
+        return {
+            duration: 200,
+            css: (t) => `
+					transform: ${transform} scale(${1/t});
+					opacity: ${t-0.2}
+				`
+        };
+    }
+});
