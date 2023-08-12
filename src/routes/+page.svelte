@@ -6,6 +6,8 @@
     import Board from "$lib/board/Board";
     import {TileType} from "$lib/board/Tile";
     import {movementCostIndicator, movementCost, display} from "$lib/components/movementCostIndicator/index";
+    import {show} from "$lib/components/temporaryValueIndicator/temporaryValueIndicator";
+    import {getAccessibles} from "../lib/board/pathfinding/accessibleTiles";
 
     let from: Coordinate = new Coordinate(0, 0);
     let to: Coordinate | undefined = undefined;
@@ -14,10 +16,12 @@
     let width = 40;
     let height = 20;
     let map: TileType[][] = [];
+    let mapComponent = [];
     for (let y = 0; y < height; y++) {
         map[y] = new Array(width);
+        mapComponent[y] = new Array(width);
         for (let x = 0; x < width; x++) {
-            map[y][x] = Math.random() < 0.0 ? TileType.Wall : TileType.Floor;
+            map[y][x] = Math.random() < 0.2 ? TileType.Wall : TileType.Floor;
         }
     }
 
@@ -25,23 +29,26 @@
 
     let path: Coordinate[] = [];
     let visibles: Coordinate[] = getVisibles([pos], board);
+    let stamina = 200;
+    let accessible: Coordinate[] = getAccessibles(pos, stamina, board, visibles);
 
     let currentPath: Coordinate[] = [];
     let closedList: Coordinate[] = [];
     let openList: Coordinate[] = [];
 
-    $: if(path.length > 0){
+    $: if (path.length > 0) {
         display.set(true);
     } else {
         display.set(false);
     }
 
     function mouseOverCell(x: number, y: number, cost: number) {
-        if (cost < 0 || isConsuming) {
+        if (!accessible.some((c: Coordinate) => c.is(x, y))
+            || isConsuming) {
             return;
         }
         to = new Coordinate(x, y);
-        [path, openList, closedList] = findPath(from, to, board);
+        [path, openList, closedList] = findPath(from, to, board, accessible);
         movementCost.set(path
             .map((coordinate: Coordinate) => map[coordinate.y][coordinate.x])
             .reduce((accumulator: number, cost: number) => accumulator + cost, 0));
@@ -49,19 +56,20 @@
 
     function mouseExitCell(x: number, y: number, cost: number) {
         to = undefined;
-        [path, openList, closedList] = [[],[],[]];
+        [path, openList, closedList] = [[], [], []];
         movementCost.set(0);
     }
 
     function selectCell(x: number, y: number, cost: number) {
         // pos = new Coordinate(-1, -1);
-        if (cost < 0 || isConsuming) {
+        if (!accessible.some((c: Coordinate) => c.is(x, y))
+            || isConsuming) {
             return;
         }
         from = new Coordinate(x, y);
         currentPath = [...currentPath, ...path];
         to = undefined;
-        [path, openList, closedList] = [[],[],[]];
+        [path, openList, closedList] = [[], [], []];
         consumePath();
     }
 
@@ -84,11 +92,14 @@
             isConsuming = false;
         }
         visibles = getVisibles([pos], board);
+        accessible = getAccessibles(pos, stamina, board, visibles);
     }
 
-    function swapTile(x:number, y:number){
-        map[y][x] = map[y][x] === TileType.Floor ? TileType.Wall : TileType.Floor;
-        board = new Board(map);
+    function swapTile(x: number, y: number) {
+        // map[y][x] = map[y][x] === TileType.Floor ? TileType.Wall : TileType.Floor;
+        // board = new Board(map);
+        let rect = mapComponent[y][x].getBoundingClientRect()
+        show(rect.left + rect.width / 2, rect.bottom, $movementCost)
     }
 </script>
 
@@ -99,20 +110,22 @@ PATH : {path.length}
     {#each map as row, y}
         <tr>
             {#each row as cost, x}
-                    <td class:blue={path.some((c) => c.is(x, y))}
-                        class:gray={!visibles.some((c) => c.is(x, y))}
-                        class:black={cost<0}
-                        on:click={()=>selectCell(x,y, cost)}
-                        on:mouseenter={()=>mouseOverCell(x,y, cost)}
-                        on:mouseleave={()=> mouseExitCell(x,y, cost)}
-                        on:contextmenu|preventDefault={()=>swapTile(x,y)}
-                        use:movementCostIndicator>
-                        {#if pos.is(x, y)}
-                            <div in:receive="{{key: 0}}" out:send="{{key: 0}}"
-                                 style:background-color="red" style:height="100%" style:width="100%">
-                            </div>
-                        {/if}
-                    </td>
+                <td class:blue={path.some((c) => c.is(x, y))}
+                    class:gray={!visibles.some((c) => c.is(x, y))}
+                    class:black={cost<0}
+                    class:green={accessible.some((c) => c.is(x, y))}
+                    on:click={()=>selectCell(x,y, cost)}
+                    on:mouseenter={()=>mouseOverCell(x,y, cost)}
+                    on:mouseleave={()=> mouseExitCell(x,y, cost)}
+                    on:contextmenu|preventDefault={()=>swapTile(x,y)}
+                    use:movementCostIndicator
+                    bind:this={mapComponent[y][x]}>
+                    {#if pos.is(x, y)}
+                        <div in:receive="{{key: 0}}" out:send="{{key: 0}}"
+                             style:background-color="red" style:height="100%" style:width="100%">
+                        </div>
+                    {/if}
+                </td>
             {/each}
         </tr>
     {/each}
@@ -145,14 +158,14 @@ PATH : {path.length}
     }
 
 
-
     .red {
         background-color: red;
     }
 
     .green {
-        background-color: green;
+        background-color: lightgreen;
     }
+
     .gray {
         background-color: gray;
     }
@@ -161,6 +174,7 @@ PATH : {path.length}
         background-color: black;
         color: white;
     }
+
     .blue {
         background-color: blue;
     }

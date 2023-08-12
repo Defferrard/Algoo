@@ -1,16 +1,16 @@
-import MovementTooltip from "./MovementTooltip.svelte";
+import MovementCostIndicator from "./MovementCostIndicator.svelte";
 import type {ActionReturn} from "svelte/action";
 import {writable} from "svelte/store";
 import type {Writable} from "svelte/store";
 
 export const movementCost: Writable<number> = writable(0);
-let tooltipComponent: MovementTooltip;
+let component: MovementCostIndicator;
 
 export const display: Writable<boolean> = writable(false)
 
 export function movementCostIndicator(node: HTMLElement, value: number): ActionReturn {
-    if (!tooltipComponent) {
-        tooltipComponent = new MovementTooltip({
+    if (!component) {
+        component = new MovementCostIndicator({
             props: {
                 x: 0,
                 y: 0,
@@ -21,7 +21,7 @@ export function movementCostIndicator(node: HTMLElement, value: number): ActionR
 
     function mouseOver(event: any) {
         const rect = node.getBoundingClientRect();
-        tooltipComponent.$set({
+        component.$set({
             x: rect.left + rect.width / 2,
             y: rect.bottom
         })

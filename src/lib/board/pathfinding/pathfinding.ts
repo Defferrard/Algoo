@@ -4,7 +4,7 @@ import type Node from "./Node";
 import type Board from "../Board";
 
 
-export function findPath(from: Coordinate, to: Coordinate, board: Board): [
+export function findPath(from: Coordinate, to: Coordinate, board: Board, filter: Coordinate[]): [
     path: Coordinate[],
     openList: Coordinate[],
     closedList: Coordinate[]
@@ -21,18 +21,21 @@ export function findPath(from: Coordinate, to: Coordinate, board: Board): [
     openList.push(current); // Add the starting tile to the open list
 
     while (!current.equals(to)) {
+        current = openList[0];
         // Move the current tile from the open list to the closed list
         openList.splice(openList.indexOf(current), 1);
         closedList.push(current);
 
-        let neighbors: Node[] = getNeighbors(current, map);
-        checkNeighbors(current, neighbors, openList, closedList);
+        if (!filter?.some(c => c.equals(current))) {
+            continue;
+        }
+
+        checkNeighbors(current, getNeighbors(current, map), openList, closedList);
 
         if (openList.length === 0) {
             return [[], openList, closedList];
         }
         openList = orderedOpenList(openList, to, minimalMovementCost);
-        current = openList[0];
     }
 
     return [unwindPath(current), openList, closedList];
@@ -54,7 +57,7 @@ function unwindPath(node: Node): Coordinate[] {
     return path;
 }
 
-function checkNeighbors(current: Node, neighbors: Node[], openList: Node[], closedList: Node[]) {
+export function checkNeighbors(current: Node, neighbors: Node[], openList: Node[], closedList: Node[]) {
     for (const neighbor of neighbors) {
         let movementCost = current.g + neighbor.cost;
         if (movementCost < neighbor.g) {
@@ -67,7 +70,7 @@ function checkNeighbors(current: Node, neighbors: Node[], openList: Node[], clos
     }
 }
 
-function getNeighbors(node: Node, nodes: Node[][]): Node[] {
+export function getNeighbors(node: Node, nodes: Node[][]): Node[] {
     // TODO : Optimize this
     const neighbors: Node[] = [];
 

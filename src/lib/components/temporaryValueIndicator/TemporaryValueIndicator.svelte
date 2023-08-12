@@ -1,41 +1,34 @@
 <script lang="ts">
     import {fly} from 'svelte/transition';
-    import {movementCost, display} from "./movementCostIndicator";
-    import {tweened} from "svelte/motion";
-    import type {Tweened} from "svelte/motion";
+    import {onMount} from "svelte";
 
-    const duration: number = 200;
-
-    const value: Tweened<number> = tweened(0, {
-        duration
-    });
-
-    movementCost.subscribe((cost: number) => {
-        value.set(cost);
-    })
-    display.subscribe((display: boolean) => {
-        if (!display) {
-            value.set(0);
-        }
-    })
     export let x: number;
     export let y: number;
+    export let value: number;
 
+    export let duration: number;
+
+    export let visible = false;
+    onMount(() => {
+        visible = true;
+    });
 </script>
 
-{#if $display}
-    <tooltip transition:fly={{y:10}}
-             style="
+
+{#if visible}
+    <indicator in:fly={{y:10}}
+               out:fly={{y:-10}}
+               style="
 		top: {y + 5}px;
 		left: {x + 5}px;">
         <content>
-            {Math.ceil($value)}
+            {value}
         </content>
-    </tooltip>
+    </indicator>
 {/if}
 
 <style>
-    tooltip {
+    indicator {
         pointer-events: none;
         position: absolute;
         font-size: 2em;
@@ -51,7 +44,7 @@
         -webkit-text-stroke-color: var(--color-body);
         color: var(--color-lighter);
         font-weight: bold;
-        animation: float 2s ease-in-out infinite;
+        animation: float 1s ease-in-out infinite;
     }
 
     @keyframes float {
