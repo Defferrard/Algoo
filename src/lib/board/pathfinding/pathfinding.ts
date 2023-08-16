@@ -4,11 +4,7 @@ import type Node from "./Node";
 import type Board from "../Board";
 
 
-export function findPath(from: Coordinate, to: Coordinate, board: Board, filter: Coordinate[]): [
-    path: Coordinate[],
-    openList: Coordinate[],
-    closedList: Coordinate[]
-] {
+export function findPath(from: Coordinate, to: Coordinate, board: Board, filter: Coordinate[]): Coordinate[]{
     let openList: Node[] = []; // Open list is the next set of tiles to evaluate
     const closedList: Node[] = []; // Closed list is the set of tiles already evaluated
     const map: Node[][] = board.mapNodes;
@@ -33,12 +29,12 @@ export function findPath(from: Coordinate, to: Coordinate, board: Board, filter:
         checkNeighbors(current, getNeighbors(current, map), openList, closedList);
 
         if (openList.length === 0) {
-            return [[], openList, closedList];
+            return [];
         }
         openList = orderedOpenList(openList, to, minimalMovementCost);
     }
 
-    return [unwindPath(current), openList, closedList];
+    return unwindPath(current);
 }
 
 function orderedOpenList(openList: Node[], to: Coordinate, minimalMovementCost: number): Node[] {
@@ -81,7 +77,8 @@ export function getNeighbors(node: Node, nodes: Node[][]): Node[] {
         let direction = (i >> 1) * 2 - 1;
         let x = node.x + (i % 2) * direction;
         let y = node.y + ((i + 1) % 2) * direction;
-        if (x >= 0 && x < width && y >= 0 && y < height && nodes[y][x].cost >= 0) {
+        if (x >= 0 && x < width && y >= 0 && y < height
+            && nodes[y][x].cost >= 0) {
             neighbors.push(nodes[y][x]);
         }
     }

@@ -1,182 +1,140 @@
 <script lang="ts">
-    import Coordinate from "$lib/board/Coordinate";
     import {findPath} from "$lib/board/pathfinding/pathfinding";
     import {getVisibles} from "$lib/board/pathfinding/visible";
-    import {receive, send} from "$lib/animations/translate";
-    import Board from "$lib/board/Board";
-    import {TileType} from "$lib/board/Tile";
-    import {movementCostIndicator, movementCost, display} from "$lib/components/movementCostIndicator/index";
-    import {show} from "$lib/components/temporaryValueIndicator/temporaryValueIndicator";
-    import {getAccessibles} from "../lib/board/pathfinding/accessibleTiles";
+    import {Board, Coordinate, Tile, TileType} from "$lib/board/";
+    import {getAccessibles} from "$lib/board/pathfinding/accessibleTiles";
+    import {BoardComponent, HeroIndicator} from "$lib/components/";
+    import {display, movementCost} from "$lib/components/indicators/movementcostindicator";
+    import {Hero, Team} from "$lib/game/";
+    import UIBoard, {generateRandomBoard} from "$lib/components/game/UIBoard";
+    import type {Readable} from "svelte/store";
+    import {Color} from "$lib/components/Color";
 
-    let from: Coordinate = new Coordinate(0, 0);
-    let to: Coordinate | undefined = undefined;
-    let pos: Coordinate = from;
-
-    let width = 40;
-    let height = 20;
-    let map: TileType[][] = [];
-    let mapComponent = [];
-    for (let y = 0; y < height; y++) {
-        map[y] = new Array(width);
-        mapComponent[y] = new Array(width);
-        for (let x = 0; x < width; x++) {
-            map[y][x] = Math.random() < 0.2 ? TileType.Wall : TileType.Floor;
-        }
+    const board: UIBoard = generateRandomBoard(15, 15, 0.1);
+    const animating: Readable<boolean> = board.animating;
+    const teams: Team[] = [
+        new Team(Color.RED, "red"),
+        new Team(Color.BLUE, "blue")
+    ];
+    for (let i = 0; i < 6; i++) {
+        new Hero(teams[i % 2], `Number ${i}`, `Of the ${teams[i % 2].name} team`, [],
+            {
+                maxStamina: Math.ceil(Math.random() * 25),
+                maxHealth: Math.ceil(Math.random() * 25),
+                strength: Math.ceil(Math.random() * 25),
+                resistance: Math.ceil(Math.random() * 25),
+                durability: Math.ceil(Math.random() * 25)
+            },
+            new Coordinate(i, 0), board);
     }
 
-    let board: Board = new Board(map);
+    let currentHero: Readable<Hero | undefined> = board.currentHero
 
     let path: Coordinate[] = [];
-    let visibles: Coordinate[] = getVisibles([pos], board);
-    let stamina = 200;
-    let accessible: Coordinate[] = getAccessibles(pos, stamina, board, visibles);
+    let visibles: Coordinate[] = [];
+    let accessible: Coordinate[] = [];
 
-    let currentPath: Coordinate[] = [];
-    let closedList: Coordinate[] = [];
-    let openList: Coordinate[] = [];
 
-    $: if (path.length > 0) {
-        display.set(true);
-    } else {
-        display.set(false);
-    }
+    let active: Coordinate | undefined;
 
-    function mouseOverCell(x: number, y: number, cost: number) {
-        if (!accessible.some((c: Coordinate) => c.is(x, y))
-            || isConsuming) {
-            return;
+    $: {
+        visibles = getVisibles($currentHero!.team.heroes.map((hero: Hero) => hero.tile), board)
+        if($animating){
+            accessible = [];
+        }else{
+            accessible = getAccessibles($currentHero!.tile, $currentHero!.stamina, board, visibles)
         }
-        to = new Coordinate(x, y);
-        [path, openList, closedList] = findPath(from, to, board, accessible);
-        movementCost.set(path
-            .map((coordinate: Coordinate) => map[coordinate.y][coordinate.x])
-            .reduce((accumulator: number, cost: number) => accumulator + cost, 0));
-    }
 
-    function mouseExitCell(x: number, y: number, cost: number) {
-        to = undefined;
-        [path, openList, closedList] = [[], [], []];
-        movementCost.set(0);
-    }
+        if (
+            active
+            && !active.equals($currentHero!.tile)
+            && accessible.some((c: Coordinate) => c.equals(active as Coordinate))
+        ) {
+            if (path.some((c: Coordinate) => c.equals(active as Coordinate))) {
+                // If the path makes a loop, cut it to the active tile
+                while(!path[0].equals(active)) {
+                    path.shift();
+                }
+            } else if (path.length > 0
+                && active.neighbors.some((n => n.equals(path[0])))
+                && board.getPathCost(path) + board.getTileByCoordinate(active)?.movementCost! <= $currentHero!.stamina
+            ) {
+                // If the active tile is simply a neighbor of the first tile of the path, add it to the path
+                path = [active, ...path];
+            } else {
+                // Otherwise, find the new shortest path
+                path = findPath($currentHero!.tile, active, board, accessible);
+            }
+            movementCost.set(board.getPathCost(path));
 
-    function selectCell(x: number, y: number, cost: number) {
-        // pos = new Coordinate(-1, -1);
-        if (!accessible.some((c: Coordinate) => c.is(x, y))
-            || isConsuming) {
-            return;
+            display.set(path.length > 0);
+        } else {
+            active = undefined;
+            path = [];
+            movementCost.set(0);
+            display.set(false);
         }
-        from = new Coordinate(x, y);
-        currentPath = [...currentPath, ...path];
-        to = undefined;
-        [path, openList, closedList] = [[], [], []];
-        consumePath();
     }
 
+    function nextTurn() {
+        board.nextTurn();
+    }
+
+    function hover(x: number, y: number) {
+        clear();
+        let tile: Tile = board.getTile(x, y);
+        if (accessible.some((c: Coordinate) => c.equals(new Coordinate(x, y)))) {
+            active = new Coordinate(x, y);
+        } else {
+            clear();
+        }
+    }
+
+    function clear() {
+        active = undefined;
+    }
+
+    function onAction(x: number, y: number,) {
+        board.moveHero($currentHero!, path);
+    }
 
     let isConsuming = false;
 
     function consumePath() {
-        if (!isConsuming) {
-            isConsuming = true;
-            consume();
-        }
+        // if (!isConsuming) {
+        //     active = undefined;
+        //     accessible = [];
+        //     isConsuming = true;
+        //     consume();
+        // }
     }
 
     function consume() {
-        if (currentPath.length > 0) {
-            pos = currentPath.pop()!;
-            setTimeout(consume, 50)
-        } else {
-            pos = from;
-            isConsuming = false;
-        }
-        visibles = getVisibles([pos], board);
-        accessible = getAccessibles(pos, stamina, board, visibles);
-    }
-
-    function swapTile(x: number, y: number) {
-        // map[y][x] = map[y][x] === TileType.Floor ? TileType.Wall : TileType.Floor;
-        // board = new Board(map);
-        let rect = mapComponent[y][x].getBoundingClientRect()
-        show(rect.left + rect.width / 2, rect.bottom, $movementCost)
+        // if (currentPath.length > 0) {
+        //     hero.tile = board.getTileByCoordinate(currentPath.pop()!);
+        //     setTimeout(consume, 100)
+        // } else {
+        //     hero.tile = board.getTileByCoordinate(from);
+        //     heroIndex++;
+        //     isConsuming = false;
+        //     accessible = getAccessibles(heroes[heroIndex%heroes.length].coordinate,
+        //         heroes[heroIndex%heroes.length].stamina, board, visibles);
+        // }
+        // visibles = getVisibles(heroes.map((h)=>h.coordinate), board);
     }
 </script>
 
-FROM : {from}
-TO : {to}
-PATH : {path.length}
-<table>
-    {#each map as row, y}
-        <tr>
-            {#each row as cost, x}
-                <td class:blue={path.some((c) => c.is(x, y))}
-                    class:gray={!visibles.some((c) => c.is(x, y))}
-                    class:black={cost<0}
-                    class:green={accessible.some((c) => c.is(x, y))}
-                    on:click={()=>selectCell(x,y, cost)}
-                    on:mouseenter={()=>mouseOverCell(x,y, cost)}
-                    on:mouseleave={()=> mouseExitCell(x,y, cost)}
-                    on:contextmenu|preventDefault={()=>swapTile(x,y)}
-                    use:movementCostIndicator
-                    bind:this={mapComponent[y][x]}>
-                    {#if pos.is(x, y)}
-                        <div in:receive="{{key: 0}}" out:send="{{key: 0}}"
-                             style:background-color="red" style:height="100%" style:width="100%">
-                        </div>
-                    {/if}
-                </td>
-            {/each}
-        </tr>
-    {/each}
-</table>
+<flex style:display="flex"
+      style:justify-content="center"
+      style:align-items="center"
+      style:height="100vh"
+      style:width="100vw">
+    <BoardComponent {...{board, path, active, accessible, visibles}}
+               on:click={(event)=>onAction(event.detail.x,event.detail.y)}
+               on:rightclick={(event)=>{nextTurn()}}
+               on:hovertile={(event)=>hover(event.detail.x,event.detail.y)}
+               on:exit={()=>clear()}/>
+</flex>
 
-<style>
-    table {
-        border-collapse: collapse;
-    }
-
-    tr:nth-of-type(even) td:nth-of-type(even),
-    tr:nth-of-type(odd) td:nth-of-type(odd) {
-        /*background-color: #e0e0e0;*/
-    }
-
-    td {
-        border: 1px solid black;
-        padding: 5px;
-        height: 1em;
-        width: 1em;
-        text-align: center;
-    }
-
-    .yellow {
-        background-color: yellow;
-    }
-
-    .pink {
-        background-color: pink;
-    }
-
-
-    .red {
-        background-color: red;
-    }
-
-    .green {
-        background-color: lightgreen;
-    }
-
-    .gray {
-        background-color: gray;
-    }
-
-    .black {
-        background-color: black;
-        color: white;
-    }
-
-    .blue {
-        background-color: blue;
-    }
-
-</style>
+<!--<HeroIndicator hero={activeHero}/>-->
+<HeroIndicator hero={board.targetHero}/>

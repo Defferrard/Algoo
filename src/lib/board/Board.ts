@@ -1,5 +1,5 @@
-import Coordinate from "./Coordinate";
-import Tile, {TileType} from "./Tile";
+import type {Hero} from "../game/";
+import {Tile, TileType, Coordinate} from "./";
 import Node from "./pathfinding/Node";
 
 export default class Board {
@@ -7,7 +7,7 @@ export default class Board {
 
     constructor(tiles: TileType[][]) {
         this._tiles = tiles.map((row: TileType[], y: number) =>
-            row.map((type: TileType, x: number) => new Tile(new Coordinate(x, y), type)));
+            row.map((type: TileType, x: number) => new Tile(x, y, type)));
     }
 
 
@@ -36,6 +36,29 @@ export default class Board {
 
     getTile(x: number, y: number): Tile {
         return this._tiles[y][x];
+    }
+
+    getTileByCoordinate(coordinate: Coordinate): Tile {
+        return this.getTile(coordinate.x, coordinate.y);
+    }
+
+    pushHero(hero: Hero, x: number, y: number): void {
+        hero.tile.hero = undefined;
+        hero.tile = this.getTile(x, y);
+        hero.tile.hero = hero;
+    }
+
+    moveHero(hero: Hero, path: Coordinate[]): void {
+        hero.stamina -= this.getPathCost(path);
+        hero.tile.hero = undefined;
+        hero.tile = this.getTileByCoordinate(path[0]);
+        hero.tile.hero = hero;
+    }
+
+    getPathCost(path: Coordinate[]): number {
+        return path
+            .map((coordinate: Coordinate) => this.getTileByCoordinate(coordinate)!.movementCost)
+            .reduce((accumulator: number, cost: number) => accumulator + cost, 0)
     }
 
     get width(): number {

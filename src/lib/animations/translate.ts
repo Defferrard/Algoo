@@ -1,7 +1,7 @@
 import { crossfade } from 'svelte/transition';
 
 export const [send, receive] = crossfade({
-    duration: (d) => Math.sqrt(d * 100),
+    duration: (d) => Math.sqrt(d * 500),
 
     fallback(node, params) {
         const style = getComputedStyle(node);

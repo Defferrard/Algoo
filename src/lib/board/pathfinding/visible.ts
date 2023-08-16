@@ -1,11 +1,14 @@
 import Coordinate from "../Coordinate";
 import type Board from "../Board";
+import {TileType} from "$lib/board";
 
 export function getVisibles(points: Coordinate[], board: Board): Coordinate[] {
     const visibles: Coordinate[] = [...points];
 
     // TODO : Can we do better than this?
     // TODO : We can see through corners...
+    // TODO : Example : Bresenham
+    // TODO : Example 2 : https://francescocossu.medium.com/creating-a-line-of-sight-map-c63e44973c6f
     // We could probably do it by using openList ? (See pathfinding...)
     const extremes: Coordinate[] = [
         ...Array.from({length: board.height}, (_, i: number) => new Coordinate(0, i)),
@@ -33,7 +36,7 @@ export function getVisibles(points: Coordinate[], board: Board): Coordinate[] {
                     current = to;
                 }
 
-                if (board.getTile(current.x, current.y).movementCost < 0) {
+                if (board.getTile(current.x, current.y).type === TileType.Wall) {
                     break;
                 } else if (!visibles.some(v => v.equals(current))) {
                     visibles.push(current);

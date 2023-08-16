@@ -28,5 +28,6 @@ export function getAccessibles(from: Coordinate, maxCost: number, board: Board, 
         }
     }
 
+    // Remove the starting tile from the accessible tiles
     return accessible;
 }

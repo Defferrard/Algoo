@@ -24,7 +24,7 @@
 </script>
 
 {#if $display}
-    <indicator transition:fly={{y:10}}
+    <indicator transition:fly
              style="
 		top: {y + 5}px;
 		left: {x + 5}px;">
@@ -46,23 +46,24 @@
         font-family: Roboto, sans-serif;
         position: relative;
         left: calc(-50% - 0.2em);
-        top: -2.5em;
+        top: -1em;
         -webkit-text-stroke-width: 0.07em;
         -webkit-text-stroke-color: var(--color-body);
         color: var(--color-lighter);
         font-weight: bold;
+        text-shadow: 0 0 0.2em var(--color-body);
         animation: float 2s ease-in-out infinite;
     }
 
     @keyframes float {
         0% {
-            transform: translatey(0);
+            transform: translatey(0.1em);
         }
         50% {
-            transform: translatey(-0.2em);
+            transform: translatey(-0.1em);
         }
         100% {
-            transform: translatey(0);
+            transform: translatey(0.1em);
         }
     }
 </style>

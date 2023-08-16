@@ -18,13 +18,11 @@
     transition: 0.2s;
 }
 
-:root, body {
+:root{
     margin: 0;
     padding: 0;
     overflow: hidden;
-}
 
-:root {
     font-family: roboto, sans-serif;
     color: var(--color-body);
 
@@ -48,6 +46,9 @@
 
     --color-green: #59A446;
     --color-green-rgb: 89, 164, 70;
+
+    --color-yellow: #F5C52A;
+    --color-yellow-rgb: 245, 197, 42;
 
 
     --color-body: #2B2B29;

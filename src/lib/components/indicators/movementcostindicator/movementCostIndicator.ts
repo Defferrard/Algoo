@@ -8,7 +8,7 @@ let component: MovementCostIndicator;
 
 export const display: Writable<boolean> = writable(false)
 
-export function movementCostIndicator(node: HTMLElement, value: number): ActionReturn {
+export function movementCostIndicator(element: HTMLElement): ActionReturn {
     if (!component) {
         component = new MovementCostIndicator({
             props: {
@@ -20,24 +20,18 @@ export function movementCostIndicator(node: HTMLElement, value: number): ActionR
     }
 
     function mouseOver(event: any) {
-        const rect = node.getBoundingClientRect();
+        const rect = element.getBoundingClientRect();
         component.$set({
             x: rect.left + rect.width / 2,
-            y: rect.bottom
+            y: rect.top + rect.height / 2
         })
     }
 
-    function mouseLeave() {
-        display.set(false)
-    }
-
-    node.addEventListener('mouseover', mouseOver);
-    node.addEventListener('mouseleave', mouseLeave);
+    element.addEventListener('mouseover', mouseOver);
 
     return {
         destroy() {
-            node.removeEventListener('mouseover', mouseOver);
-            node.removeEventListener('mouseleave', mouseLeave);
+            element.removeEventListener('mouseover', mouseOver);
         }
     }
 }
