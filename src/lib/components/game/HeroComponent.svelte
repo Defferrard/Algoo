@@ -1,18 +1,20 @@
 <script lang="ts">
     import {receive, send} from "../../animations/translate";
-    import {Hero} from "../../game";
+    import {HeroEntity} from "../../game";
     import type {Writable} from "svelte/store";
     import {getCSS} from "../Color";
 
-    export let targetHero: Writable<Hero | undefined>;
-    export let hero: Hero;
+    export let targetHero: Writable<HeroEntity | undefined>;
+    export let hero: HeroEntity;
     let uuid = hero.uuid;
     $: if (hero) {
         uuid = hero.uuid;
     }
 </script>
 
+<!-- ARIA Role : IMG -->
 <hero
+        role="img"
         on:mouseenter={()=>targetHero.set(hero)}
         on:mouseleave={()=>targetHero.set(undefined)}
         style:--team-color={getCSS(hero.team.color)}>

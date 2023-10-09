@@ -15,10 +15,11 @@
 }
 
 * {
-    transition: 0.2s;
+    transition: inherit;
 }
 
-:root{
+:root {
+    transition: 0.2s;
     margin: 0;
     padding: 0;
     overflow: hidden;
@@ -41,14 +42,29 @@
     --color-blue: #316BDE;
     --color-blue-rgb: 49, 107, 222;
 
-    --color-red: #DD3030;
-    --color-red-rgb: 221, 48, 48;
+    --color-red: #e53232;
+    --color-red-rgb: 229, 50, 50;
 
     --color-green: #59A446;
     --color-green-rgb: 89, 164, 70;
 
-    --color-yellow: #F5C52A;
-    --color-yellow-rgb: 245, 197, 42;
+    --color-yellow: #e5be32;
+    --color-yellow-rgb: 229, 190, 50;
+
+    --color-purple: #9632e5;
+    --color-purple-rgb: 150, 50, 229;
+
+    --color-orange: #E58832;
+    --color-orange-rgb: 222, 153, 49;
+
+    --color-pink: #E532DE;
+    --color-pink-rgb: 222, 49, 182;
+
+    --color-cyan: #32E5D0;
+    --color-cyan-rgb: 50, 229, 208;
+
+    --color-gray: #7585A5;
+    --color-gray-rgb: 117, 133, 165;
 
 
     --color-body: #2B2B29;
@@ -69,7 +85,7 @@
     --bg-color: var(--color-light);
 }
 
-lighter{
+lighter {
     color: var(--color-body-lighter);
 }
 

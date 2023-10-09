@@ -7,9 +7,11 @@ export function getVisibles(points: Coordinate[], board: Board): Coordinate[] {
 
     // TODO : Can we do better than this?
     // TODO : We can see through corners...
-    // TODO : Example : Bresenham
-    // TODO : Example 2 : https://francescocossu.medium.com/creating-a-line-of-sight-map-c63e44973c6f
+    // TODO : Idea 1 : Bresenham
+    // TODO : Idea 2 : https://francescocossu.medium.com/creating-a-line-of-sight-map-c63e44973c6f
+    // TODO : Idea 3 :
     // We could probably do it by using openList ? (See pathfinding...)
+
     const extremes: Coordinate[] = [
         ...Array.from({length: board.height}, (_, i: number) => new Coordinate(0, i)),
         ...Array.from({length: board.width}, (_, i: number) => new Coordinate(i, 0)),
@@ -21,6 +23,7 @@ export function getVisibles(points: Coordinate[], board: Board): Coordinate[] {
 
     for (let from of points) {
         from = from.plus(half);
+
         for (let to of extremes) {
             const direction: Coordinate = to.plus(half).minus(from).normalized();
             let current: Coordinate = from;

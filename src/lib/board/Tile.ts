@@ -1,5 +1,5 @@
 import Coordinate from "./Coordinate";
-import type Hero from "../game/Hero";
+import type {Entity} from "../game";
 
 export enum TileType {
     Wall = -1,
@@ -9,7 +9,7 @@ export enum TileType {
 
 export default class Tile extends Coordinate {
     readonly type: TileType;
-    hero?: Hero;
+    entity?: Entity;
 
     constructor(x: number, y: number, type: TileType) {
         super(x, y);
@@ -17,6 +17,6 @@ export default class Tile extends Coordinate {
     }
 
     get movementCost(): number {
-        return this.hero ? -1 : this.type;
+        return this.entity ? -1 : this.type;
     }
 }

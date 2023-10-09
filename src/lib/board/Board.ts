@@ -1,15 +1,21 @@
-import type {Hero} from "../game/";
+import type {Entity} from "../game/";
 import {Tile, TileType, Coordinate} from "./";
 import Node from "./pathfinding/Node";
 
+/**
+ * A board is a 2D array of tiles. It is used to represent the game map. It also contains interactions with the tiles.
+ */
 export default class Board {
     private readonly _tiles: Tile[][];
 
+    /**
+     * Create a new Board from a 2D array of TileTypes.
+     * @param tiles 2D array of TileTypes.
+     */
     constructor(tiles: TileType[][]) {
         this._tiles = tiles.map((row: TileType[], y: number) =>
             row.map((type: TileType, x: number) => new Tile(x, y, type)));
     }
-
 
     /**
      * Map the board into a 2D array of Nodes.
@@ -33,28 +39,39 @@ export default class Board {
                 Infinity);
     }
 
-
+    /**
+     * Get the tile at the given XY coordinate.
+     * @param x X axis coordinate.
+     * @param y Y axis coordinate.
+     */
     getTile(x: number, y: number): Tile {
         return this._tiles[y][x];
     }
 
+    /**
+     * Get the tile at the given coordinate object.
+     * @param coordinate 2D Coordinate object.
+     */
     getTileByCoordinate(coordinate: Coordinate): Tile {
         return this.getTile(coordinate.x, coordinate.y);
     }
 
-    pushHero(hero: Hero, x: number, y: number): void {
-        hero.tile.hero = undefined;
-        hero.tile = this.getTile(x, y);
-        hero.tile.hero = hero;
+    /**
+     * Add an entity to the board at the given XY coordinate.
+     * @param hero Hero to add to the board.
+     * @param x X axis coordinate.
+     * @param y Y axis coordinate.
+     */
+    pushEntity(entity: Entity, x: number, y: number): void {
+        entity.tile!.entity = undefined;
+        entity.tile = this.getTile(x, y);
+        entity.tile.entity = entity;
     }
 
-    moveHero(hero: Hero, path: Coordinate[]): void {
-        hero.stamina -= this.getPathCost(path);
-        hero.tile.hero = undefined;
-        hero.tile = this.getTileByCoordinate(path[0]);
-        hero.tile.hero = hero;
-    }
-
+    /**
+     * Get the sum movement cost of the given path.
+     * @param path Path to get the cost of.
+     */
     getPathCost(path: Coordinate[]): number {
         return path
             .map((coordinate: Coordinate) => this.getTileByCoordinate(coordinate)!.movementCost)

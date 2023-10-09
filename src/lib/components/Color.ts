@@ -14,7 +14,19 @@ export enum Color {
 
     RED = 'red',
 
-    BLUE = 'blue'
+    BLUE = 'blue',
+
+    YELLOW = 'yellow',
+
+    ORANGE = 'orange',
+
+    PURPLE = 'purple',
+
+    PINK = 'pink',
+
+    CYAN = 'cyan',
+
+    GRAY = 'gray',
 }
 
 export function getCSS(color: Color): string {
