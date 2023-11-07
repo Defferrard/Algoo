@@ -43,7 +43,7 @@
 
     content {
         display: block;
-        font-family: "Arial Black", sans-serif;
+        font-family: poppins, sans-serif;
         position: relative;
         left: calc(-50% - 0.2em);
         top: -1em;

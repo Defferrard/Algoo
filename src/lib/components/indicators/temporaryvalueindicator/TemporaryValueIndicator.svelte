@@ -1,6 +1,7 @@
 <script lang="ts">
     import {fly} from 'svelte/transition';
     import {onMount} from "svelte";
+    import {Color, getCSS} from "../../../components/Color";
 
     export let x: number;
     export let y: number;
@@ -8,20 +9,25 @@
 
     export let duration: number;
 
+    export let color: Color;
+
     export let visible = false;
     onMount(() => {
         visible = true;
     });
 </script>
 
-
 {#if visible}
     <indicator in:fly={{y:10}}
                out:fly={{y:-10}}
+               style:--color={getCSS(color)}
                style="
-		top: {y + 5}px;
-		left: {x + 5}px;">
+		top: {y}px;
+		left: {x}px;">
         <content>
+            {#if value>0}
+                +
+            {/if}
             {value}
         </content>
     </indicator>
@@ -36,14 +42,13 @@
 
     content {
         display: block;
-        font-family: Roboto, sans-serif;
+        font-family: poppins, sans-serif;
         position: relative;
-        left: calc(-50% - 0.2em);
-        top: -2.5em;
-        -webkit-text-stroke-width: 0.07em;
-        -webkit-text-stroke-color: var(--color-body);
-        color: var(--color-lighter);
-        font-weight: bold;
+        top: -1em;
+        -webkit-text-stroke-width: 2px;
+        -webkit-text-stroke-color: color-mix(in srgb, var(--color), black 70%);
+        color: var(--color);
+        font-weight: bolder;
         animation: float 1s ease-in-out infinite;
     }
 

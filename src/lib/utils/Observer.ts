@@ -70,7 +70,7 @@ export function arrayObserver<T>(stores: RArray<Writable<T>>): ArrayObserver<RAr
 
 function setStore<T>(localStore: Writable<T>, newStore: Writable<T>): Unsubscriber {
     localStore.set(get(newStore));
-
+    if(!newStore) return () => {};
     return newStore.subscribe((value: T) => {
         localStore.set(value);
     });
@@ -81,6 +81,8 @@ function setArrayStore<T>(localStore: Writable<RArray<T>>,
                           index: number[]): Unsubscriber {
     // Set initial value from all stores
     updateArrayLocalStore(localStore, get(newStore), index);
+
+    if(!newStore) return () => {};
 
     // Subscribe to all stores
     return newStore.subscribe((value: T) => {

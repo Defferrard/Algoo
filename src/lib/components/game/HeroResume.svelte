@@ -1,5 +1,4 @@
 <script lang="ts">
-    import {receive, send} from "../../animations/translate";
     import {fly} from "svelte/transition";
     import {HeroEntity, ResourceColor, Spell} from "../../game/";
     import type {Readable} from "svelte/store";

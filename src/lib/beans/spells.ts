@@ -3,6 +3,7 @@ import {DistanceStrategyType} from "../pattern/strategy/distance";
 import {BandageIcon, DopingIcon, FlameIcon, HealIcon, SliceIcon, ToxicIcon} from "../assets/spells";
 import type {Resources} from "../game";
 import {ResourceType} from "$lib/game/";
+import {SpellActionType} from "$lib/pattern/strategy/spellAction";
 
 export type SpellObject = {
     name: string,
@@ -17,10 +18,12 @@ export type SpellObject = {
     maximalRangeAttacked: number,
     attackedDistanceStrategy?: DistanceStrategyType,
 
-    cost: Resources
+    cost: Resources,
+
+    actions: { "type": SpellActionType, "args": { [key in string]: any } }[]
 }
 
-export const spells: Record<string, SpellObject> = {
+export const spells: { [key in string]: SpellObject } = {
     "bandage": {
         name: "Bandage",
         color: Color.PINK,
@@ -37,7 +40,14 @@ export const spells: Record<string, SpellObject> = {
 
         cost: {
             [ResourceType.STAMINA]: 2
-        }
+        },
+
+        actions: [
+            {
+                type: SpellActionType.UPDATE_RESSOURCE,
+                args: {value: 5, type: ResourceType.HEALTH}
+            }
+        ]
     },
     "doping": {
         name: "Doping",
@@ -53,7 +63,14 @@ export const spells: Record<string, SpellObject> = {
         attackedDistanceStrategy: DistanceStrategyType.MONO,
         cost: {
             [ResourceType.HEALTH]: 2
-        }
+        },
+
+        actions: [
+            {
+                type: SpellActionType.UPDATE_RESSOURCE,
+                args: {value: 2, type: ResourceType.STAMINA}
+            }
+        ]
     },
     "flame": {
         name: "Flame",
@@ -69,7 +86,14 @@ export const spells: Record<string, SpellObject> = {
         attackedDistanceStrategy: DistanceStrategyType.MONO,
         cost: {
             [ResourceType.STAMINA]: 10
-        }
+        },
+
+        actions: [
+            {
+                type: SpellActionType.UPDATE_RESSOURCE,
+                args: {value: -2, type: ResourceType.HEALTH}
+            }
+        ]
     },
     "heal": {
         name: "Heal",
@@ -85,7 +109,14 @@ export const spells: Record<string, SpellObject> = {
         attackedDistanceStrategy: DistanceStrategyType.MONO,
         cost: {
             [ResourceType.STAMINA]: 7
-        }
+        },
+
+        actions: [
+            {
+                type: SpellActionType.UPDATE_RESSOURCE,
+                args: {value: 5, type: ResourceType.HEALTH}
+            }
+        ]
     },
     "slice": {
         name: "Slice",
@@ -101,7 +132,14 @@ export const spells: Record<string, SpellObject> = {
         attackedDistanceStrategy: DistanceStrategyType.MONO,
         cost: {
             [ResourceType.STAMINA]: 5
-        }
+        },
+
+        actions: [
+            {
+                type: SpellActionType.UPDATE_RESSOURCE,
+                args: {value: -2, type: ResourceType.HEALTH}
+            }
+        ]
     },
     "toxic": {
         name: "Toxic",
@@ -117,7 +155,14 @@ export const spells: Record<string, SpellObject> = {
         attackedDistanceStrategy: DistanceStrategyType.MOVEMENT,
         cost: {
             [ResourceType.STAMINA]: 7
-        }
+        },
+
+        actions: [
+            {
+                type: SpellActionType.UPDATE_RESSOURCE,
+                args: {value: -2, type: ResourceType.HEALTH}
+            }
+        ]
     }
 
 }

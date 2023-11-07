@@ -16,6 +16,8 @@
     import {delay} from "$lib/utils/Functions";
     import KeyBoardListener from "$lib/components/KeyBoardListener.svelte";
     import {spells} from "$lib/beans/spells";
+    import type {Observer} from "$lib/utils/Observer";
+    import {observer} from "$lib/utils/Observer";
 
     const gameManager: GameManager = generateRandomBoard(15, 15, 0);
     const board: Board = gameManager.board;
@@ -49,7 +51,7 @@
     }
 
     const currentHero: Readable<HeroEntity | undefined> = gameManager.currentHero
-    const targetHero: Writable<HeroEntity | undefined> = writable();
+    const targetHero: Observer<HeroEntity | undefined> = observer();
     const currentSpell: Writable<Spell | undefined> = writable();
 
     let path: Coordinate[] = []; // The path the current hero will take
@@ -61,6 +63,7 @@
 
 
     let active: Coordinate | undefined; // The tile the mouse is hovering
+    let lastHover: Coordinate | undefined; // The last tile the mouse was hovering
 
     $: {
         visibles = getVisibles($currentHero!.team.heroes.map((hero: HeroEntity) => hero.tile), board)
@@ -102,7 +105,7 @@
             display.set(path.length > 0);
         } else if (active && targetable.some((c: Coordinate) => c.equals(active as Coordinate))) {
             path = [];
-            attacked = $currentSpell?.attackedTiles(active as Coordinate, board) || [];
+            attacked = $currentSpell?.attackedTiles($currentHero?.tile as Coordinate, active as Coordinate, board) || [];
             movementCost.set(0);
             display.set(false);
         } else {
@@ -120,6 +123,7 @@
     }
 
     function hover(x: number, y: number) {
+        lastHover = new Coordinate(x, y);
         clearHover();
         if (board.getTile(x, y).type !== TileType.Wall && (
             accessible.some((c: Coordinate) => c.equals(new Coordinate(x, y)))
@@ -133,10 +137,9 @@
     }
 
     function onAction(x: number, y: number) {
-        if(!active) {
+        if (!active) {
             return;
-        }
-        else if ($currentSpell) {
+        } else if ($currentSpell) {
             $currentSpell.cast($currentHero!, new Coordinate(x, y))
             currentSpell.set(undefined);
         } else {
@@ -157,6 +160,7 @@
             || !$currentHero!.has(spell.cost)) { // if the hero doesn't have enough resources, cancel it
             currentSpell.set(undefined);
         } else {
+            active = lastHover;
             currentSpell.set(spell);
         }
     }
@@ -174,7 +178,7 @@
                   on:digit={(event)=>previewSpell($currentHero.spells[event.detail.digit-1])}
 />
 
-<svelte:window on:click={()=>currentSpell.set(undefined)} />
+<svelte:window on:click={()=>currentSpell.set(undefined)}/>
 
 <section style:--color={getCSS(colors[colorIndex])}>
     <board>
@@ -183,7 +187,7 @@
                 on:click={(event)=>onAction(event.detail.x,event.detail.y)}
                 on:rightclick={(event)=>{mark(event.detail.x,event.detail.y)}}
                 on:hovertile={(event)=>hover(event.detail.x,event.detail.y)}
-                on:exit={()=>clearHover()}/>
+                on:exit={()=>{clearHover();lastHover = undefined;}}/>
     </board>
 
 

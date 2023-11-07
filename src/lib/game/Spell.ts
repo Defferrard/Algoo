@@ -1,11 +1,20 @@
 import type {Color} from "../components/Color";
-import type {Coordinate, Board} from "../board/";
+import type {Board, Coordinate} from "../board/";
 import type Node from "../board/pathfinding/Node";
 import {inRange} from "../utils/Functions";
 import type {DistanceStrategy} from "../pattern/strategy/distance";
 import {distanceStrategies} from "../pattern/strategy/distance";
-import type {Resources, HeroEntity, Entity} from "../game";
+import type {HeroEntity, Resources} from "../game";
 import type {SpellObject} from "../beans/spells";
+import type {SpellActionStrategy} from "../pattern/strategy/spellAction";
+import {getSpellAction, SpellActionType} from "../pattern/strategy/spellAction";
+import {ResourceType} from "../game";
+
+type SpellAction = {
+    strategy?: SpellActionStrategy,
+    type: SpellActionType,
+    args: { [key in string]: any }
+};
 
 export default class Spell {
     readonly color: Color;
@@ -23,6 +32,8 @@ export default class Spell {
 
     readonly cost: Resources;
 
+    private readonly _actions: SpellAction[];
+
 
     constructor(spellObject: SpellObject) {
         this.color = spellObject.color;
@@ -38,19 +49,29 @@ export default class Spell {
         this.attackedDistanceStrategy = distanceStrategies[spellObject.attackedDistanceStrategy!];
 
         this.cost = spellObject.cost;
+
+        this._actions = spellObject.actions.map((action) => {
+            return {
+                strategy: getSpellAction(action.type),
+                type: action.type,
+                args: action.args
+            }
+        });
     }
 
     cast(by: HeroEntity, to: Coordinate): boolean {
         let result: boolean = true;
-        by.update((entity: Entity) => {
+        by.update((entity: HeroEntity) => {
             result = entity.pay(this.cost)
             return entity;
         });
         if (!result) return false;
 
-        by.gameManager.board.getTileByCoordinate(to).entity?.update((entity: Entity) => {
-            return entity;
-        });
+        for(let action of this._actions) {
+            action.strategy!(this, by,
+                this.attackedTiles(by.tile as Coordinate, to, by.gameManager.board),
+                action.args);
+        }
 
         return result;
     }
@@ -64,10 +85,10 @@ export default class Spell {
         return targetable
     }
 
-    attackedTiles(from: Coordinate, board: Board): Coordinate[] {
+    attackedTiles(from: Coordinate, to: Coordinate, board: Board): Coordinate[] {
         const map: Node[][] = board.mapNodes;
         let attacked: Coordinate[] = [...map.flat()]
-            .filter((n: Coordinate) => inRange(this.attackedDistanceStrategy(from, n),
+            .filter((n: Coordinate) => inRange(this.attackedDistanceStrategy(to, n),
                 this.minimalRangeAttacked, this.maximalRangeAttacked));
 
         return attacked

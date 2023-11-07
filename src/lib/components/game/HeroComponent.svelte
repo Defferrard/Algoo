@@ -1,10 +1,10 @@
 <script lang="ts">
     import {receive, send} from "../../animations/translate";
     import {HeroEntity} from "../../game";
-    import type {Writable} from "svelte/store";
     import {getCSS} from "../Color";
+    import type {Observer} from "$lib/utils/Observer";
 
-    export let targetHero: Writable<HeroEntity | undefined>;
+    export let targetHero: Observer<HeroEntity | undefined>;
     export let hero: HeroEntity;
     let uuid = hero.uuid;
     $: if (hero) {
@@ -15,7 +15,7 @@
 <!-- ARIA Role : IMG -->
 <hero
         role="img"
-        on:mouseenter={()=>targetHero.set(hero)}
+        on:mouseenter={()=>targetHero.set(hero.getWritable())}
         on:mouseleave={()=>targetHero.set(undefined)}
         style:--team-color={getCSS(hero.team.color)}>
     <div in:receive="{{key: hero.uuid}}"

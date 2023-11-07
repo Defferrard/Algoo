@@ -1,4 +1,4 @@
-import type {Entity} from "../game/";
+import type {Entity, Resources} from "../game/";
 import {Tile, TileType, Coordinate} from "./";
 import Node from "./pathfinding/Node";
 
@@ -62,7 +62,7 @@ export default class Board {
      * @param x X axis coordinate.
      * @param y Y axis coordinate.
      */
-    pushEntity(entity: Entity, x: number, y: number): void {
+    pushEntity(entity: Entity<Resources>, x: number, y: number): void {
         entity.tile!.entity = undefined;
         entity.tile = this.getTile(x, y);
         entity.tile.entity = entity;

@@ -7,4 +7,4 @@ export {default as Entity} from "./entities/Entity";
 export {default as HeroEntity} from "./entities/HeroEntity";
 export {Characteristics, StandardCharacteristics} from "./Characteristics";
 export {ResourceType, ResourceColor} from "./enums/ResourceType";
-export type {Resources} from "./Characteristics";
+export type {Resources, StandardResources} from "./Characteristics";

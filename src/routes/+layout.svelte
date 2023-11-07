@@ -1,10 +1,9 @@
 <script>
     import {LoadingPage} from "$lib/components/";
-    import {shakeable} from "$lib/animations/shake";
 </script>
 
 <LoadingPage/>
-<body use:shakeable>
+<body>
 <slot/>
 </body>
 

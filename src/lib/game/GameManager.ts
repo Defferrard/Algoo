@@ -1,6 +1,6 @@
 import type {Readable, Writable} from "svelte/store";
 import type {Coordinate} from "../board";
-import type {HeroEntity, Entity, StandardCharacteristics} from "./";
+import type {HeroEntity, Entity, StandardCharacteristics, Resources} from "./";
 import {get, writable} from "svelte/store";
 import {Board, TileType} from "../board";
 import {delay} from "../utils/Functions";
@@ -25,15 +25,15 @@ export default class GameManager {
     // Whether the client is currently animating.
     // TODO : Use a buffer !
     private _animating: boolean = false;
-    private readonly _entityMap: Observer<Entity | undefined>[][];
-    private readonly _entityMapRArrayObserver: ArrayObserver<(Entity | undefined)[][]>;
+    private readonly _entityMap: Observer<Entity<Resources> | undefined>[][];
+    private readonly _entityMapRArrayObserver: ArrayObserver<(Entity<Resources> | undefined)[][]>;
     private readonly _animatingStore: Writable<boolean> = writable(false);
     readonly board: Board;
     private readonly _currentHero: Observer<HeroEntity | undefined> = observer();
     private _turnIndex: number = 0;
 
     private _heroes: Writable<HeroEntity>[] = [];
-    private _entities: { [key in string]: Writable<Entity> } = {};
+    private _entities: { [key in string]: Writable<Entity<Resources>> } = {};
 
     constructor(tiles: TileType[][]) {
         this.board = new Board(tiles);
@@ -42,11 +42,11 @@ export default class GameManager {
         this._entityMapRArrayObserver = arrayObserver(this._entityMap as any) as any;
     }
 
-    pushEntity(entity: Entity, x: number, y: number) {
+    pushEntity(entity: Entity<Resources>, x: number, y: number) {
         let oldTile: Coordinate | undefined = entity.tile;
         this.board.pushEntity(entity, x, y);
 
-        let writableEntity: Writable<Entity> = this._entities[entity.uuid] || writable(entity);
+        let writableEntity: Writable<Entity<Resources>> = this._entities[entity.uuid] || writable(entity);
         if (!this._entities[entity.uuid]) {
             this._entities[entity.uuid] = writableEntity;
         }
@@ -71,7 +71,7 @@ export default class GameManager {
     async moveEntityByUUID(uuid: string, path: Coordinate[]): Promise<boolean> {
         if (this._animating || path.length <= 0) return false;
         this.animating = true;
-        const writableEntity: Writable<Entity> = this.findEntityByUuid(uuid)!;
+        const writableEntity: Writable<Entity<Resources>> = this.findEntityByUuid(uuid)!;
 
         const entity = get(writableEntity);
         let oldTile: Coordinate = entity.tile!;
@@ -105,14 +105,14 @@ export default class GameManager {
         this._currentHero.set(this.getCurrentHero());
     }
 
-    findEntityByUuid(uuid: string): Writable<Entity> | undefined {
+    findEntityByUuid(uuid: string): Writable<Entity<Resources>> | undefined {
         return this._entities[uuid];
     }
 
     /**
      * Returns a read-only version of the entity map store.
      */
-    get entityMap(): Readable<(Entity | undefined)[][]> {
+    get entityMap(): Readable<(Entity<Resources> | undefined)[][]> {
         return {subscribe: this._entityMapRArrayObserver.subscribe};
     }
 
@@ -134,5 +134,9 @@ export default class GameManager {
     private set animating(value: boolean) {
         this._animating = value;
         this._animatingStore.set(value);
+    }
+
+    killEntity(uuid: string) {
+        console.error("Not implemented yet !")
     }
 }

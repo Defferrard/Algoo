@@ -1,28 +1,26 @@
 import {ResourceType} from "./enums/ResourceType";
 
 export type Resources = { [key in ResourceType]?: number };
-export abstract class Characteristics {
-    private readonly _maxResources: Resources;
+export abstract class Characteristics<R extends Resources> {
+    private readonly _maxResources: R;
 
-    protected constructor(maxResources: Resources) {
+    protected constructor(maxResources: R) {
         this._maxResources = maxResources;
     }
 
-    buildResources(): Resources {
+    buildResources(): R {
         return {...this._maxResources};
     }
 
-    get max(): Resources {
+    get max(): R {
         return {...this._maxResources};
     }
 }
 
-type StandardResources = {
-    [ResourceType.HEALTH]: number,
-    [ResourceType.STAMINA]: number
-}
+export type StandardResources = Resources & {[ResourceType.HEALTH]: number, [ResourceType.STAMINA]: number};
 
-export class StandardCharacteristics extends Characteristics {
+
+export class StandardCharacteristics extends Characteristics<StandardResources> {
 
     readonly strength: number;
     readonly resistance: number;

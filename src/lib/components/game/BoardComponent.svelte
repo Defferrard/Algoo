@@ -3,8 +3,9 @@
     import {movementCostIndicator} from "../indicators/movementcostindicator/";
     import {Coordinate, TileType, Board} from "../../board/";
     import HeroComponent from "./HeroComponent.svelte";
-    import type {Writable} from "svelte/store";
     import {HeroEntity, GameManager} from "../../game";
+    import type {Observer} from "../../utils/Observer";
+    import {shakeable} from "../../animations/shake";
 
     const dispatch = createEventDispatcher();
 
@@ -17,25 +18,27 @@
     export let path: Coordinate[] = [];
     export let active: Coordinate | undefined = undefined;
 
-    export let targetHero: Writable<HeroEntity | undefined>;
+    export let targetHero: Observer<HeroEntity | undefined>;
 
     let entityMap = gameManager.entityMap;
     let board: Board = gameManager.board;
 
 </script>
 
-<table on:mouseleave={()=> dispatch('exit')}
+<table use:shakeable
+        on:mouseleave={()=> dispatch('exit')}
        style:--width={board.width + "em"}>
     {#each {length: board.height} as _, y}
         <tr>
             {#each {length: board.width} as _, x}
-                <td class:path={path.some((c) => c.is(x, y))}
+                <td id={board.getTile(x,y).stringId}
+                    class:path={path.some((c) => c.is(x, y))}
                     class:fog={!visibles.some((c) => c.is(x, y))}
                     class:wall={board.getTile(x,y).type === TileType.Wall}
                     class:accessible={accessible.some((c) => c.is(x, y))}
                     class:targetable={targetable.some((c) => c.is(x, y))}
                     class:attacked={attacked.some((c) => c.is(x, y))}
-                    class:active={$targetHero?.tile.is(x,y) || active?.is(x,y)}
+                    class:active={active?.is(x,y)}
                     class:marker={markers.some((c) => c.is(x, y))}
                     on:click={(event)=>{
                         if(board.getTile(x,y).type === TileType.Wall){

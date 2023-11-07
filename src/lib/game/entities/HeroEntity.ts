@@ -1,22 +1,23 @@
-import type {Effect, GameManager, Hero, Resources, Spell, StandardCharacteristics, Team} from "../";
+import type {Effect, GameManager, Hero, Spell, StandardCharacteristics, StandardResources, Team} from "../";
 import {ResourceType} from "../";
 import {default as Entity} from "./Entity";
 import type {Coordinate} from "../../board/";
+import type {Writable} from "svelte/store";
 
-export default class HeroEntity extends Entity {
+
+export default class HeroEntity extends Entity<StandardResources> {
 
     private readonly _effects: Effect[] = [];
     readonly team: Team;
     private readonly _hero: Hero;
 
-    constructor(team: Team, hero:Hero, coordinate: Coordinate, gameManager: GameManager) {
+    constructor(team: Team, hero: Hero, coordinate: Coordinate, gameManager: GameManager) {
         super(coordinate, gameManager, hero.characteristics.buildResources());
         this.team = team;
         this._hero = hero;
         team.pushHero(this);
         gameManager.setEntityAsHero(this.uuid);
     }
-
 
     onEndTurn() {
         this.resources[ResourceType.STAMINA]! += this._hero.characteristics.durability;
@@ -41,4 +42,20 @@ export default class HeroEntity extends Entity {
     }
 
 
+    update(updateFunction: (entity: HeroEntity) => HeroEntity): void {
+        this.gameManager.findEntityByUuid(this.uuid)!.set(updateFunction(this));
+    }
+
+    getWritable(): Writable<HeroEntity> {
+        return this.gameManager.findEntityByUuid(this.uuid) as Writable<HeroEntity>;
+    }
+
+    updateResource(type: ResourceType, updateFunction: (value: number) => number) {
+        super.updateResource(type, updateFunction);
+        if (this.resources[type]! > this.characteristics.max[type]!) {
+            this.resources[type] = this.characteristics.max[type]!;
+        }else if (type === ResourceType.HEALTH && this.resources[type]! <= 0) {
+            this.gameManager.killEntity(this.uuid);
+        }
+    }
 }
