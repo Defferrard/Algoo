@@ -25,5 +25,5 @@ backend-package:
     - cd $WORKDIR
   script:
     - "docker login $DOCKER_REGISTRY -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_PASSWORD"
-    - "docker build --network host -t $DOCKER_REGISTRY_IMAGE/$IMAGE_NAME:latest . -f $DOCKERFILE"
-    - "docker push $DOCKER_REGISTRY_IMAGE/$IMAGE_NAME:latest"
+    - "docker build --network host -t $DOCKER_REGISTRY/$IMAGE_NAME:latest . -f $DOCKERFILE"
+    - "docker push $DOCKER_REGISTRY/$IMAGE_NAME:latest"
