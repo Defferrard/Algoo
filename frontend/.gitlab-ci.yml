@@ -1,0 +1,10 @@
+frontend-test:
+  stage: test
+  before_script:
+    - cd frontend
+    - npm install
+  script:
+    - npm run test
+  artifacts:
+    paths:
+      - frontend/dist

@@ -1,0 +1,11 @@
+
+backend-test:
+  stage: test
+  before_script:
+    - cd backend
+    - npm install
+  script:
+    - npm run test
+  artifacts:
+    paths:
+      - backend/mochawesome-report

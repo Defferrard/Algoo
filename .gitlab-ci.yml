@@ -2,26 +2,8 @@ image: node:latest
 
 stages:
   - test
-  - build
+  - package
 
-frontend-test:
-  stage: test
-  before_script:
-    - cd frontend
-    - npm install
-  script:
-    - npm run test
-  artifacts:
-    paths:
-      - frontend/dist
-
-backend-test:
-  stage: test
-  before_script:
-    - cd backend
-    - npm install
-  script:
-    - npm run test
-  artifacts:
-    paths:
-      - backend/mochawesome-report
+include:
+  - local: '/backend/.gitlab-ci.yml'
+  - local: '/frontend/.gitlab-ci.yml'
