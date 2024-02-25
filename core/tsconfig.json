@@ -1,0 +1,12 @@
+{
+  "extends": ["../tsconfig.json"],
+  "compilerOptions": {
+    "target": "ES2022",
+    "declaration": true,
+    "declarationMap": true,
+    "strict": true,
+    "rootDir": ".",
+    "composite": true,
+    "moduleResolution": "node"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "short_name": "Algoo",
+  "name": "Algoo - Game",
+  "start_url": ".",
+  "display": "standalone",
+  "description": "OpenSources Tactical RPG",
+  "theme_color": "#316BDE",
+  "icons": [
+  ]
+}

@@ -1,0 +1,42 @@
+
+.bounce > * {
+    animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        translate: 0 0;
+        transform: scaleY(0.8) scaleX(1.1);
+    }
+    50% {
+        translate: 0 -0.5em;
+        transform: scaleY(1) scaleX(0.8);
+
+    }
+}
+
+.vibrate > * {
+    animation: vibrate 0.2s infinite;
+}
+
+@keyframes vibrate {
+    0%, 100% {
+        transform: rotate(2deg);
+    }
+    50% {
+        transform: rotate(-2deg);
+    }
+}
+
+.dance > *{
+    animation: dance 1s infinite;
+}
+
+@keyframes dance {
+    0%, 100% {
+        transform: rotate(-10deg);
+    }
+    50% {
+        transform: rotate(10deg);
+    }
+}

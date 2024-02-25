@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@backend": ["./backend/src"],
+      "@core": ["./core/src"],
+      "@frontend": ["./frontend/src"]
+    }
+  },
+  "references": [
+    {
+      "path": "backend"
+    },
+    {
+      "path": "core"
+    },
+    {
+      "path": "frontend"
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+@font-face {
+    font-family: ubuntu;
+    src: url("../fonts/UbuntuTitling-Bold.ttf");
+}
+
+@font-face {
+    font-family: roboto;
+    src: url("../fonts/Roboto-Regular.ttf");
+}
+
+@font-face {
+    font-family: roboto;
+    src: url("../fonts/Roboto-Black.ttf");
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: poppins;
+    src: url("../fonts/Poppins-ExtraBold.ttf");
+    font-weight: bold;
+}
+
+* {
+    transition: inherit;
+}
+
+:root {
+    transition: 0.2s;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+
+    font-family: roboto, sans-serif;
+    color: var(--color-body);
+
+    --color-gap: 20%;
+    --color-gaper: 50%;
+
+    --color-main: var(--color-blue);
+    --color-main-rgb: var(--color-blue-rgb);
+
+    --color-success: var(--color-green);
+    --color-success-rgb: var(--color-green-rgb);
+
+    --color-danger: var(--color-red);
+    --color-danger-rgb: var(--color-red-rgb);
+
+    --color-blue: #316BDE;
+    --color-blue-rgb: 49, 107, 222;
+
+    --color-red: #e53232;
+    --color-red-rgb: 229, 50, 50;
+
+    --color-green: #59A446;
+    --color-green-rgb: 89, 164, 70;
+
+    --color-yellow: #e5be32;
+    --color-yellow-rgb: 229, 190, 50;
+
+    --color-purple: #9632e5;
+    --color-purple-rgb: 150, 50, 229;
+
+    --color-orange: #E58832;
+    --color-orange-rgb: 222, 153, 49;
+
+    --color-pink: #E532DE;
+    --color-pink-rgb: 222, 49, 182;
+
+    --color-cyan: #32E5D0;
+    --color-cyan-rgb: 50, 229, 208;
+
+    --color-gray: #7585A5;
+    --color-gray-rgb: 117, 133, 165;
+
+
+    --color-body: #2B2B29;
+    --color-body-rgb: 43, 43, 41;
+    --color-lightest: #F6F6F6;
+    --color-lightest-rgb: 246, 246, 246;
+    --color-light: #F8F8FE;
+    --color-light-rgb: 248, 248, 254;
+    --color-lighter: #FFF;
+    --color-lighter-rgb: 255, 255, 255;
+
+    background-color: var(--color-light);
+
+
+    --color-body-light: color-mix(in srgb, var(--color-body) 90%, var(--color-light) var(--color-gap));
+    --color-body-lighter: color-mix(in srgb, var(--color-body) 90%, var(--color-lighter) var(--color-gaper));
+    --color: var(--color-main);
+    --bg-color: var(--color-light);
+}
+
+lighter {
+    color: var(--color-body-lighter);
+}
+
+sm {
+    font-size: 0.8em;
+}
+
+::-webkit-scrollbar-thumb {
+    --color: var(--color-main);
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--color);
+    border-radius: 1em;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: color-mix(in srgb, var(--color), black var(--color-gap));
+}
+
+::-webkit-scrollbar-thumb:active {
+    background-color: color-mix(in srgb, var(--color), black var(--color-gaper));
+}
+
