@@ -9,8 +9,8 @@ backend-test:
   script:
     - npm run test
   artifacts:
-    paths:
-      - $WORKDIR/junit.xml
+    reports:
+        junit: $WORKDIR/junit.xml
 
 backend-package:
   stage: package

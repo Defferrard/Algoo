@@ -8,9 +8,8 @@ frontend-test:
   script:
     - npm run test
   artifacts:
-    paths:
-      - $WORKDIR/dist/junit-report.xml
-
+    reports:
+        junit: $WORKDIR/dist/junit-report.xml
 
 frontend-package:
   stage: package
