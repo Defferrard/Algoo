@@ -7,3 +7,36 @@ stages:
 include:
   - local: '/backend/.gitlab-ci.yml'
   - local: '/frontend/.gitlab-ci.yml'
+
+variables:
+  WORKDIR: .
+
+backend-package:
+  stage: package
+  image: docker:24.0.2-dind-alpine3.18
+  services:
+    - docker:19.03.12-dind
+  variables:
+    IMAGE_NAME: algoo-backend
+    DOCKERFILE: ./Backend.Dockerfile
+  before_script:
+    - cd $WORKDIR
+  script:
+    - "docker login $DOCKER_REGISTRY -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_PASSWORD"
+    - "docker build --network host -t $DOCKER_REGISTRY/$IMAGE_NAME:latest . -f $DOCKERFILE"
+    - "docker push $DOCKER_REGISTRY/$IMAGE_NAME:latest"
+
+frontend-package:
+  stage: package
+  image: docker:24.0.2-dind-alpine3.18
+  services:
+    - docker:19.03.12-dind
+  variables:
+    IMAGE_NAME: algoo-frontend
+    DOCKERFILE: ./Frontend.Dockerfile
+  before_script:
+    - cd $WORKDIR
+  script:
+    - "docker login $DOCKER_REGISTRY -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_PASSWORD"
+    - "docker build --network host -t $DOCKER_REGISTRY/$IMAGE_NAME:latest . -f $DOCKERFILE"
+    - "docker push $DOCKER_REGISTRY/$IMAGE_NAME:latest"

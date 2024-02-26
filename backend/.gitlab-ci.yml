@@ -11,19 +11,3 @@ backend-test:
   artifacts:
     reports:
         junit: $WORKDIR/junit.xml
-
-backend-package:
-  stage: package
-  image: docker:24.0.2-dind-alpine3.18
-  services:
-    - docker:19.03.12-dind
-  variables:
-    WORKDIR: backend
-    IMAGE_NAME: algoo-backend
-    DOCKERFILE: ./Dockerfile
-  before_script:
-    - cd $WORKDIR
-  script:
-    - "docker login $DOCKER_REGISTRY -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_PASSWORD"
-    - "docker build --network host -t $DOCKER_REGISTRY/$IMAGE_NAME:latest . -f $DOCKERFILE"
-    - "docker push $DOCKER_REGISTRY/$IMAGE_NAME:latest"
