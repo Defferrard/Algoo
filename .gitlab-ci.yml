@@ -13,9 +13,9 @@ variables:
 
 backend-package:
   stage: package
-  image: docker:24.0.2-dind-alpine3.18
+  image: docker:25.0.3-dind
   services:
-    - docker:19.03.12-dind
+    - docker:25.0.3-dind
   variables:
     IMAGE_NAME: algoo-backend
     DOCKERFILE: ./Backend.Dockerfile
@@ -28,9 +28,9 @@ backend-package:
 
 frontend-package:
   stage: package
-  image: docker:24.0.2-dind-alpine3.18
+  image: docker:25.0.3-dind
   services:
-    - docker:19.03.12-dind
+    - docker:25.0.3-dind
   variables:
     IMAGE_NAME: algoo-frontend
     DOCKERFILE: ./Frontend.Dockerfile
