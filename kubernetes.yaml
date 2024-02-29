@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: algoo-frontend
+  namespace: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: algoo-frontend
+  template:
+    metadata:
+      labels:
+        app: algoo-frontend
+    spec:
+      containers:
+        - image: registry.defferrard.dev/algoo-frontend
+          imagePullPolicy: Always
+          name: algoo-frontend
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+      imagePullSecrets:
+        - name: local-registry
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: algoo-frontend
+  namespace: app
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 3000
+  selector:
+    app: algoo-frontend
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: algoo-frontend
+  namespace: app
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: algoo.defferrard.dev
+      http:
+        paths:
+          - backend:
+              service:
+                name: algoo-frontend
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - algoo.defferrard.dev
+      secretName: ssl-cert-production
