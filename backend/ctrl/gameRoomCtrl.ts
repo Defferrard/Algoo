@@ -1,6 +1,13 @@
 import {NextFunction, Response, Request} from "express";
-import {gameRoomRepo} from "../repo";
+import {gameRoomRepository} from "../repositories";
+import {GameRoom} from "../game";
 
 export function getRooms(req: Request, res: Response, next: NextFunction) {
-    res.send(gameRoomRepo.rooms)
+    res.send(gameRoomRepository.rooms)
+}
+
+export function createRoom(req: Request, res: Response, next: NextFunction) {
+    const ROOM: GameRoom = new GameRoom();
+    gameRoomRepository.push(ROOM);
+    res.send(ROOM);
 }

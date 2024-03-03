@@ -1,6 +1,6 @@
 import {GameRoom} from "../game";
 
-export class GameRoomRepo {
+export class GameRoomRepository {
     private readonly _rooms: GameRoom[];
 
     constructor() {
@@ -10,6 +10,10 @@ export class GameRoomRepo {
     get rooms(): GameRoom[] {
         return [...this._rooms]
     }
+
+    push(room: GameRoom): void {
+        this._rooms.push(room);
+    }
 }
 
-export default new GameRoomRepo();
+export default new GameRoomRepository();

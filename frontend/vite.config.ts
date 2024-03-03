@@ -8,7 +8,8 @@ export default defineConfig({
 	plugins: [sveltekit()],
 	server: {
 		proxy: {
-			'/socket.io': 'http://localhost:8080/socket.io'
+			'/socket.io': 'http://localhost:8080/',
+			'/api/v1': 'http://localhost:8080/'
 		}
 	}
 });

@@ -14,10 +14,10 @@ export default class GameRoom {
     private _state: GameRoomState;
     private readonly _players: Player[]; // Player UUID -> Team UUID
 
-    constructor(owner: Player){
+    constructor(){
         this.uuid = uuidV4();
         this._state = GameRoomState.CREATING;
-        this._players = [owner];
+        this._players = [];
         // this._gameManager = new GameManager(generateRandomBoard(10, 10, 0.5));
     }
 }
