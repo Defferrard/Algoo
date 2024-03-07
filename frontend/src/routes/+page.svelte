@@ -2,6 +2,7 @@
     import { goto } from '$app/navigation';
     import {JSON} from "$lib/components/index.js";
     import {GAME_ROOM_REPOSITORY} from "$lib/repositories";
+    import {onMount} from "svelte";
 
     const URL = "defferrard.dev";
 
@@ -10,12 +11,16 @@
     function createGameRoom(){
         GAME_ROOM_REPOSITORY.request.create("test").then((res) => {
             res.json().then((data) => {
-                console.log(data);
                 goto(`/gamerooms/${data.uuid}`)
             });
         });
     }
+
+    onMount(() => {
+        GAMES_REFRESH();
+    });
 </script>
+
 <section>
     <button on:click={GAMES_REFRESH}>
         Refresh

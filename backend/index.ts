@@ -9,16 +9,24 @@ import {createServer} from "http";
 
 import {SocketMap} from "./socket/";
 import {MessageType} from "@defferrard/algoo-core/src/socket";
+import type {User} from "@defferrard/algoo-core/src/socket";
 import {delay} from "lodash";
 import {router} from "./routes"
+import cors from 'cors';
 
 export const APP: Express = express();
 const PORT: number = +(process.env.PORT || 8080);
 const HTTP_SERVER = createServer(APP);
-const IO: Server = new Server(HTTP_SERVER, {path: '/socket.io'});
+const IO: Server = new Server(HTTP_SERVER, {
+    path: '/socket.io'
+});
 
 const SOCKET_MAP: SocketMap = new SocketMap();
-const SOCKET_ON_CONNECTION: Socket[] = [];
+const SOCKET_ON_CONNECTION: Socket[] = [];4
+
+const options: cors.CorsOptions = {
+    origin: ['*'],
+};
 
 APP.use(express.json())
     .use((req, res, next) => {
@@ -37,10 +45,10 @@ IO.on(MessageType.CONNECTION, (socket: Socket) => {
     }, 10000);
 
 
-    socket.on(MessageType.LOGIN, (uuid: string) => {
-        LOGGER.info(`Socket ${uuid} logged in`);
+    socket.on(MessageType.LOGIN, (user: User) => {
+        LOGGER.info(`Socket ${user.uuid} logged in`);
         SOCKET_ON_CONNECTION.splice(SOCKET_ON_CONNECTION.indexOf(socket), 1);
-        SOCKET_MAP.push(socket, uuid);
+        SOCKET_MAP.push(socket, user.uuid);
     });
 
     socket.on(MessageType.DISCONNECT, () => {

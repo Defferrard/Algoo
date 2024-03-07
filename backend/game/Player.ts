@@ -1,16 +1,12 @@
 import {Color, Team} from "@defferrard/algoo-core/src/game";
+import {User} from "@defferrard/algoo-core/src/socket";
 
-export default class Player {
-    private readonly _uuid: string;
+export default class Player extends User {
     private readonly _team: Team;
 
     constructor(uuid: string) {
-        this._uuid = uuid;
+        super(uuid, "Kharamel");
         this._team = new Team(Color.GREEN, uuid);
-    }
-
-    get uuid(): string {
-        return this._uuid;
     }
 
     get team(): Team {

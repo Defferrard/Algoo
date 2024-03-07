@@ -9,7 +9,6 @@
         Loading...
     </loadingPage>
 {/if}
-vcx
 <style>
     loadingPage {
         position: fixed;

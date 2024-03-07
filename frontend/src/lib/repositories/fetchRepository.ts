@@ -1,4 +1,4 @@
-import type {fetchStoreResult} from "$lib/store";
+import type {fetchStoreResult} from "$lib/stores";
 
 export type fetchRepository = {
     getAll: () => fetchStoreResult;

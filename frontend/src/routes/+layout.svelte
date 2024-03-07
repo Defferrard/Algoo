@@ -1,8 +1,10 @@
 <script>
     import {LoadingPage} from "$lib/components/";
+    import ProfileTab from "$lib/components/profile/ProfileTab.svelte";
 </script>
 
 <LoadingPage/>
+<ProfileTab/>
 <body>
 <slot/>
 </body>

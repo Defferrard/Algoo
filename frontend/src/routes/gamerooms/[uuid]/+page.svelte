@@ -1,11 +1,14 @@
 <script lang="ts">
     import { page } from '$app/stores';
+    import { socket } from '$lib/stores/socket';
+    import {onMount} from "svelte";
     export let data;
 
-
+    onMount(() => {
+        socket.connect();
+    });
 </script>
 <section>
-    {data.uuid}
     <qr-container>
         <qr style:mask-image={`url(https://api.qrserver.com/v1/create-qr-code/?data=${$page.url}&format=svg)`}/>
     </qr-container>

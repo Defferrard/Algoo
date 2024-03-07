@@ -1,6 +1,6 @@
 import {API_BASE_PATH} from "$lib/utils/Const";
-import {fetchStore} from "$lib/store";
-import type {fetchStoreResult} from "$lib/store";
+import {fetchStore} from "$lib/stores";
+import type {fetchStoreResult} from "$lib/stores";
 import type {fetchRepository} from ".";
 
 const BASE_URL = API_BASE_PATH + "/gamerooms";

@@ -20,4 +20,8 @@ export default class GameRoom {
         this._players = [];
         // this._gameManager = new GameManager(generateRandomBoard(10, 10, 0.5));
     }
+
+    get playersCount(): number {
+        return this._players.length;
+    }
 }

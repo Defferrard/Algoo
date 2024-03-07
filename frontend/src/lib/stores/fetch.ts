@@ -12,15 +12,16 @@ function fetchStore(url: string, init: RequestInit): fetchStoreResult {
         loading.set(true)
         error.set(false)
         try {
+            console.log("Fetching", url, init)
             const response: Response = await fetch(url, init)
+            console.log("Fetched", response)
             data.set(await response.json())
+            console.log("Set data", data)
         } catch (e) {
             error.set(e)
         }
         loading.set(false)
     }
-
-    refresh().then();
 
     return [data, loading, error, refresh]
 }
