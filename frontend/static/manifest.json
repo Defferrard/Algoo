@@ -6,5 +6,11 @@
   "description": "OpenSources Tactical RPG",
   "theme_color": "#316BDE",
   "icons": [
+    {
+      "src": "monochrome_icon.png",
+      "sizes": "196x196",
+      "type": "image/png",
+      "purpose": "monochrome"
+    }
   ]
 }

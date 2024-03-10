@@ -6,31 +6,40 @@ import {localUser} from "$lib/stores/localUser";
 let connected: boolean = false;
 
 export const socket = (() => {
-    console.log("Creating socket...")
-    const IO = io();
+    const IO = io({
+        autoConnect: false
+    });
     const {subscribe, set, update} = writable(IO);
 
-    IO.on("*",function(event,data) {
+    IO.on("*", function (event, data) {
         console.log(event);
         console.log(data);
     });
 
+    IO.onAny((event, ...args) => {
+        console.log(event, args);
+        set(IO);
+    });
+
     async function connect(): Promise<User> {
-        console.log("Connecting to server...");
+        IO.connect();
         return new Promise((resolve, reject) => {
-            if(connected) {
+            if (connected) {
                 resolve(get(localUser));
                 return;
             }
 
             const USER: User = get(localUser);
-            console.log("Beginning connection...")
             IO.on(MessageType.CONNECT, () => {
-                console.log("Connected to server");
-                IO.emit(MessageType.LOGIN, USER);
-                resolve(USER );
+                IO.emit(MessageType.LOGIN, USER, ({status}:{status:number})=>{
+                    if(status === 200){
+                        resolve(USER);
+                        set(IO);
+                    }else{
+                        IO.disconnect();
+                    }
+                });
             });
-            set(IO);
         });
     }
 
@@ -38,7 +47,9 @@ export const socket = (() => {
         connect,
         subscribe,
         get: () => IO,
-        emit: (type: MessageType, data?: any) => IO.emit(type, data),
-        on: IO.on as (type: MessageType, listener: (...args: any[]) => void) => typeof IO
+        emit: (type: MessageType, data?: any, ack?: (data: any) => void) => IO.emit(type, data, ack),
+        on: function (type: MessageType, listener: (...args: any[]) => void) {
+            IO.on(type, listener);
+        }
     };
 })();

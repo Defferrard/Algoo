@@ -1,6 +1,7 @@
 <script lang="ts">
     import {socket} from '$lib/stores/socket';
     import {localUser} from '$lib/stores/localUser';
+
     export let open = false;
 </script>
 
@@ -10,7 +11,7 @@
         account_circle
     </button>
     <input value={$localUser.name} disabled={$socket.connected}
-    on:change={(e)=> localUser.setUsername(e.target.value)}
+           on:change={(e)=> localUser.setUsername(e.target.value)}
     />
 </tab>
 
@@ -23,7 +24,7 @@
     }
 
     input {
-        border:none;
+        border: none;
         width: 0;
         border-radius: 5em;
         margin: 0;
@@ -32,6 +33,7 @@
         color: var(--color-light);
         opacity: 0;
     }
+
     input:disabled {
         background-color: rgba(0, 0, 0, 0);
         width: auto !important;

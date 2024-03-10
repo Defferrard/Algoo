@@ -1,17 +1,53 @@
 <script lang="ts">
-    import { page } from '$app/stores';
-    import { socket } from '$lib/stores/socket';
+    import {page} from '$app/stores';
+    import {socket} from '$lib/stores/socket';
     import {onMount} from "svelte";
+    import {MessageType} from "@defferrard/algoo-core/src/socket";
+    import {JSON} from "$lib/components/index.js";
+
     export let data;
 
-    onMount(() => {
-        socket.connect();
+    let MESSAGES: [string] = [];
+    let messageInput: HTMLElement;
+
+    onMount(async () => {
+        await socket.connect()
+        socket.emit(MessageType.GAME_ROOM_JOIN, data.uuid);
+
+        socket.on(MessageType.GAME_ROOM_MESSAGE, (message: string) => {
+            MESSAGES.push(message);
+            MESSAGES = [...MESSAGES];
+        });
+
+        messageInput.focus()
     });
+
+    async function sendMessage() {
+        await socket.emit(MessageType.GAME_ROOM_MESSAGE, {
+            room:data.uuid,
+            message: messageInput.value
+        });
+        messageInput.value = '';
+    }
 </script>
 <section>
     <qr-container>
         <qr style:mask-image={`url(https://api.qrserver.com/v1/create-qr-code/?data=${$page.url}&format=svg)`}/>
     </qr-container>
+    <br/>
+    <div style:text-align="left">
+        {#key MESSAGES}
+            {#each MESSAGES as message}
+                <div>
+                    <b>{message.from.name}</b> : {message.message}
+                </div>
+            {/each}
+        {/key}
+    </div>
+    <input bind:this={messageInput} on:keypress={(event)=>{
+        if(event.key === 'Enter') sendMessage();
+    }} />
+    <button on:click={sendMessage}>send</button>
 </section>
 
 <style>
