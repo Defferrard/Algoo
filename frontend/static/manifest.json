@@ -10,7 +10,7 @@
       "src": "monochrome_icon.png",
       "sizes": "196x196",
       "type": "image/png",
-      "purpose": "monochrome"
+      "purpose": "monochrome maskable any"
     }
   ]
 }
