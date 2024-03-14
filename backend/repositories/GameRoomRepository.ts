@@ -21,6 +21,10 @@ export class GameRoomRepository {
             this._rooms.splice(index, 1);
         }
     }
+
+    get(uuid: string): GameRoom | undefined {
+        return this._rooms.find(room => room.uuid === uuid);
+    }
 }
 
 export default new GameRoomRepository();

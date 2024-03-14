@@ -29,7 +29,11 @@
         Create Game
     </button>
     <div>
-    <JSON data={$GAMES_DATA}></JSON>
+        {#each $GAMES_DATA || [] as gameRoom}
+            <button on:click={()=>goto(`/gamerooms/${gameRoom.uuid}`)}>
+                {gameRoom.uuid}
+            </button>
+        {/each}
     </div>
 </section>
 

@@ -12,16 +12,20 @@ export default class GameRoom {
     readonly uuid: string;
     private _gameManager?: GameManager;
     private _state: GameRoomState;
-    private readonly _players: Player[]; // Player UUID -> Team UUID
+    readonly #players: Player[]; // Player UUID -> Team UUID
 
     constructor(){
         this.uuid = uuidV4();
         this._state = GameRoomState.CREATING;
-        this._players = [];
+        this.#players = [];
         // this._gameManager = new GameManager(generateRandomBoard(10, 10, 0.5));
     }
 
     get playersCount(): number {
-        return this._players.length;
+        return this.#players.length;
+    }
+
+    addPlayer(player: Player): void {
+        this.#players.push(player);
     }
 }

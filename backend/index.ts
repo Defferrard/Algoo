@@ -2,17 +2,19 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-import express, {Express, NextFunction} from 'express';
+import express, {Express} from 'express';
 import {Server, Socket} from 'socket.io';
 import {LOGGER} from "./utils/logger";
 import {createServer} from "http";
 
 import {SocketMap} from "./socket/";
-import {MessageType} from "@defferrard/algoo-core/src/socket";
+import {MessageType, SocketStatus} from "@defferrard/algoo-core/src/socket";
 import type {User} from "@defferrard/algoo-core/src/socket";
 import {delay} from "lodash";
 import {router} from "./routes"
 import cors from 'cors';
+
+import SocketUser from "./socket/SocketUser";
 
 export const APP: Express = express();
 const PORT: number = +(process.env.PORT || 8080);
@@ -35,6 +37,7 @@ APP.use(express.json())
     })
     .use('/api/v1', router);
 IO.on(MessageType.CONNECTION, (socket: Socket) => {
+    let socketUser: SocketUser;
     LOGGER.info('Socket connected, waiting for log in.');
     SOCKET_ON_CONNECTION.push(socket);
     delay(() => {
@@ -48,27 +51,13 @@ IO.on(MessageType.CONNECTION, (socket: Socket) => {
     socket.on(MessageType.LOGIN, (user: User, callback) => {
         LOGGER.info(`Socket ${user.uuid} logged in`);
         SOCKET_ON_CONNECTION.splice(SOCKET_ON_CONNECTION.indexOf(socket), 1);
-        SOCKET_MAP.push(socket, user);
-        callback({status: 200});
-    });
-
-    socket.on(MessageType.DISCONNECT, () => {
+        socketUser = new SocketUser(user, socket);
+        SOCKET_MAP.push(socketUser);
+        socketUser.buildRoutes(IO);
+        callback({status: SocketStatus.OK});
+    }).on(MessageType.DISCONNECT, () => {
         LOGGER.info('Socket disconnected');
         SOCKET_ON_CONNECTION.splice(SOCKET_ON_CONNECTION.indexOf(socket), 1);
-    });
-
-    socket.on(MessageType.GAME_ROOM_JOIN, (room: string) => {
-        LOGGER.info(`Socket ${SOCKET_MAP.getUUID(socket)} joined room ${room}`);
-        socket.join(room);
-    });
-
-    socket.on(MessageType.GAME_ROOM_MESSAGE, ({room, message}) => {
-        LOGGER.info(`Socket ${SOCKET_MAP.getUUID(socket)} sent message ${message}`);
-        IO.to(room).emit(MessageType.GAME_ROOM_MESSAGE, {
-            datetime: new Date(),
-            from: SOCKET_MAP.getUUID(socket),
-            message
-        });
     });
 });
 

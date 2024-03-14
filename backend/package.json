@@ -24,6 +24,7 @@
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "socket.io": "^4.7.4",
+    "uuid": "^9.0.0",
     "winston": "^3.8.2"
   },
   "devDependencies": {
@@ -37,6 +38,7 @@
     "@types/passport-local": "^1.0.35",
     "@types/superagent": "^4.1.16",
     "@types/supertest": "^2.0.12",
+    "@types/uuid": "^9.0.2",
     "chai": "^4.3.6",
     "concurrently": "^7.6.0",
     "mocha": "^10.0.0",
