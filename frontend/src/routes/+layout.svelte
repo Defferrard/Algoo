@@ -6,7 +6,9 @@
 <LoadingPage/>
 <ProfileTab/>
 <body>
-<slot/>
+<content>
+    <slot/>
+</content>
 </body>
 
 <style>
@@ -15,7 +17,8 @@
         background: linear-gradient(0deg, var(--gradient) 0%, var(--color-body) 100%);
         color: var(--color-light);
     }
-    body{
+
+    body {
         transition: 0s;
         margin: 0;
         padding: 0;
@@ -23,5 +26,8 @@
         height: 100vh;
         width: 100vw;
 
+    }
+    content {
+        transition: 0.2s    ;
     }
 </style>

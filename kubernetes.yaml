@@ -117,6 +117,13 @@ spec:
                   number: 80
             path: /api/v1
             pathType: Prefix
+          - backend:
+              service:
+                name: algoo-backend
+                port:
+                  number: 80
+            path: /socket.io
+            pathType: ImplementationSpecific
   tls:
     - hosts:
         - algoo.defferrard.dev

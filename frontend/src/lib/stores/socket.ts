@@ -1,6 +1,6 @@
 import {io} from "socket.io-client";
 import {get, writable} from 'svelte/store';
-import {MessageType, User} from "@defferrard/algoo-core/src/socket";
+import {MessageType, SocketStatus, User} from "@defferrard/algoo-core/src/socket";
 import {localUser} from "$lib/stores/localUser";
 
 let connected: boolean = false;
@@ -31,12 +31,15 @@ export const socket = (() => {
 
             const USER: User = get(localUser);
             IO.on(MessageType.CONNECT, () => {
-                IO.emit(MessageType.LOGIN, USER, ({status}:{status:number})=>{
-                    if(status === 200){
-                        resolve(USER);
-                        set(IO);
-                    }else{
-                        IO.disconnect();
+                IO.emit(MessageType.LOGIN, USER, ({status}:{status:SocketStatus})=>{
+                    switch (status) {
+                        case SocketStatus.OK:
+                            resolve(USER);
+                            set(IO);
+                            break;
+                        default:
+                            IO.disconnect();
+                            reject({status});
                     }
                 });
             });
