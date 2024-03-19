@@ -1,12 +1,14 @@
 <script>
     import {LoadingPage} from "$lib/components/";
     import ProfileTab from "$lib/components/profile/ProfileTab.svelte";
+    import Header from "$lib/components/layout/Header.svelte";
 </script>
 
-<LoadingPage/>
-<ProfileTab/>
+
 <body>
 <content>
+    <LoadingPage/>
+    <Header/>
     <slot/>
 </content>
 </body>

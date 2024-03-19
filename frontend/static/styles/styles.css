@@ -117,10 +117,5 @@ sm {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: color-mix(in srgb, var(--color), black var(--color-gap));
+    background-color: color-mix(in srgb, var(--color), var(--color-light) var(--color-gap));
 }
-
-::-webkit-scrollbar-thumb:active {
-    background-color: color-mix(in srgb, var(--color), black var(--color-gaper));
-}
-

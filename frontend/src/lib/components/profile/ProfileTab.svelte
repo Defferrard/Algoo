@@ -59,8 +59,6 @@
         font-size: 3em;
         background-color: rgba(0, 0, 0, 0);
         gap: 0.2em;
-        position: absolute;
-        top: 0.2em;
         border-radius: 0 5.2em 5.2em 0;
     }
 
