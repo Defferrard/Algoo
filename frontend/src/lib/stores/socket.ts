@@ -2,6 +2,7 @@ import {io} from "socket.io-client";
 import {get, writable} from 'svelte/store';
 import {MessageType, SocketStatus, User} from "@defferrard/algoo-core/src/socket";
 import {localUser} from "$lib/stores/localUser";
+import {loadingMutex} from "$lib/components";
 
 let connected: boolean = false;
 
@@ -22,9 +23,11 @@ export const socket = (() => {
     });
 
     async function connect(): Promise<User> {
+        loadingMutex.increment();
         IO.connect();
         return new Promise((resolve, reject) => {
             if (connected) {
+                loadingMutex.decrement();
                 resolve(get(localUser));
                 return;
             }
@@ -34,12 +37,15 @@ export const socket = (() => {
                 IO.emit(MessageType.LOGIN, USER, ({status}:{status:SocketStatus})=>{
                     switch (status) {
                         case SocketStatus.OK:
-                            resolve(USER);
                             set(IO);
+                            loadingMutex.decrement();
+                            resolve(USER);
                             break;
                         default:
                             IO.disconnect();
+                            loadingMutex.decrement();
                             reject({status});
+                            break;
                     }
                 });
             });

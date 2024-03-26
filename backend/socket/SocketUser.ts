@@ -20,6 +20,7 @@ export default class SocketUser extends User {
                 this.#socket.join(room);
                 const PLAYER = new Player(this)
                 gameRoomRepository.get(room)!.addPlayer(PLAYER);
+                this.#socket.to(room).emit(MessageType.GAME_ROOM_JOIN, PLAYER);
             })
             .on(MessageType.GAME_ROOM_MESSAGE, ({room, message}) => {
             LOGGER.info(`Socket ${this.uuid} sent message ${message}`);

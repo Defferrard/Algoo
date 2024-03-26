@@ -1,12 +1,14 @@
 <script lang="ts">
     import {navigating} from "$app/stores";
-    import { fly } from 'svelte/transition';
-    import {count} from "./";
+    import {fly} from 'svelte/transition';
+    import {loadingMutex} from "./";
 </script>
 
-{#if $navigating || $count !== 0}
+{#if $navigating || $loadingMutex !== 0}
     <loadingPage transition:fly>
-        Loading...
+        <div class="material-symbols-rounded">
+            sync
+        </div>
     </loadingPage>
 {/if}
 <style>
@@ -18,11 +20,21 @@
         height: 100%;
         z-index: 1000;
         color: white;
-        font-size: 10em;
-        background: color-mix(in srgb, var(--color-body), transparent 5%);
+        background: black;
+        opacity: 95%;
         display: flex;
         justify-content: center;
         align-items: center;
         user-select: none;
+    }
+
+    .material-symbols-rounded{
+        animation: spin 5s linear infinite;
+        font-size: 10em;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(-360deg); }
     }
 </style>
