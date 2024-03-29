@@ -13,4 +13,8 @@ export default class Player {
     get team(): Team {
         return this._team
     }
+
+    get user(): User {
+        return this._user;
+    }
 }

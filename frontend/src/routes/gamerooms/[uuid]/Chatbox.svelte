@@ -1,36 +1,28 @@
 <script lang="ts">
-    import {socket} from '$lib/stores/socket';
-    import {MessageType, User} from "@defferrard/algoo-core/src/socket";
+    import {createEventDispatcher} from 'svelte';
+    import {User} from "@defferrard/algoo-core/src/socket";
     import {afterUpdate, onMount} from "svelte";
 
+
+    const dispatch = createEventDispatcher();
+
     export let room: string;
-    let MESSAGES: [string | {from:User, message:string}] = [`Welcome to the Game Room ${room}`];
+    let messages: (string | { from: User, message: string })[] = [`Welcome to the Game Room ${room}`];
 
     let messageInput: HTMLElement;
     let chat: HTMLElement;
 
-    async function sendMessage() {
-        await socket.emit(MessageType.GAME_ROOM_MESSAGE, {
-            room: room,
-            message: messageInput.value
-        });
+    function sendMessage() {
+        dispatch('send', {room: room, message: messageInput.value})
         messageInput.value = '';
     }
 
-    onMount(async () => {
-        await socket.connect()
-        socket.emit(MessageType.GAME_ROOM_JOIN, room);
+    export function pushMessage(message: string | { from: User, message: string }) {
+        messages = [...messages, message];
+    }
 
-        socket.on(MessageType.GAME_ROOM_MESSAGE, (message: {from:User, message:string}) => {
-            MESSAGES.push(message);
-            MESSAGES = [...MESSAGES];
-        });
-        socket.on(MessageType.GAME_ROOM_JOIN, (player: any) => {
-            MESSAGES.push(player._user.name + ' joined the room');
-            MESSAGES = [...MESSAGES];
-        });
-
-        messageInput.focus()
+    onMount(() => {
+        messageInput.focus();
     });
 
     let lastChatHeight = 0;
@@ -42,8 +34,7 @@
 
 <section>
     <chat bind:this={chat}>
-        {#key MESSAGES}
-            {#each MESSAGES as message}
+            {#each messages as message}
                 <div>
                     {#if message.from}
                         <b>{message.from.name}</b> : {message.message}
@@ -52,7 +43,6 @@
                     {/if}
                 </div>
             {/each}
-        {/key}
     </chat>
 
     <chatinput>
@@ -77,7 +67,7 @@
     }
 
     chat {
-        flex:1;
+        flex: 1;
         background-color: rgb(var(--color-main-rgb), 0.7);
         border-radius: 0.5em;
 
