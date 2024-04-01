@@ -1,0 +1,94 @@
+<script lang="ts">
+    import {fly} from "svelte/transition";
+    import {onMount} from "svelte";
+    import {delay} from "$lib/utils/Functions";
+
+    let display = false;
+    let title = "We are sorry…";
+    let text = "An error has occurred.";
+    let _e;
+
+    onMount(() => {
+        window.onunhandledrejection = (e: any) => {
+            _e = e;
+            display = true;
+            console.log(e)
+            text = e.reason?.message || e.message;
+            // Focus on the alert
+            delay(5000).then(() => {
+                close();
+            });
+        };
+    });
+
+    function close() {
+        display = false;
+    }
+</script>
+
+
+{#if display}
+<section transition:fly>
+    <popup>
+        <header>
+            <h1>{title}</h1>
+            <button class="material-symbols-rounded" on:click={close}>close</button>
+        </header>
+        <div>
+            {text}
+        </div>
+
+    </popup>
+</section>
+{/if}
+
+<style>
+    section {
+        --color: var(--color-danger);
+        position: fixed;
+        top: 1em;
+        z-index: 1000;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    popup {
+        overflow: hidden;
+        background-color: color-mix(in srgb, var(--color-body), transparent 10%);
+        outline: 0.2em solid var(--color);
+        outline-offset: .2em;
+        border-radius: 1em;
+        width: 50vw;
+        min-width: 20em;
+    }
+
+    header{
+        background-color: var(--color);
+        padding: 0.5em 1em;
+        display: flex;
+        justify-content: space-between;
+    }
+    h1 {
+        margin: 0;
+        line-height: 2em;
+    }
+    header>button{
+        background: none;
+        color: white;
+    }
+    header>button:hover{
+        transform:scale(1.3);
+        filter:none;
+    }
+    header>button:active{
+        transform:scale(0.9);
+        filter:none;
+        opacity: 0.7;
+    }
+
+    div {
+        padding: 0.5em 1em;
+
+    }
+</style>

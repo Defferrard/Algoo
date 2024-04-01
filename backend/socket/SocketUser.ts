@@ -22,12 +22,13 @@ export default class SocketUser extends User {
                 try {
                     let gameRoom: GameRoom = gameRoomRepository.get(room)!;
                     gameRoom.addPlayer(PLAYER);
-                    this.#socket.to(room).emit(MessageType.GAME_ROOM_JOIN, PLAYER);
+                    this.#socket.to(room).emit(MessageType.GAME_ROOM_JOIN, this);
                     callback({status: SocketStatus.OK, data: gameRoom.users});
                 } catch (e) {
                     callback({status: SocketStatus.FAILED, data: e});
                 }
             })
+            .on(MessageType.GAME_ROOM_LEAVE, (room: string) => this.leaveRoom(room))
             .on(MessageType.GAME_ROOM_MESSAGE, ({room, message}) => {
                 LOGGER.info(`Socket ${this.uuid} sent message ${message}`);
                 server.to(room).emit(MessageType.GAME_ROOM_MESSAGE, {
@@ -35,7 +36,21 @@ export default class SocketUser extends User {
                     from: this,
                     message
                 });
+            }).on(MessageType.GAME_ROOM_READY, (isReady: boolean) => {
+                LOGGER.info(`Socket ${this.uuid} is${isReady?" ":" not "}ready `);
+
+            }).onAny((event, ...args) => {
+                LOGGER.info(`Socket ${this.uuid} sent event ${event}`);
             });
+    }
+
+    leaveRoom(room: string) {
+        LOGGER.info(`Socket ${this.uuid} left room ${room}`);
+        this.#socket.leave(room);
+        let gameRoom: GameRoom | undefined = gameRoomRepository.get(room);
+        if (!gameRoom) return;
+        gameRoom.removePlayer(this.uuid);
+        this.#socket.to(room).emit(MessageType.GAME_ROOM_LEAVE, this);
     }
 
     get socket(): Socket {

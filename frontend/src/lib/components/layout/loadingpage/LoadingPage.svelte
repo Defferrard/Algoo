@@ -2,13 +2,19 @@
     import {navigating} from "$app/stores";
     import {fly} from 'svelte/transition';
     import {loadingMutex} from "./";
+    import {onMount} from "svelte";
+    loadingMutex.increment();
+
+    onMount(() => {
+        loadingMutex.decrement();
+    });
 </script>
 
-{#if $navigating || $loadingMutex !== 0}
+{#if $navigating || $loadingMutex > 0}
     <loadingPage transition:fly>
-        <div class="material-symbols-rounded">
+        <icon class="material-symbols-rounded">
             sync
-        </div>
+        </icon>
     </loadingPage>
 {/if}
 <style>
@@ -28,7 +34,8 @@
         user-select: none;
     }
 
-    .material-symbols-rounded{
+    icon{
+        opacity: 20%;
         animation: spin 5s linear infinite;
         font-size: 10em;
     }

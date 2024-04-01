@@ -10,5 +10,8 @@ export enum MessageType {
     LOGIN = 'login', // Logging in with uuid
 
     GAME_ROOM_JOIN = 'game_room_join', // Joining a room
+    GAME_ROOM_LEAVE = 'game_room_leave', // Leaving a room
     GAME_ROOM_MESSAGE = 'game_room_message', // Sending a message to a room
+
+    GAME_ROOM_READY = 'game_room_ready', // Ready to start the game
 }

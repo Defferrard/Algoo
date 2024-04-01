@@ -3,12 +3,15 @@ import {Player} from "./";
 import {v4 as uuidV4} from "uuid";
 import {User} from "@defferrard/algoo-core/src/socket";
 import {FullGameRoomException} from "../exceptions/GameRoomException";
+import {gameRoomRepository} from "../repositories";
 
 enum GameRoomState{
     CREATING,
     PLAYING,
     DONE
 }
+
+const ROOM_SIZE = 2;
 
 export default class GameRoom {
     readonly uuid: string;
@@ -32,9 +35,21 @@ export default class GameRoom {
     }
 
     addPlayer(player: Player): void {
-        if(this.playersCount >= 2){
+        if(this.playersCount >= ROOM_SIZE){
             throw new FullGameRoomException(this.uuid);
         }
         this.#players.push(player);
+    }
+
+    removePlayer(uuid: string): void {
+        const index = this.#players.findIndex(player => player.user.uuid === uuid);
+        if(index !== -1){
+            this.#players.splice(index, 1);
+        }
+
+        if(this.playersCount === 0){
+            this.#state = GameRoomState.DONE;
+            gameRoomRepository.delete(this);
+        }
     }
 }

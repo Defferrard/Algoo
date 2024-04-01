@@ -1,6 +1,7 @@
 <script async lang="ts">
     import {onMount} from "svelte";
     import type {Readable} from "svelte/store";
+    import {fly} from "svelte/transition";
 
     import {Coordinate, TileType, Board, Entity} from "@defferrard/algoo-core/src/board/";
     import {getAccessibles, getVisibles, findPath} from "@defferrard/algoo-core/src/pathfinding";
@@ -175,16 +176,6 @@
         GAME_MANAGER.pushEntity(HERO_2, new Coordinate({x: 1, y: 0}));
         // GAME_MANAGER.pushEntity(HERO_3, new Coordinate({x: 13, y: 12}));
     });
-
-
-    const colors: Color[] = Object.values(Color) as any as Color[];
-    let colorIndex: number = Math.floor(Math.random() * colors.length);
-
-    // Funny code to change the color of the board every 100ms
-    //  setInterval(() => {
-    //      colorIndex = (colorIndex + 1) % colors.length;
-    //  }, 100);
-
 </script>
 
 <KeyBoardListener on:space={nextTurn}
@@ -200,7 +191,7 @@
     </title>
 </svelte:head>
 
-<section style:--color={getCSS(colors[colorIndex])}>
+<section transition:fly={{duration:200}}>
     <board>
         <BoardComponent
                 {...{

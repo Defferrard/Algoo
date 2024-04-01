@@ -1,17 +1,27 @@
-<script>
+<script lang="ts">
     import {LoadingPage} from "$lib/components/";
-    import ProfileTab from "$lib/components/profile/ProfileTab.svelte";
-    import Header from "$lib/components/layout/Header.svelte";
+    import {Header, ExceptionHandler} from "$lib/components/layout/index";
+    import {Color} from "@defferrard/algoo-core/src/game/";
+    import {getCSS, getCSSRGB} from "$lib/components/Color";
+
+    const colors: Color[] = Object.values(Color) as any as Color[];
+    let colorIndex: number = Math.floor(Math.random() * colors.length);
+
+    // Funny code to change the color of the board every 100ms
+    //  setInterval(() => {
+    //      colorIndex = (colorIndex + 1) % colors.length;
+    //  }, 100);
 </script>
 
 
-<body>
+<section style:--color={getCSS(colors[colorIndex])} style:--color-rgb={getCSSRGB(colors[colorIndex])}>
 <content>
-    <LoadingPage/>
+    <ExceptionHandler />
     <Header/>
+    <LoadingPage/>
     <slot/>
 </content>
-</body>
+</section>
 
 <style>
     :root {
@@ -20,7 +30,7 @@
         color: var(--color-light);
     }
 
-    body {
+    section {
         transition: 0s;
         margin: 0;
         padding: 0;
@@ -30,6 +40,6 @@
 
     }
     content {
-        transition: 0.2s    ;
+        transition: 0.2s;
     }
 </style>

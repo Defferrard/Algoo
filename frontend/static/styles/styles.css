@@ -88,6 +88,7 @@
     --color-body-light: color-mix(in srgb, var(--color-body) 90%, var(--color-light) var(--color-gap));
     --color-body-lighter: color-mix(in srgb, var(--color-body) 90%, var(--color-lighter) var(--color-gaper));
     --color: var(--color-main);
+    --color-rgb: var(--color-main-rgb);
     --bg-color: var(--color-light);
 }
 
@@ -118,4 +119,26 @@ sm {
 
 ::-webkit-scrollbar-thumb:hover {
     background-color: color-mix(in srgb, var(--color), var(--color-light) var(--color-gap));
+}
+
+
+button, input {
+    background-color: var(--color);
+    color: var(--color-lighter);
+    border: none;
+    border-radius: 0.5em;
+    font-size: 1.1em;
+    padding: 0.3em 1em;
+}
+
+button{
+    cursor: pointer;
+}
+button:hover {
+    filter: brightness(1.5);
+    transform: translateY(-0.2em);
+}
+button:active {
+    filter: brightness(0.5);
+    transform: translateY(0.2em);
 }

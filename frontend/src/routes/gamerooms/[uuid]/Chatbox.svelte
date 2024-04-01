@@ -2,6 +2,7 @@
     import {createEventDispatcher} from 'svelte';
     import {User} from "@defferrard/algoo-core/src/socket";
     import {afterUpdate, onMount} from "svelte";
+    import {fly} from "svelte/transition";
 
 
     const dispatch = createEventDispatcher();
@@ -35,7 +36,7 @@
 <section>
     <chat bind:this={chat}>
             {#each messages as message}
-                <div>
+                <div transition:fly={{y:20}}>
                     {#if message.from}
                         <b>{message.from.name}</b> : {message.message}
                     {:else}
@@ -49,7 +50,7 @@
         <input bind:this={messageInput} on:keypress={(event)=>{
         if(event.key === 'Enter') sendMessage();
     }}/>
-        <button on:click={sendMessage}>►</button>
+        <button class="material-symbols-rounded" on:click={sendMessage}>send</button>
     </chatinput>
 </section>
 
@@ -61,14 +62,14 @@
         transition: 0.2s;
         border-radius: 0.5em;
 
-        outline: 0.2em solid var(--color-main);
+        outline: 0.2em solid var(--color);
         outline-offset: 0.2em;
         height: 100%;
     }
 
     chat {
         flex: 1;
-        background-color: rgb(var(--color-main-rgb), 0.7);
+        background-color: rgb(var(--color-rgb), 0.7);
         border-radius: 0.5em;
 
         display: block;
@@ -84,7 +85,7 @@
 
     chat::-webkit-scrollbar-track {
         border-radius: 0 1em 1em 0;
-        background-color: color-mix(in srgb, var(--color-main), black var(--color-gaper));
+        background-color: color-mix(in srgb, var(--color), black var(--color-gaper));
     }
 
     chat > div {
@@ -93,7 +94,7 @@
     }
 
     chat > div:nth-child(even) {
-        background-color: var(--color-main);
+        background-color: var(--color);
     }
 
     chatinput {
@@ -102,31 +103,11 @@
         padding: 0.5em;
         gap: 1em;
     }
-
-    chatinput > * {
-        background-color: var(--color-main);
-        color: var(--color-lighter);
-        border: none;
-        border-radius: 0.5em;
-        font-size: 1.1em;
-        padding: 0.3em 1em;
+    button {
+        padding: .2em .5em;
     }
 
-    chatinput > input {
+    input {
         flex: 1;
-    }
-
-    chatinput > button {
-        cursor: pointer;
-    }
-
-    chatinput > button:hover {
-        filter: brightness(1.5);
-        transform: translateY(-0.2em);
-    }
-
-    chatinput > button:active {
-        filter: brightness(0.5);
-        transform: translateY(0.2em);
     }
 </style>

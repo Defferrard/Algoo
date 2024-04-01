@@ -12,11 +12,6 @@ export const socket = (() => {
     });
     const {subscribe, set, update} = writable(IO);
 
-    IO.on("*", function (event, data) {
-        console.log(event);
-        console.log(data);
-    });
-
     IO.onAny((event, ...args) => {
         console.log(event, args);
         set(IO);
@@ -24,19 +19,21 @@ export const socket = (() => {
 
     async function connect(): Promise<User> {
         loadingMutex.increment();
-        IO.connect();
+        // TODO : Mutex on IO
         return new Promise((resolve, reject) => {
             if (connected) {
                 loadingMutex.decrement();
                 resolve(get(localUser));
                 return;
             }
+            IO.connect();
 
             const USER: User = get(localUser);
             IO.on(MessageType.CONNECT, () => {
                 IO.emit(MessageType.LOGIN, USER, ({status}:{status:SocketStatus})=>{
                     switch (status) {
                         case SocketStatus.OK:
+                            connected = true;
                             set(IO);
                             loadingMutex.decrement();
                             resolve(USER);

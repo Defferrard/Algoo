@@ -10,17 +10,54 @@
     <button class="material-symbols-rounded" on:click={()=> open = !open}>
         account_circle
     </button>
-    <input value={$localUser.name} disabled={$socket.connected}
-           on:change={(e)=> localUser.setUsername(e.target.value)}
-    />
+    {#if $socket.connected}
+        <username>
+            {$localUser.name}
+        </username>
+    {:else}
+        <input value={$localUser.name} on:change={(e)=> localUser.setUsername(e.target.value)}/>
+    {/if}
+
+
+    <icon class="material-symbols-rounded" class:connected={$socket.connected}>
+        {#if $socket.connected}
+            link
+        {:else}
+            link_off
+        {/if}
+    </icon>
+
 </tab>
 
 <style>
-    tab.open > input {
-        width: 25em;
-        padding: 0 2em;
-        opacity: 1;
 
+    tab > * {
+        height: 100%;
+    }
+    tab.open > input {
+        width: 10em;
+        padding: 0.1em 1em;
+    }
+
+
+    tab.open > username {
+        width: auto;
+    }
+
+    tab.open > input, tab.open > username {
+        margin: 0 0.5em;
+
+        opacity: 1;
+    }
+
+    username, input{
+        font-size: 0.75em;
+        overflow: hidden;
+    }
+
+    username{
+        opacity: 0;
+        width: 0;
     }
 
     input {
@@ -34,9 +71,10 @@
         opacity: 0;
     }
 
-    input:disabled {
-        background-color: rgba(0, 0, 0, 0);
-        width: auto !important;
+    tab.open > input:disabled {
+        display: inline;
+        padding: 0;
+
     }
 
     button {
@@ -46,6 +84,17 @@
         border: none;
         background: none;
         color: white;
+    }
+
+    button:hover {
+        filter: brightness(1.5);
+        transform: scale(1.3) rotate(10deg);
+    }
+
+    button:active {
+        filter: brightness(0.5);
+        transform: scale(0.8) rotate(25deg);
+
     }
 
     tab {
@@ -66,5 +115,16 @@
         padding: 0.2em 0.2em 0.2em 0.1em;
         background-color: rgba(0, 0, 0, 0.3);
 
+    }
+
+    icon {
+        font-size: 1em;
+        opacity: 0.2;
+    }
+
+    icon.connected {
+        color: var(--color);
+        transform: rotate(-45deg);
+        opacity: 1;
     }
 </style>

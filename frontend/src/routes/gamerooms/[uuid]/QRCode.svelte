@@ -19,20 +19,20 @@
     button {
         cursor: pointer;
         padding: 0.5em 1em;
-        border: solid 0.2em var(--color-main);
+        border: solid 0.2em var(--color);
         border-radius: 0.5em;
         background: none;
-        color: var(--color-main);
+        color: var(--color);
     }
 
     button:hover {
-        background-color: var(--color-main);
+        background-color: var(--color);
         color: var(--color-lighter);
         transform: translateY(-0.2em);
     }
 
     button:active {
-        background-color: var(--color-main);
+        background-color: var(--color);
         color: var(--color-lighter);
         transform: translateY(0.2em);
         filter: brightness(0.5);
@@ -42,8 +42,8 @@
         mask-mode: luminance;
         mask-size: contain;
 
-        --gradient: color-mix(in srgb, var(--color-main), var(--color-light) var(--color-gap));
-        background: linear-gradient(0deg, var(--color-main) 0%, var(--gradient) 100%);
+        --gradient: color-mix(in srgb, var(--color), var(--color-light) var(--color-gap));
+        background: linear-gradient(0deg, var(--color) 0%, var(--gradient) 100%);
 
         --size: 10em;
         height: var(--size);

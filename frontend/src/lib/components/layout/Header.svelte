@@ -5,7 +5,7 @@
 
 <tab>
     <button on:click={()=>goto("/")}>
-        <img src="/icon.svg" alt="icon"/>
+        <img src="/img/uncolored_icon.svg" alt="icon"/>
     </button>
     <profile>
         <ProfileTab/>
@@ -34,8 +34,9 @@
 
     button{
         font-size: 4.5em;
-        background: var(--color-main);
-        border-radius: 0.5em;
+        background: var(--color);
+        border-radius: 0.1em;
+        overflow: hidden;
         width: 1em;
         height: 1em;
 
@@ -46,11 +47,7 @@
         cursor: pointer;
     }
 
-    button:hover{
-        filter: brightness(1.2);
-    }
-
-    button:active{
-        filter: brightness(0.8);
+    button:active, button:hover{
+        transform: none;
     }
 </style>
