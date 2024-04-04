@@ -45,6 +45,9 @@ export const socket = (() => {
                             break;
                     }
                 });
+            }).on(MessageType.DISCONNECT, () => {
+                connected = false;
+                set(IO);
             });
         });
     }

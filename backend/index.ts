@@ -58,6 +58,9 @@ IO.on(MessageType.CONNECTION, (socket: Socket) => {
     }).on(MessageType.DISCONNECT, () => {
         LOGGER.info('Socket disconnected');
         SOCKET_ON_CONNECTION.splice(SOCKET_ON_CONNECTION.indexOf(socket), 1);
+        if (socketUser) {
+            socketUser.disconnect();
+        }
     });
 });
 

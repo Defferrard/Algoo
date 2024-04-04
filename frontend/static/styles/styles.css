@@ -92,16 +92,17 @@
     --bg-color: var(--color-light);
 }
 
+:root, body{
+    height: 100%;
+    width: 100%;
+}
+
 lighter {
     color: var(--color-body-lighter);
 }
 
 sm {
     font-size: 0.8em;
-}
-
-::-webkit-scrollbar-thumb {
-    --color: var(--color-main);
 }
 
 ::-webkit-scrollbar {
@@ -127,7 +128,6 @@ button, input {
     color: var(--color-lighter);
     border: none;
     border-radius: 0.5em;
-    font-size: 1.1em;
     padding: 0.3em 1em;
 }
 
@@ -141,4 +141,8 @@ button:hover {
 button:active {
     filter: brightness(0.5);
     transform: translateY(0.2em);
+}
+
+icon, button, img, br {
+    user-select: none;
 }

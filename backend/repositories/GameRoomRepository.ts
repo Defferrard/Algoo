@@ -1,4 +1,5 @@
 import {GameRoom} from "../game";
+import {delay} from "lodash";
 
 export class GameRoomRepository {
     private readonly _rooms: GameRoom[];
@@ -24,6 +25,14 @@ export class GameRoomRepository {
 
     get(uuid: string): GameRoom | undefined {
         return this._rooms.find(room => room.uuid === uuid);
+    }
+
+    startTimeout(room: GameRoom, delay:number = 60_000): NodeJS.Timeout {
+        return setTimeout(() => {
+            if (room.playersCount === 0) {
+                this.delete(room);
+            }
+        }, delay);
     }
 }
 

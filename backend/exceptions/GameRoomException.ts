@@ -15,3 +15,9 @@ export class FullGameRoomException extends GameRoomException {
     super(uuid, `Game room ${uuid} is full`);
   }
 }
+
+export class PlayerAlreadyInGameRoomException extends GameRoomException {
+  constructor(player: string, room: string) {
+    super(room, `Player ${player} is already in room ${room}`);
+  }
+}

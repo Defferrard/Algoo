@@ -11,3 +11,9 @@
         <slot/>
     </div>
 </section>
+
+<style>
+    section, div {
+        height: 100%;
+    }
+</style>

@@ -11,6 +11,7 @@
     //  setInterval(() => {
     //      colorIndex = (colorIndex + 1) % colors.length;
     //  }, 100);
+
 </script>
 
 
@@ -35,8 +36,8 @@
         margin: 0;
         padding: 0;
 
-        height: 100vh;
-        width: 100vw;
+        height: 100%;
+        width: 100%;
 
     }
     content {

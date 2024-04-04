@@ -7,50 +7,80 @@
     import QRCode from "./QRCode.svelte";
     import {goto} from "$app/navigation";
     import {StandardLayout} from "$lib/components/layout/index";
+    import {Player} from "@defferrard/algoo-core/src/game";
+    import {localUser} from "$lib/stores/localUser";
 
     export let data;
 
     let pushMessage;
-    let users: User[] = [];
+    let players: Player[] = [];
 
-    let isReady:boolean = false;
+    let isReady: boolean = false;
 
-    function setReady(){
+    function setReady() {
         isReady = !isReady;
-        socket.emit(MessageType.GAME_ROOM_READY, isReady);
-
-        goto("/game")
+        socket.emit(MessageType.GAME_ROOM_READY, {room: data.uuid, isReady});
+        // goto("/game")
     }
 
+    let marginBottom = 0;
+
     onMount(async () => {
+
         await socket.connect()
-        socket.emit(MessageType.GAME_ROOM_JOIN, data.uuid, ({status, data}: { status: SocketStatus, data }) => {
-            if (status === SocketStatus.OK) {
-                socket.on(MessageType.GAME_ROOM_MESSAGE, (message: { from: User, message: string }) => {
-                    pushMessage(message);
-                });
-                socket.on(MessageType.GAME_ROOM_JOIN, (user: User) => {
-                    users = [...users, user];
-                    pushMessage(user.name + ' joined the room');
-                });
-                socket.on(MessageType.GAME_ROOM_LEAVE, (user: User) => {
-                    users = users.filter(u => u.uuid !== user.uuid);
-                    pushMessage(user.name + ' left the room');
-                });
-                users = data;
-            } else {
-                goto('/')
-                throw new Error('The game room is already full or does not exist.');
-            }
+        let player: Player = new Player($localUser as User);
+        socket.emit(MessageType.GAME_ROOM_JOIN,
+            {room: data.uuid, player},
+            ({status, data}: { status: SocketStatus, data }) => {
+                if (status === SocketStatus.OK) {
+                    socket.on(MessageType.GAME_ROOM_MESSAGE, (message: { from: Player, message: string }) => {
+                        pushMessage(message);
+                    });
+                    socket.on(MessageType.GAME_ROOM_JOIN, (player: Player) => {
+                        console.log(players);
+                        players = [...players, player];
+                        pushMessage(player.user.name + ' joined the room');
+
+                    });
+                    socket.on(MessageType.GAME_ROOM_LEAVE, (player: Player) => {
+                        players = players.filter(p => p.user.uuid !== player.user.uuid);
+
+                        pushMessage(player.user.name + ' left the room');
+                    });
+                    socket.on(MessageType.GAME_ROOM_READY, ({from, isReady}: { from: Player, isReady: boolean }) => {
+                        players = players.map(p => {
+                            if (p.user.uuid === from.user.uuid) {
+                                p.isReady = isReady;
+                            }
+                            return p;
+                        });
+
+                        pushMessage(from.user.name + ' is ' + (isReady ? 'ready' : 'not ready'));
+                    });
+                    players = data;
+                } else {
+                    goto('/')
+                    throw data;
+                }
+            });
+
+        navigator.virtualKeyboard.addEventListener('geometrychange', (event) => {
+            const { x, y, width, height } = event.target.boundingRect;
+            marginBottom = height;
+            console.log('Virtual keyboard geometry changed:', x, y, width, height);
         });
+
+
     });
 
     onDestroy(() => {
         socket.emit(MessageType.GAME_ROOM_LEAVE, data.uuid);
     });
+
+
 </script>
 <StandardLayout>
-    <section>
+    <section style:--margin-bottom={marginBottom+"px"}>
         <chatbox>
             <Chatbox room={data.uuid}
                      on:send={e => {
@@ -68,15 +98,26 @@
             <qrcode>
                 <QRCode value={$page.url}/>
             </qrcode>
-            <users>
-                {#each users as user}
-                    <user>{user.name}</user>
+            <players>
+                <b>Players ({players.length}/2)</b>
+                {#each players as player}
+                    <player>
+                        <name>{player.user.name}</name>
+
+                        <icon class="material-symbols-rounded" class:ready={player.isReady}>
+                            {#if player.isReady}
+                                task_alt
+                            {:else}
+                                progress_activity
+                            {/if}
+                        </icon>
+                    </player>
                 {/each}
-                {#if users.length === 2}
+                {#if players.length === 2}
                     <br/>
                     <button on:click={setReady}>I'm ready !</button>
                 {/if}
-            </users>
+            </players>
 
         </subsection>
     </section>
@@ -90,6 +131,8 @@
 
     section {
         padding: 5em 5vw;
+        --margin-bottom: 0;
+
 
         display: flex;
         justify-content: center;
@@ -97,7 +140,7 @@
         gap: 3em;
         align-items: center;
 
-        height: calc(100vh - 10em);
+        height: calc(100% - 10em - var(--margin-bottom));
     }
 
     subsection {
@@ -109,11 +152,32 @@
         gap: 1em;
     }
 
-    user {
-        display: block;
-        width: 100%;
-        text-align: center;
+    players {
+        display: flex;
+        flex-direction: column;
+        gap: .2em;
     }
+
+    player {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        gap: .5em
+    }
+
+    player > icon {
+        opacity: .3;
+        transform: rotate(0deg);
+    }
+
+    player > icon.ready{
+        color: var(--color);
+        opacity: 1;
+        animation: rotate 1s infinite;
+        transform: rotate(360deg);
+    }
+
+
 
 
     @media (max-width: 800px) {

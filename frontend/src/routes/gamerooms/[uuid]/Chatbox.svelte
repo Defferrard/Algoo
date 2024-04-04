@@ -1,14 +1,14 @@
 <script lang="ts">
     import {createEventDispatcher} from 'svelte';
-    import {User} from "@defferrard/algoo-core/src/socket";
     import {afterUpdate, onMount} from "svelte";
     import {fly} from "svelte/transition";
+    import {Player} from "@defferrard/algoo-core/src/game";
 
 
     const dispatch = createEventDispatcher();
 
     export let room: string;
-    let messages: (string | { from: User, message: string })[] = [`Welcome to the Game Room ${room}`];
+    let messages: (string | { from: Player, message: string })[] = [`Welcome to the Game Room ${room}`];
 
     let messageInput: HTMLElement;
     let chat: HTMLElement;
@@ -18,7 +18,7 @@
         messageInput.value = '';
     }
 
-    export function pushMessage(message: string | { from: User, message: string }) {
+    export function pushMessage(message: string | { from: Player, message: string }) {
         messages = [...messages, message];
     }
 
@@ -35,15 +35,15 @@
 
 <section>
     <chat bind:this={chat}>
-            {#each messages as message}
-                <div transition:fly={{y:20}}>
-                    {#if message.from}
-                        <b>{message.from.name}</b> : {message.message}
-                    {:else}
-                        <b>{message}</b>
-                    {/if}
-                </div>
-            {/each}
+        {#each messages as message}
+            <div transition:fly={{y:20}}>
+                {#if message.from}
+                    <b>{message.from.user.name}</b> : {message.message}
+                {:else}
+                    <b>{message}</b>
+                {/if}
+            </div>
+        {/each}
     </chat>
 
     <chatinput>
@@ -65,12 +65,13 @@
         outline: 0.2em solid var(--color);
         outline-offset: 0.2em;
         height: 100%;
+        gap: 0.2em;
     }
 
     chat {
         flex: 1;
         background-color: rgb(var(--color-rgb), 0.7);
-        border-radius: 0.5em;
+        border-radius: .5em .5em 0 0;
 
         display: block;
         padding: 0.5em 0;
@@ -79,12 +80,12 @@
 
     }
 
-    chat::-webkit-scrollbar-thumb {
-        border-radius: 0 1em 1em 0;
+    chat::-webkit-scrollbar-thumb,
+    chat::-webkit-scrollbar-track{
+        border-radius: 0 1em 0 0;
     }
 
     chat::-webkit-scrollbar-track {
-        border-radius: 0 1em 1em 0;
         background-color: color-mix(in srgb, var(--color), black var(--color-gaper));
     }
 
@@ -100,14 +101,20 @@
     chatinput {
         display: flex;
         justify-content: space-between;
-        padding: 0.5em;
-        gap: 1em;
     }
+
+    button, input {
+        border-radius: 0;
+
+        font-size: 1.5em;
+    }
+
     button {
-        padding: .2em .5em;
+        border-bottom-right-radius: .3em;
     }
 
     input {
+        border-bottom-left-radius: .3em;
         flex: 1;
     }
 </style>

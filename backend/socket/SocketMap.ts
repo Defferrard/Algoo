@@ -18,6 +18,7 @@ export default class SocketMap{
             delete this._uuidToSocket[this._socketToUser[SID].uuid];
         }
         if(this._uuidToSocket[socketUser.uuid]){
+            this._uuidToSocket[socketUser.uuid].socket.disconnect();
             delete this._socketToUser[this._uuidToSocket[socketUser.uuid].socket.client.conn.transport.sid];
         }
 

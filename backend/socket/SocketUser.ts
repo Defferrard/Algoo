@@ -1,12 +1,15 @@
 import {MessageType, SocketStatus, User} from "@defferrard/algoo-core/src/socket";
+import {Player} from "@defferrard/algoo-core/src/game";
 import {Server, Socket} from 'socket.io';
 import {LOGGER} from "../utils/logger";
-import {GameRoom, Player} from "../game";
+import {GameRoom} from "../game";
 import {gameRoomRepository} from "../repositories";
+
 
 export default class SocketUser extends User {
 
     #socket: Socket;
+    #rooms: { [key: string]: GameRoom } = {};
 
     constructor(user: User, socket: Socket) {
         super(user.uuid, user.name);
@@ -15,42 +18,61 @@ export default class SocketUser extends User {
 
     buildRoutes(server: Server) {
         this.#socket
-            .on(MessageType.GAME_ROOM_JOIN, (room: string, callback) => {
+            .on(MessageType.GAME_ROOM_JOIN, ({room, player}: { room: string, player: Player }, callback) => {
                 LOGGER.info(`Socket ${this.uuid} joined room ${room}`);
                 this.#socket.join(room);
-                const PLAYER = new Player(this);
                 try {
                     let gameRoom: GameRoom = gameRoomRepository.get(room)!;
-                    gameRoom.addPlayer(PLAYER);
-                    this.#socket.to(room).emit(MessageType.GAME_ROOM_JOIN, this);
-                    callback({status: SocketStatus.OK, data: gameRoom.users});
-                } catch (e) {
-                    callback({status: SocketStatus.FAILED, data: e});
+                    gameRoom.addPlayer(player);
+                    this.#socket.to(room).emit(MessageType.GAME_ROOM_JOIN, player);
+                    this.#rooms[room] = gameRoom;
+                    callback({status: SocketStatus.OK, data: gameRoom.players});
+                } catch (e: any) {
+                    callback({status: SocketStatus.FAILED, data: {message: e.message}});
                 }
             })
             .on(MessageType.GAME_ROOM_LEAVE, (room: string) => this.leaveRoom(room))
-            .on(MessageType.GAME_ROOM_MESSAGE, ({room, message}) => {
+            .on(MessageType.GAME_ROOM_MESSAGE, ({room, message}: { room: string, message: string }) => {
                 LOGGER.info(`Socket ${this.uuid} sent message ${message}`);
                 server.to(room).emit(MessageType.GAME_ROOM_MESSAGE, {
                     datetime: new Date(),
-                    from: this,
+                    from: this.getPlayer(room),
                     message
                 });
-            }).on(MessageType.GAME_ROOM_READY, (isReady: boolean) => {
-                LOGGER.info(`Socket ${this.uuid} is${isReady?" ":" not "}ready `);
-
-            }).onAny((event, ...args) => {
-                LOGGER.info(`Socket ${this.uuid} sent event ${event}`);
+            }).on(MessageType.GAME_ROOM_READY, ({room, isReady}: { room: string, isReady: boolean }) => {
+            LOGGER.info(`Socket ${this.uuid} is${isReady ? " " : " not "}ready `);
+            server.to(room).emit(MessageType.GAME_ROOM_READY, {
+                from: this.getPlayer(room),
+                isReady
             });
+        }).onAny((event, ...args) => {
+            LOGGER.info(`Socket ${this.uuid} sent event ${event}`);
+        });
     }
 
     leaveRoom(room: string) {
         LOGGER.info(`Socket ${this.uuid} left room ${room}`);
+        let player = this.getPlayer(room);
         this.#socket.leave(room);
-        let gameRoom: GameRoom | undefined = gameRoomRepository.get(room);
-        if (!gameRoom) return;
-        gameRoom.removePlayer(this.uuid);
-        this.#socket.to(room).emit(MessageType.GAME_ROOM_LEAVE, this);
+        if (!this.#rooms[room]) return;
+        this.#rooms[room].removePlayer(this.uuid);
+        delete this.#rooms[room];
+        this.#socket.to(room).emit(MessageType.GAME_ROOM_LEAVE, player);
+    }
+
+    leaveAllRooms() {
+        for (const room in this.#rooms) {
+            this.leaveRoom(room);
+        }
+    }
+
+    disconnect() {
+        this.leaveAllRooms();
+        this.#socket.disconnect(true);
+    }
+
+    getPlayer(room: string): Player | undefined {
+        return this.#rooms[room]?.getPlayer(this.uuid);
     }
 
     get socket(): Socket {
