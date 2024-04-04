@@ -64,7 +64,7 @@
                 }
             });
 
-        navigator.virtualKeyboard.addEventListener('geometrychange', (event) => {
+        navigator.virtualKeyboard?.addEventListener('geometrychange', (event) => {
             const { x, y, width, height } = event.target.boundingRect;
             marginBottom = height;
             console.log('Virtual keyboard geometry changed:', x, y, width, height);

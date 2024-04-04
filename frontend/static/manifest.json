@@ -5,6 +5,7 @@
   "display": "standalone",
   "description": "OpenSources Tactical RPG",
   "theme_color": "#2B2B29",
+  "background_color": "#2B2B29",
   "icons": [
     {
       "src": "pwa_icon.svg",

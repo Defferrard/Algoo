@@ -105,16 +105,25 @@
 
     button, input {
         border-radius: 0;
+        --border-radius: .3em;
 
         font-size: 1.5em;
     }
 
     button {
-        border-bottom-right-radius: .3em;
+        border-bottom-right-radius: var(--border-radius);
     }
 
     input {
-        border-bottom-left-radius: .3em;
+        border-bottom-left-radius: var(--border-radius);
         flex: 1;
+    }
+
+    @media (max-width: 600px) {
+        button, input {
+            --border-radius: .5em;
+
+            font-size: 1em;
+        }
     }
 </style>
