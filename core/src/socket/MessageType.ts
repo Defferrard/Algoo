@@ -14,4 +14,6 @@ export enum MessageType {
     GAME_ROOM_MESSAGE = 'game_room_message', // Sending a message to a room
 
     GAME_ROOM_READY = 'game_room_ready', // Ready to start the game
+    GAME_ROOM_STARTING = 'game_room_starting', // Timer before starting the game
+    GAME_ROOM_START = 'game_room_start', // Start the game
 }

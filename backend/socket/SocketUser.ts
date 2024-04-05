@@ -41,10 +41,16 @@ export default class SocketUser extends User {
                 });
             }).on(MessageType.GAME_ROOM_READY, ({room, isReady}: { room: string, isReady: boolean }) => {
             LOGGER.info(`Socket ${this.uuid} is${isReady ? " " : " not "}ready `);
+            let gameRoomReady: boolean = this.#rooms[room].setPlayerReady(this.uuid, isReady);
             server.to(room).emit(MessageType.GAME_ROOM_READY, {
                 from: this.getPlayer(room),
                 isReady
             });
+            if (gameRoomReady) {
+                server.to(room).emit(MessageType.GAME_ROOM_STARTING, this.#rooms[room].startGame((data)=>{
+                    server.to(room).emit(MessageType.GAME_ROOM_START, data);
+                }));
+            }
         }).onAny((event, ...args) => {
             LOGGER.info(`Socket ${this.uuid} sent event ${event}`);
         });

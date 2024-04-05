@@ -57,6 +57,9 @@
 
                         pushMessage(from.user.name + ' is ' + (isReady ? 'ready' : 'not ready'));
                     });
+                    socket.on(MessageType.GAME_ROOM_START, () => {
+                        goto('/game')
+                    })
                     players = data;
                 } else {
                     goto('/')
@@ -67,7 +70,6 @@
         navigator.virtualKeyboard?.addEventListener('geometrychange', (event) => {
             const { x, y, width, height } = event.target.boundingRect;
             marginBottom = height;
-            console.log('Virtual keyboard geometry changed:', x, y, width, height);
         });
 
 
