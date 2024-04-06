@@ -1,6 +1,6 @@
 import {NextFunction, Response, Request} from "express";
 import {gameRoomRepository} from "../repositories";
-import {GameRoom} from "../game";
+import {GameRoom} from "@defferrard/algoo-core/src/game";
 
 export function getRooms(req: Request, res: Response, next: NextFunction) {
     res.send(gameRoomRepository.rooms)

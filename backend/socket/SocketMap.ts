@@ -1,4 +1,4 @@
-import { Socket } from "socket.io";import type {User} from "@defferrard/algoo-core/src/socket";
+import { Socket } from "socket.io";
 import SocketUser from "./SocketUser";
 
 

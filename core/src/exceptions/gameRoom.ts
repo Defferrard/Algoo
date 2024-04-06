@@ -21,3 +21,8 @@ export class PlayerAlreadyInGameRoomException extends GameRoomException {
     super(room, `Player ${player} is already in room ${room}`);
   }
 }
+export class GameRoomNotFoundException extends GameRoomException {
+  constructor(room: string) {
+    super(room, `Game room ${room} not found`);
+  }
+}

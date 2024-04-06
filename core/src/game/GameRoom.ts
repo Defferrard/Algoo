@@ -1,34 +1,30 @@
-import {GameManager, generateRandomBoard, Team} from "@defferrard/algoo-core/src/game";
-import {Player} from "@defferrard/algoo-core/src/game";
+import {GameManager, generateRandomBoard, Player} from "./index";
 import {v4 as uuidV4} from "uuid";
-import {User} from "@defferrard/algoo-core/src/socket";
-import {FullGameRoomException, PlayerAlreadyInGameRoomException} from "../exceptions/GameRoomException";
-import {gameRoomRepository} from "../repositories";
-import {clear} from "winston";
+import {
+    FullGameRoomException,
+    PlayerAlreadyInGameRoomException
+} from "../exceptions/gameRoom";
 
-enum GameRoomState {
+export enum GameRoomState {
     CREATING,
     PLAYING,
     DONE
 }
 
-const ROOM_SIZE = 2;
-const START_TIMEOUT = 10000;
-
+const DEFAULT_ROOM_SIZE = 2;
 export default class GameRoom {
     readonly uuid: string;
-    #gameManager?: GameManager;
+    maxPlayers: number;
+    #gameManager: GameManager;
     #state: GameRoomState;
     readonly #players: { [key: string]: Player };  // Key = Player UUID = Team UUID
 
-    #deleteRoomTimeout?: NodeJS.Timeout;
-    #startGameTimeout?: NodeJS.Timeout;
-
-    constructor() {
+    constructor(maxPlayers: number = DEFAULT_ROOM_SIZE) {
         this.uuid = uuidV4();
         this.#state = GameRoomState.CREATING;
         this.#players = {};
-        // this._gameManager = new GameManager(generateRandomBoard(10, 10, 0.5));
+        this.maxPlayers = maxPlayers;
+        this.#gameManager = new GameManager(generateRandomBoard(10, 10, 0.5));
     }
 
     get playersCount(): number {
@@ -39,24 +35,26 @@ export default class GameRoom {
         return Object.values(this.#players);
     }
 
+    set state(state: GameRoomState) {
+        this.#state = state;
+    }
+
+    get gameManager(): GameManager {
+        return this.#gameManager;
+    }
+
     addPlayer(player: Player): void {
-        if (this.playersCount >= ROOM_SIZE) {
+        if (this.playersCount >= this.maxPlayers) {
             throw new FullGameRoomException(this.uuid);
         }
         if (this.#players[player.user.uuid]) {
             throw new PlayerAlreadyInGameRoomException(player.user.uuid, this.uuid);
         }
         this.#players[player.user.uuid] = player;
-        clearTimeout(this.#deleteRoomTimeout);
     }
 
     removePlayer(uuid: string): void {
         delete this.#players[uuid];
-
-        if (this.playersCount === 0) {
-            this.#state = GameRoomState.DONE;
-            this.#deleteRoomTimeout = gameRoomRepository.startTimeout(this);
-        }
     }
 
     getPlayer(uuid: string): Player | undefined {
@@ -73,12 +71,7 @@ export default class GameRoom {
         return this.players.every(player => player.isReady);
     }
 
-    startGame(next: (data:any) => void, delay:number = START_TIMEOUT): number {
-        this.#startGameTimeout = setTimeout(() => {
-            this.#gameManager = new GameManager(generateRandomBoard(10, 10, 0.5));
-            this.#state = GameRoomState.PLAYING;
-            next(this.#gameManager.board);
-        }, delay);
-        return delay;
+    startGame(): void {
+        this.state = GameRoomState.PLAYING;
     }
 }

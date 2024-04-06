@@ -20,3 +20,4 @@ export type {SpellDTO} from "./spell/SpellDTO";
 export {default as Spell} from "./spell/Spell";
 
 export {default as Player} from "./Player";
+export {default as GameRoom, GameRoomState} from "./GameRoom";
