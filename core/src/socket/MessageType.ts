@@ -15,5 +15,6 @@ export enum MessageType {
 
     GAME_ROOM_READY = 'game_room_ready', // Ready to start the game
     GAME_ROOM_STARTING = 'game_room_starting', // Timer before starting the game
+    CANCEL_GAME_ROOM_STARTING = 'cancel_game_room_starting', // Cancel timer before starting the game
     GAME_ROOM_START = 'game_room_start', // Start the game
 }

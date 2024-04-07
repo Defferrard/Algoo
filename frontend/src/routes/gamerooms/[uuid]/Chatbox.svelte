@@ -18,7 +18,7 @@
         messageInput.value = '';
     }
 
-    export function pushMessage(message: string | { from: Player, message: string }) {
+    export function pushMessage(message: string | { from: Player, message: string }): void {
         messages = [...messages, message];
     }
 
@@ -36,11 +36,11 @@
 <section>
     <chat bind:this={chat}>
         {#each messages as message}
-            <div transition:fly={{y:20}}>
+            <div transition:fly={{y:20}} class:event={!message.from}>
                 {#if message.from}
                     <b>{message.from.user.name}</b> : {message.message}
                 {:else}
-                    <b>{message}</b>
+                    {message}
                 {/if}
             </div>
         {/each}
@@ -81,7 +81,7 @@
     }
 
     chat::-webkit-scrollbar-thumb,
-    chat::-webkit-scrollbar-track{
+    chat::-webkit-scrollbar-track {
         border-radius: 0 1em 0 0;
     }
 
@@ -92,10 +92,24 @@
     chat > div {
         padding: 0 1em;
         word-break: break-all;
+
+        color: color-mix(in srgb, var(--color-lighter), var(--color-body) 10%);
+
+    }
+
+    chat > div > b {
+        color: color-mix(in srgb, var(--color-lighter), var(--color-body) 5%);
+        font-size: 1em;
+    }
+
+    chat > div.event{
+        color: var(--color-lighter);
+        font-size: 1.2em;
+        text-align: center;
     }
 
     chat > div:nth-child(even) {
-        background-color: var(--color);
+        background-color: color-mix(in srgb, var(--color), var(--color-body) var(--color-gap));
     }
 
     chatinput {

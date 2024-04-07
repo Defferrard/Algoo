@@ -12,26 +12,28 @@
 
     export let data;
 
-    let pushMessage;
+    let pushMessage: (message: string | { from: Player, message: string }) => void;
     let players: Player[] = [];
 
     let isReady: boolean = false;
 
     function setReady() {
         isReady = !isReady;
-        socket.emit(MessageType.GAME_ROOM_READY, {room: data.uuid, isReady});
+        socket.emit(MessageType.GAME_ROOM_READY, {roomUuid: data.uuid, isReady});
         // goto("/game")
     }
 
     let marginBottom = 0;
+
+    let timeouts: { [key: string]: NodeJS.Timeout } = {}; // Key = Timeout Type
 
     onMount(async () => {
 
         await socket.connect()
         let player: Player = new Player($localUser as User);
         socket.emit(MessageType.GAME_ROOM_JOIN,
-            {room: data.uuid, player},
-            ({status, data}: { status: SocketStatus, data }) => {
+            {roomUuid: data.uuid, player},
+            ({status, data}: { status: SocketStatus, data: any }) => {
                 if (status === SocketStatus.OK) {
                     socket.on(MessageType.GAME_ROOM_MESSAGE, (message: { from: Player, message: string }) => {
                         pushMessage(message);
@@ -57,6 +59,19 @@
 
                         pushMessage(from.user.name + ' is ' + (isReady ? 'ready' : 'not ready'));
                     });
+                    socket.on(MessageType.GAME_ROOM_STARTING, (timer) => {
+                        timeouts[MessageType.GAME_ROOM_STARTING] = setInterval(() => {
+                            if (timer > 0) {
+                                pushMessage('Game starting in ' + timer / 1000 + ' seconds');
+                                timer -= 1000;
+                            } else {
+                                clearInterval(timeouts[MessageType.GAME_ROOM_STARTING]);
+                            }
+                        }, 1000);
+                    });
+                    socket.on(MessageType.CANCEL_GAME_ROOM_STARTING, () => {
+                        clearInterval(timeouts[MessageType.GAME_ROOM_STARTING]);
+                    });
                     socket.on(MessageType.GAME_ROOM_START, () => {
                         goto('/game')
                     })
@@ -68,7 +83,7 @@
             });
 
         navigator.virtualKeyboard?.addEventListener('geometrychange', (event) => {
-            const { x, y, width, height } = event.target.boundingRect;
+            const {x, y, width, height} = event.target.boundingRect;
             marginBottom = height;
         });
 
@@ -86,9 +101,8 @@
         <chatbox>
             <Chatbox room={data.uuid}
                      on:send={e => {
-                 console.log(e.detail);
                 socket.emit(MessageType.GAME_ROOM_MESSAGE, {
-                    room: e.detail.room,
+                    roomUuid: data.uuid,
                     message: e.detail.message
                 });
             }}
@@ -172,7 +186,7 @@
         transform: rotate(0deg);
     }
 
-    player > icon.ready{
+    player > icon.ready {
         color: var(--color);
         opacity: 1;
         animation: rotate 1s infinite;
@@ -180,14 +194,19 @@
     }
 
 
-
-
     @media (max-width: 800px) {
         section {
             flex-direction: column-reverse;
             gap: 1em;
             padding: 1em;
-            height: calc(100vh - 2em);
+            align-self: stretch;
+            height: calc(100% - 4em - var(--margin-bottom));
+
+        }
+
+        chatbox {
+            flex:none;
+            height: calc(100% - 10em);;
         }
 
         subsection {

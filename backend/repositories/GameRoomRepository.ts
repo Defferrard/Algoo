@@ -74,6 +74,14 @@ export class GameRoomRepository {
         }, delay);
         return delay;
     }
+
+    cancelStartGame(roomUuid: string, next: () => void): void {
+        if(this._timeouts[roomUuid][START_GAME_TIMEOUT.key]) {
+            clearTimeout(this._timeouts[roomUuid][START_GAME_TIMEOUT.key]);
+            delete this._timeouts[roomUuid][START_GAME_TIMEOUT.key];
+            next();
+        }
+    }
 }
 
 export default new GameRoomRepository();

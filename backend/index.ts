@@ -51,9 +51,8 @@ IO.on(MessageType.CONNECTION, (socket: Socket) => {
     socket.on(MessageType.LOGIN, (user: User, callback) => {
         LOGGER.info(`Socket ${user.uuid} logged in`);
         SOCKET_ON_CONNECTION.splice(SOCKET_ON_CONNECTION.indexOf(socket), 1);
-        socketUser = new SocketUser(user, socket);
+        socketUser = new SocketUser(user, socket, IO);
         SOCKET_MAP.push(socketUser);
-        socketUser.buildRoutes(IO);
         callback({status: SocketStatus.OK});
     }).on(MessageType.DISCONNECT, () => {
         LOGGER.info('Socket disconnected');
