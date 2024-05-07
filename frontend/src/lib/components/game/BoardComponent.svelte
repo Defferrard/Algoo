@@ -103,7 +103,6 @@
                         use:movementCostIndicator>
                         {#if visibles.some((c) => c.is({x, y})) && board.getTile({x, y}).entity}
                             <HeroComponent
-                                    dropShadow={true}
                                     lookAt={$mousePosition}
                                     on:mouseenter={()=>{dispatch('mouseenterentity', board.getTile({x,y}).entity);}}
                                     on:mouseleave={()=>{dispatch('mouseleaveentity', board.getTile({x,y}).entity);}}
@@ -124,7 +123,7 @@
         position: relative;
         height: 100%;
         width: 100%;
-        filter: drop-shadow(0 0 1em var(--color-table-shadow));
+        filter: drop-shadow(0 0 2px var(--color-table-shadow));
     }
 
     table {

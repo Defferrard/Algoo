@@ -16,6 +16,7 @@
         </username>
     {:else}
         <input value={$localUser.name} on:change={(e)=> localUser.setUsername(e.target.value)}/>
+
     {/if}
 
 
@@ -60,15 +61,23 @@
         width: 0;
     }
 
+    button, input, icon {
+        color: var(--color-body);
+    }
+
     input {
         border: none;
         width: 0;
-        border-radius: 5em;
+        border-radius: .5em;
         margin: 0;
         padding: 0;
-        background-color: rgba(0, 0, 0, 0.3);
-        color: var(--color-light);
+        background:var(--color-body-5);
         opacity: 0;
+        position: relative;
+    }
+    input::after{
+        content: 'edit';
+        position: absolute
     }
 
     tab.open > input:disabled {
@@ -83,7 +92,6 @@
         font-size: 1em;
         border: none;
         background: none;
-        color: white;
     }
 
     button:hover {
@@ -108,18 +116,17 @@
         font-size: 3em;
         background-color: rgba(0, 0, 0, 0);
         gap: 0.2em;
-        border-radius: 0 5.2em 5.2em 0;
+        border-radius: 0 .5em .5em 0;
     }
 
     tab.open {
         padding: 0.2em 0.2em 0.2em 0.1em;
-        background-color: rgba(0, 0, 0, 0.3);
+        background-color: var(--color-bg);
 
     }
 
     icon {
         font-size: 1em;
-        opacity: 0.2;
     }
 
     icon.connected {

@@ -3,12 +3,13 @@
     import {afterUpdate, onMount} from "svelte";
     import {fly} from "svelte/transition";
     import {Player} from "@defferrard/algoo-core/src/game";
+    import {Window} from "$lib/components/layout/";
 
 
     const dispatch = createEventDispatcher();
 
     export let room: string;
-    let messages: (string | { from: Player, message: string })[] = [`Welcome to the Game Room ${room}`];
+    export let messages: (string | { from: Player, message: string })[] = [];
 
     let messageInput: HTMLElement;
     let chat: HTMLElement;
@@ -18,12 +19,12 @@
         messageInput.value = '';
     }
 
-    export function pushMessage(message: string | { from: Player, message: string }): void {
-        messages = [...messages, message];
-    }
-
     onMount(() => {
-        messageInput.focus();
+        // messageInput.focus({preventScroll: true});
+        messageInput.onfocus = (e) =>{
+            e.preventDefault()
+            window.scrollTo(0,0);
+        }
     });
 
     let lastChatHeight = 0;
@@ -33,7 +34,10 @@
     });
 </script>
 
-<section>
+<Window>
+    <div slot="header">
+        Chat Box
+    </div>
     <chat bind:this={chat}>
         {#each messages as message}
             <div transition:fly={{y:20}} class:event={!message.from}>
@@ -46,70 +50,48 @@
         {/each}
     </chat>
 
-    <chatinput>
-        <input bind:this={messageInput} on:keypress={(event)=>{
-        if(event.key === 'Enter') sendMessage();
-    }}/>
+    <chatinput slot="footer">
+        <input bind:this={messageInput}
+               on:keypress={(event)=>{if(event.key === 'Enter') sendMessage();}}
+
+        />
         <button class="material-symbols-rounded" on:click={sendMessage}>send</button>
     </chatinput>
-</section>
+</Window>
 
 <style>
-    section {
-        display: flex;
-        flex-direction: column;
-
-        transition: 0.2s;
-        border-radius: 0.5em;
-
-        outline: 0.2em solid var(--color);
-        outline-offset: 0.2em;
-        height: 100%;
-        gap: 0.2em;
-    }
-
     chat {
         flex: 1;
-        background-color: rgb(var(--color-rgb), 0.7);
         border-radius: .5em .5em 0 0;
-
+        height: 60vh;
         display: block;
-        padding: 0.5em 0;
+        padding: 0.5em;
         overflow-x: hidden;
-        overflow-y: auto;
-
-    }
-
-    chat::-webkit-scrollbar-thumb,
-    chat::-webkit-scrollbar-track {
-        border-radius: 0 1em 0 0;
-    }
-
-    chat::-webkit-scrollbar-track {
-        background-color: color-mix(in srgb, var(--color), black var(--color-gaper));
+        overflow-y: scroll;
     }
 
     chat > div {
         padding: 0 1em;
         word-break: break-all;
 
-        color: color-mix(in srgb, var(--color-lighter), var(--color-body) 10%);
+        color: var(--color-body-90);
+        border-radius: 0.3em;
 
     }
 
     chat > div > b {
-        color: color-mix(in srgb, var(--color-lighter), var(--color-body) 5%);
+        color: var(--color-body);
         font-size: 1em;
     }
 
-    chat > div.event{
-        color: var(--color-lighter);
+    chat > div.event {
+        color: var(--color-body);
         font-size: 1.2em;
         text-align: center;
     }
 
     chat > div:nth-child(even) {
-        background-color: color-mix(in srgb, var(--color), var(--color-body) var(--color-gap));
+        background-color: var(--color-body-5);
     }
 
     chatinput {
@@ -119,24 +101,18 @@
 
     button, input {
         border-radius: 0;
-        --border-radius: .3em;
 
-        font-size: 1.5em;
-    }
-
-    button {
-        border-bottom-right-radius: var(--border-radius);
+        font-size: 1.2em;
     }
 
     input {
-        border-bottom-left-radius: var(--border-radius);
         flex: 1;
+        background-color: color-mix(in srgb, var(--color), var(--color-body));
+        color: var(--color-bg);
     }
 
     @media (max-width: 600px) {
         button, input {
-            --border-radius: .5em;
-
             font-size: 1em;
         }
     }

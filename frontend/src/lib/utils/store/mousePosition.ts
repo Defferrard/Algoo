@@ -1,6 +1,5 @@
 import {readable} from 'svelte/store';
 import {Coordinate} from "@defferrard/algoo-core/src/board/";
-import {throttle} from "lodash";
 import {browser} from '$app/environment';
 
 export default readable<Coordinate>(new Coordinate({x:0, y:0}), (set) => {

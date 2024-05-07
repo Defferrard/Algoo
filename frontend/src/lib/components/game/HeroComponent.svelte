@@ -101,7 +101,7 @@
     }
 
     hero.drop-shadow{
-        filter: drop-shadow(0 0 0.5em var(--team-color));
+        filter: drop-shadow(0 0 2px black);
     }
 
 

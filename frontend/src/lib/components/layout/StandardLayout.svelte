@@ -6,8 +6,8 @@
 </script>
 
 <section>
-    <div out:fly={animate?{duration:animationDuration, y:-animationDuration}:undefined}
-         in:fly={animate?{delay:animationDuration, y:animationDuration}:undefined}>
+    <div out:fly={animate?{duration:animationDuration, x:-animationDuration*3}:undefined}
+         in:fly={animate?{delay:animationDuration, x:animationDuration*3}:undefined}>
         <slot/>
     </div>
 </section>

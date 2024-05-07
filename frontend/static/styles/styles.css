@@ -24,6 +24,32 @@
     transition: inherit;
 }
 
+ .light-theme{
+    --color-bg: white;
+    --color-bg-rgb: 255, 255, 255;
+    --color-body: #2B2B29;
+    --color-body-rgb: 43, 43, 41;
+}
+
+:root,.dark-theme{
+    --color-body: white;
+    --color-body-rgb: 255, 255, 255;
+    --color-bg: #2B2B29;
+    --color-bg-rgb: 43, 43, 41;
+}
+
+:root, .light-theme, .dark-theme{
+    --color-body-90: color-mix(in srgb, var(--color-body) 90%, var(--color-bg));
+    --color-body-80: color-mix(in srgb, var(--color-body) 80%, var(--color-bg));
+    --color-body-60: color-mix(in srgb, var(--color-body) 60%, var(--color-bg));
+    --color-body-40: color-mix(in srgb, var(--color-body) 40%, var(--color-bg));
+    --color-body-20: color-mix(in srgb, var(--color-body) 20%, var(--color-bg));
+    --color-body-10: color-mix(in srgb, var(--color-body) 10%, var(--color-bg));
+    --color-body-5: color-mix(in srgb, var(--color-body) 5%, var(--color-bg));
+
+    background-color: var(--color-bg);
+}
+
 :root {
     transition: 0.2s;
     margin: 0;
@@ -72,33 +98,21 @@
     --color-gray: #7585A5;
     --color-gray-rgb: 117, 133, 165;
 
-
-    --color-body: #2B2B29;
-    --color-body-rgb: 43, 43, 41;
-    --color-lightest: #F6F6F6;
-    --color-lightest-rgb: 246, 246, 246;
-    --color-light: #F8F8FE;
-    --color-light-rgb: 248, 248, 254;
-    --color-lighter: #FFF;
-    --color-lighter-rgb: 255, 255, 255;
-
-    background-color: var(--color-light);
-
-
-    --color-body-light: color-mix(in srgb, var(--color-body) 90%, var(--color-light) var(--color-gap));
-    --color-body-lighter: color-mix(in srgb, var(--color-body) 90%, var(--color-lighter) var(--color-gaper));
     --color: var(--color-main);
     --color-rgb: var(--color-main-rgb);
-    --bg-color: var(--color-light);
+
+
+    --height: 100vh;
 }
 
 :root, body{
-    height: 100vh;
+    height: var(--height);
     width: 100vw;
+    margin: 0;
 }
 
 lighter {
-    color: var(--color-body-lighter);
+    color: var(--color-body-60);
 }
 
 sm {
@@ -119,13 +133,13 @@ sm {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: color-mix(in srgb, var(--color), var(--color-light) var(--color-gap));
+    background-color: color-mix(in srgb, var(--color), white var(--color-gap));
 }
 
 
 button, input {
     background-color: var(--color);
-    color: var(--color-lighter);
+    color: white;
     border: none;
     border-radius: 0.5em;
     padding: 0.3em 1em;
@@ -135,11 +149,9 @@ button{
     cursor: pointer;
 }
 button:hover {
-    filter: brightness(1.5);
     transform: translateY(-0.2em);
 }
 button:active {
-    filter: brightness(0.5);
     transform: translateY(0.2em);
 }
 

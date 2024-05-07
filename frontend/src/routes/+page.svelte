@@ -5,6 +5,8 @@
     import StandardLayout from "$lib/components/layout/StandardLayout.svelte";
     import {loadingMutex} from "$lib/components";
     import type {Unsubscriber} from "svelte/store";
+    import {JSON} from "$lib/components/";
+    import {Window} from "$lib/components/layout/";
 
     const URL = "defferrard.dev";
 
@@ -30,22 +32,40 @@
 
 <StandardLayout>
     <center-flex>
-        <button-bar>
-            <button on:click={GAMES_REFRESH} class="material-symbols-rounded icon-button">
-                Refresh
-            </button>
-            <button on:click={createGameRoom} class="text-button">
-                Create Game
-            </button>
-        </button-bar>
-
-        <content>
-            {#each $GAMES_DATA || [] as gameRoom}
-                <button on:click={()=>goto(`/gamerooms/${gameRoom.uuid}`)}>
-                    {gameRoom.uuid}
+        <container>
+        <Window>
+            <div slot="header">
+                Game Rooms
+            </div>
+            <button-bar>
+                <button on:click={GAMES_REFRESH} class="material-symbols-rounded icon-button">
+                    Refresh
                 </button>
-            {/each}
-        </content>
+                <button on:click={createGameRoom} class="text-button">
+                    Create Game...
+                </button>
+            </button-bar>
+            <hr/>
+            <div>
+            <gamerooms>
+                {#each $GAMES_DATA || [] as gameRoom}
+                <button on:click={()=>goto(`/gamerooms/${gameRoom.uuid}`)}>
+                    <div>
+                        {#if Object.keys(gameRoom.players).length>0}
+                            {Object.values(gameRoom.players)[0].user.name}'s Game Room
+                        {:else}
+                            Empty Game Room
+                        {/if}
+                    </div>
+                    <div>
+                        ({Object.keys(gameRoom.players).length}/{gameRoom.maxPlayers})
+                    </div>
+                </button>
+                {/each}
+            </gamerooms>
+            </div>
+        </Window>
+        </container>
     </center-flex>
 </StandardLayout>
 
@@ -59,7 +79,6 @@
         flex-direction: column;
         height: 100%;
         gap: 1em;
-        filter: drop-shadow(0 0 0.2em black);
 
         margin: 0 1em;
     }
@@ -71,37 +90,34 @@
         }
     }
 
+    hr {
+        border: solid .1em;
+        color: var(--color-body-5);
+    }
+
     button-bar {
         display: flex;
         align-items: flex-start;
-        gap: 2em;
+        z-index: 1;
     }
 
-    content {
-        transition: 0.2s;
-        background-color: rgb(var(--color-rgb), 0.7);
-        border-radius: 0.5em;
+    gamerooms{
+        flex-direction: column;
+        display:block;
+        overflow: auto;
+        height: 70vh;
+    }
+
+    container {
         width: var(--width);
-
-        height: 80vh;
-        overflow-x: hidden;
-        overflow-y: auto;
-
-        outline: 0.2em solid var(--color);
-        outline-offset: 0.2em;
-    }
-
-    content::-webkit-scrollbar-thumb {
-        border-radius: 0 1em 1em 0;
-    }
-
-    content::-webkit-scrollbar-track {
-        border-radius: 0 1em 1em 0;
-        background-color: color-mix(in srgb, var(--color), black var(--color-gaper));
     }
 
     .text-button, .icon-button {
-        font-size: 1.75em;
+        font-size: 1em;
+        background-color: transparent;
+        color:var(--color);
+        text-decoration: underline;
+        text-decoration-color: transparent;
     }
 
     .icon-button {
@@ -121,21 +137,27 @@
     .icon-button:active {
         transform: rotate(360deg);
     }
+    .text-button:hover, .text-button:active {
+        text-decoration-color: var(--color);
+    }
 
-    content > button {
+
+    gamerooms > button {
         background: none;
         width: 100%;
-        font-size: 1.5em;
+        font-size: 1em;
+        color: var(--color-body);
+        display: flex;
+        justify-content: space-between;
+
+        text-decoration: underline;
+        text-decoration-color: transparent;
+    }
+    gamerooms > button:nth-child(even){
+        background-color: var(--color-body-5);
     }
 
-    content > button:hover {
-        background-color: rgb(var(--color-rgb), 1);
-        box-shadow: 0 0 0.5em 0 black;
-
-    }
-
-    content > button:active {
-        box-shadow: none;
-        background: none;
+    gamerooms > button:hover {
+        text-decoration-color: unset;
     }
 </style>

@@ -49,8 +49,8 @@
         left: calc(-50% - 0.2em);
         top: -1em;
         -webkit-text-stroke-width: 0.07em;
-        -webkit-text-stroke-color: var(--color-body);
-        color: var(--color-lighter);
+        -webkit-text-stroke-color:black;
+        color: white;
         font-weight: bold;
         text-shadow: 0 0 0.2em var(--color-body);
         animation: float 2s ease-in-out infinite;

@@ -11,11 +11,11 @@
 </script>
 
 {#if $navigating || $loadingMutex > 0}
-    <loadingPage transition:fly>
-        <icon class="material-symbols-rounded">
-            sync
-        </icon>
-    </loadingPage>
+<!--    <loadingPage transition:fly>-->
+<!--        <icon class="material-symbols-rounded">-->
+<!--            sync-->
+<!--        </icon>-->
+<!--    </loadingPage>-->
 {/if}
 <style>
     loadingPage {

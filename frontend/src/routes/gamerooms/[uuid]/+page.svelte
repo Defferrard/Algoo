@@ -1,223 +1,104 @@
 <script lang="ts">
-    import {page} from '$app/stores';
-    import {socket} from '$lib/stores/socket';
-    import {MessageType, SocketStatus, User} from "@defferrard/algoo-core/src/socket";
-    import {onDestroy, onMount} from "svelte";
-    import Chatbox from "./Chatbox.svelte";
-    import QRCode from "./QRCode.svelte";
-    import {goto} from "$app/navigation";
     import {StandardLayout} from "$lib/components/layout/index";
+    import LobbyPage from "./LobbyPage.svelte";
+    import {onDestroy, onMount} from "svelte";
+    import {socket} from "$lib/stores/socket";
+    import {MessageType, SocketStatus, User} from "@defferrard/algoo-core/src/socket";
     import {Player} from "@defferrard/algoo-core/src/game";
     import {localUser} from "$lib/stores/localUser";
+    import {goto} from "$app/navigation";
+    import {GameRoomReadable} from "$lib/stores";
+    import {GameRoomState} from "@defferrard/algoo-core/src/game/GameRoom.js";
 
     export let data;
+    let roomUuid = data.uuid;
 
-    let pushMessage: (message: string | { from: Player, message: string }) => void;
-    let players: Player[] = [];
+    let gameRoom: GameRoomReadable = new GameRoomReadable(undefined, roomUuid);
+    let timeouts: { [key: string]: NodeJS.Timeout } = {}; // Key = Timeout Type
+    let messages: (string | { from: Player, message: string })[] = [`Welcome to the Game Room ${roomUuid}`];
 
-    let isReady: boolean = false;
-
-    function setReady() {
-        isReady = !isReady;
-        socket.emit(MessageType.GAME_ROOM_READY, {roomUuid: data.uuid, isReady});
-        // goto("/game")
+    function pushMessage(message: string | { from: Player, message: string }): void {
+        messages = [...messages, message];
     }
 
-    let marginBottom = 0;
-
-    let timeouts: { [key: string]: NodeJS.Timeout } = {}; // Key = Timeout Type
+    const ROUTES: { messageType: MessageType, handler: (...params: any) => void }[] = [
+        {
+            messageType: MessageType.GAME_ROOM_MESSAGE, handler: (message: { from: Player, message: string }) => {
+                pushMessage(message);
+            }
+        },
+        {
+            messageType: MessageType.GAME_ROOM_JOIN, handler: (player: Player) => {
+                gameRoom.addPlayer(player);
+                pushMessage(player.user.name + ' joined the room');
+            }
+        },
+        {
+            messageType: MessageType.GAME_ROOM_LEAVE, handler: (player: Player) => {
+                gameRoom.removePlayer(player.user.uuid);
+                pushMessage(player.user.name + ' left the room');
+            }
+        },
+        {
+            messageType: MessageType.GAME_ROOM_READY,
+            handler: ({from, isReady}: { from: Player, isReady: boolean }) => {
+                gameRoom.setPlayerReady(from.user.uuid, isReady)
+                pushMessage(from.user.name + ' is ' + (isReady ? 'ready' : 'not ready'));
+            }
+        },
+        {
+            messageType: MessageType.GAME_ROOM_STARTING, handler: (timer: number) => {
+                timeouts[MessageType.GAME_ROOM_STARTING] = setInterval(() => {
+                    if (timer > 0) {
+                        pushMessage('Game starting in ' + timer / 1000 + ' seconds');
+                        timer -= 1000;
+                    } else {
+                        clearInterval(timeouts[MessageType.GAME_ROOM_STARTING]);
+                    }
+                }, 1000);
+            }
+        },
+        {
+            messageType: MessageType.CANCEL_GAME_ROOM_STARTING, handler: () => {
+                clearInterval(timeouts[MessageType.GAME_ROOM_STARTING]);
+            }
+        },
+        {
+            messageType: MessageType.GAME_ROOM_START, handler: () => {
+                gameRoom.startGame();
+            }
+        },
+    ]
 
     onMount(async () => {
-
         await socket.connect()
         let player: Player = new Player($localUser as User);
         socket.emit(MessageType.GAME_ROOM_JOIN,
-            {roomUuid: data.uuid, player},
-            ({status, data}: { status: SocketStatus, data: any }) => {
+            {roomUuid: roomUuid, player},
+            ({status, data}: { status: SocketStatus, data: Player[] }) => {
                 if (status === SocketStatus.OK) {
-                    socket.on(MessageType.GAME_ROOM_MESSAGE, (message: { from: Player, message: string }) => {
-                        pushMessage(message);
-                    });
-                    socket.on(MessageType.GAME_ROOM_JOIN, (player: Player) => {
-                        console.log(players);
-                        players = [...players, player];
-                        pushMessage(player.user.name + ' joined the room');
-
-                    });
-                    socket.on(MessageType.GAME_ROOM_LEAVE, (player: Player) => {
-                        players = players.filter(p => p.user.uuid !== player.user.uuid);
-
-                        pushMessage(player.user.name + ' left the room');
-                    });
-                    socket.on(MessageType.GAME_ROOM_READY, ({from, isReady}: { from: Player, isReady: boolean }) => {
-                        players = players.map(p => {
-                            if (p.user.uuid === from.user.uuid) {
-                                p.isReady = isReady;
-                            }
-                            return p;
-                        });
-
-                        pushMessage(from.user.name + ' is ' + (isReady ? 'ready' : 'not ready'));
-                    });
-                    socket.on(MessageType.GAME_ROOM_STARTING, (timer) => {
-                        timeouts[MessageType.GAME_ROOM_STARTING] = setInterval(() => {
-                            if (timer > 0) {
-                                pushMessage('Game starting in ' + timer / 1000 + ' seconds');
-                                timer -= 1000;
-                            } else {
-                                clearInterval(timeouts[MessageType.GAME_ROOM_STARTING]);
-                            }
-                        }, 1000);
-                    });
-                    socket.on(MessageType.CANCEL_GAME_ROOM_STARTING, () => {
-                        clearInterval(timeouts[MessageType.GAME_ROOM_STARTING]);
-                    });
-                    socket.on(MessageType.GAME_ROOM_START, () => {
-                        goto('/game')
-                    })
-                    players = data;
+                    for (let route of ROUTES) {
+                        socket.on(route.messageType, route.handler);
+                    }
+                    for (let player of Object.values(data)) {
+                        gameRoom.addPlayer(player);
+                    }
                 } else {
                     goto('/')
                     throw data;
                 }
             });
 
-        navigator.virtualKeyboard?.addEventListener('geometrychange', (event) => {
-            const {x, y, width, height} = event.target.boundingRect;
-            marginBottom = height;
-        });
-
-
     });
 
     onDestroy(() => {
-        socket.emit(MessageType.GAME_ROOM_LEAVE, data.uuid);
+        socket.emit(MessageType.GAME_ROOM_LEAVE, roomUuid);
     });
-
-
 </script>
 <StandardLayout>
-    <section style:--margin-bottom={marginBottom+"px"}>
-        <chatbox>
-            <Chatbox room={data.uuid}
-                     on:send={e => {
-                socket.emit(MessageType.GAME_ROOM_MESSAGE, {
-                    roomUuid: data.uuid,
-                    message: e.detail.message
-                });
-            }}
-                     bind:pushMessage
-            />
-        </chatbox>
+    {#if $gameRoom.state === GameRoomState.LOBBY}
+        <LobbyPage roomUuid={roomUuid} {...{messages, players: $gameRoom.players}}/>
+    {:else if $gameRoom.state === GameRoomState.PLAYING}
 
-        <subsection>
-            <qrcode>
-                <QRCode value={$page.url}/>
-            </qrcode>
-            <players>
-                <b>Players ({players.length}/2)</b>
-                {#each players as player}
-                    <player>
-                        <name>{player.user.name}</name>
-
-                        <icon class="material-symbols-rounded" class:ready={player.isReady}>
-                            {#if player.isReady}
-                                task_alt
-                            {:else}
-                                progress_activity
-                            {/if}
-                        </icon>
-                    </player>
-                {/each}
-                {#if players.length === 2}
-                    <br/>
-                    <button on:click={setReady}>I'm ready !</button>
-                {/if}
-            </players>
-
-        </subsection>
-    </section>
+    {/if}
 </StandardLayout>
-
-<style>
-    chatbox {
-        align-self: stretch;
-        flex: 1;
-    }
-
-    section {
-        padding: 5em 5vw;
-        --margin-bottom: 0;
-
-
-        display: flex;
-        justify-content: center;
-        filter: drop-shadow(0 0 0.2em black);
-        gap: 3em;
-        align-items: center;
-
-        height: calc(100% - 10em - var(--margin-bottom));
-    }
-
-    subsection {
-        justify-content: center;
-        align-items: center;
-
-        display: flex;
-        flex-direction: column;
-        gap: 1em;
-    }
-
-    players {
-        display: flex;
-        flex-direction: column;
-        gap: .2em;
-    }
-
-    player {
-        display: flex;
-        width: 100%;
-        align-items: center;
-        gap: .5em
-    }
-
-    player > icon {
-        opacity: .3;
-        transform: rotate(0deg);
-    }
-
-    player > icon.ready {
-        color: var(--color);
-        opacity: 1;
-        animation: rotate 1s infinite;
-        transform: rotate(360deg);
-    }
-
-
-    @media (max-width: 800px) {
-        section {
-            flex-direction: column-reverse;
-            gap: 1em;
-            padding: 1em;
-            align-self: stretch;
-            height: calc(100% - 4em - var(--margin-bottom));
-
-        }
-
-        chatbox {
-            flex:none;
-            height: calc(100% - 10em);;
-        }
-
-        subsection {
-            flex-direction: row-reverse;
-            justify-content: flex-start;
-            align-self: stretch;
-            padding: 0 1em;
-        }
-
-        qrcode {
-            font-size: 0.75em;
-        }
-    }
-</style>

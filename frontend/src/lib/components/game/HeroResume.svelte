@@ -29,6 +29,7 @@
                 {#key hero}
                     <inner-icon transition:fade={{duration: 200}}>
                         <HeroComponent
+                                dropShadow={true}
                                 lookAt={$mousePosition}
                                 hero={hero}/>
                     </inner-icon>
@@ -71,7 +72,6 @@
     resume {
         --color: black;
         --color-indicator-shadow: color-mix(in srgb, var(--color), black 70%);
-        filter: drop-shadow(0 0 1em var(--color-indicator-shadow));
 
         font-size: 2.5vh;
         color: white;
@@ -81,26 +81,26 @@
     }
 
     icon {
-        height: 15vh;
-        width: 15vh;
+        min-height: 15vh;
+        min-width: 15vh;
         transform: rotate(15deg);
         background-color: color-mix(in srgb, var(--color), black 70%);
-        border: solid 0.5em white;
+        border: outset 0.5em white;
         padding: 0.5em;
         border-radius: 1em;
         z-index: 1;
-
+        box-shadow: inset 0 0 2em black, 0 0 5px black;
         position: relative;
+
+
     }
 
     inner-icon {
         height: 100%;
         width: 100%;
         border-radius: 0.5em;
-
         transform: rotate(-15deg);
         font-size: 6em;
-        filter: drop-shadow(0 0 0.1em black);
 
         position: absolute;
         top: 0;
@@ -119,7 +119,7 @@
 
     name, title {
         overflow: hidden;
-        background-color: black;
+        background-color: color-mix(in srgb, black 60%, transparent);
         display: block;
         padding: 0 15% 0 10%;
 
@@ -174,12 +174,12 @@
     }
 
     value {
+        color: var(--color-body);
         white-space: nowrap;
         position: relative;
         margin-right: calc(100% + 1em);
         float: right;
         display: inline-block;
-        text-shadow: 0 0 0.5em black;
         z-index: 1;
         filter: drop-shadow(0 0 1em black);
     }
