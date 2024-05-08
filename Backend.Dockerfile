@@ -30,7 +30,7 @@ LABEL maintainer="DEFFERRARD Jeremy" \
       description="Open source Tactical RPG - Backend Service" \
       website="https://defferrard.dev/"
 
-RUN apk add nodejs npm
+USER node
 WORKDIR app
 
 COPY --from=builder /app/backend/build ./
@@ -39,5 +39,4 @@ COPY --from=dependencies /app/node_modules/ ./node_modules/
 COPY --from=core-builder /app/core/build/ ./node_modules/@defferrard/algoo-core/
 
 EXPOSE 8080
-USER node
 CMD node index.js

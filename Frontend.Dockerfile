@@ -30,6 +30,7 @@ LABEL maintainer="DEFFERRARD Jeremy" \
       description="Open source Tactical RPG - Frontend Service" \
       website="https://defferrard.dev/"
 
+USER node
 WORKDIR app
 
 COPY --from=builder /app/frontend/build ./
@@ -38,5 +39,4 @@ COPY --from=dependencies /app/node_modules/ ./node_modules/
 COPY --from=core-builder /app/core/build/ ./node_modules/@defferrard/algoo-core/
 
 EXPOSE 3000
-USER node
 CMD node index.js
