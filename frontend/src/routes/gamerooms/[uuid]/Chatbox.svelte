@@ -21,9 +21,9 @@
 
     onMount(() => {
         // messageInput.focus({preventScroll: true});
-        messageInput.onfocus = (e) =>{
+        messageInput.onfocus = (e) => {
             e.preventDefault()
-            window.scrollTo(0,0);
+            window.scrollTo(0, 0);
         }
     });
 
@@ -34,7 +34,7 @@
     });
 </script>
 
-<Window>
+<Window animated={false}>
     <div slot="header">
         Chat Box
     </div>
@@ -61,11 +61,10 @@
 
 <style>
     chat {
-        flex: 1;
         border-radius: .5em .5em 0 0;
-        height: 60vh;
-        display: block;
-        padding: 0.5em;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
         overflow-x: hidden;
         overflow-y: scroll;
     }
@@ -95,6 +94,7 @@
     }
 
     chatinput {
+        flex: 1;
         display: flex;
         justify-content: space-between;
     }

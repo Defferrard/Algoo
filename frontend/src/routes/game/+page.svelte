@@ -182,7 +182,6 @@
                   on:digit={(event)=>previewSpell(GAME_MANAGER.currentHero.spells[event.detail.digit-1])}
 />
 
-<svelte:window on:click={()=>currentSpell = undefined}/>
 
 <!--TODO : Better title management-->
 <svelte:head>
@@ -191,7 +190,12 @@
     </title>
 </svelte:head>
 
-<section transition:fly={{duration:200}}>
+<svelte:document
+        style:backdrop-filter="blur(10px)"
+/>
+
+
+<section in:fly={{delay: 200}} out:fly={{duration: 200}}>
     <board>
         <BoardComponent
                 {...{
@@ -240,6 +244,8 @@
     section {
         height: 100vh;
         display: block;
+        background: linear-gradient(180deg, transparent 0%, var(--color-theme) 100%);
+        backdrop-filter: blur(.5em);
     }
 
     board {

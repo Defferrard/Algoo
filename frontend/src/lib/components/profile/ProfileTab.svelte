@@ -8,7 +8,7 @@
 
 <tab class:open>
     <button class="material-symbols-rounded" on:click={()=> open = !open}>
-        account_circle
+        settings
     </button>
     {#if $socket.connected}
         <username>
@@ -35,6 +35,7 @@
     tab > * {
         height: 100%;
     }
+
     tab.open > input {
         width: 10em;
         padding: 0.1em 1em;
@@ -51,17 +52,21 @@
         opacity: 1;
     }
 
-    username, input{
+    username, input {
         font-size: 0.75em;
         overflow: hidden;
     }
 
-    username{
+    username {
         opacity: 0;
         width: 0;
     }
 
-    button, input, icon {
+    button, icon {
+        color: white;
+    }
+
+    tab.open > button, tab.open > input, tab.open > icon {
         color: var(--color-body);
     }
 
@@ -71,11 +76,12 @@
         border-radius: .5em;
         margin: 0;
         padding: 0;
-        background:var(--color-body-5);
+        background: var(--color-body-5);
         opacity: 0;
         position: relative;
     }
-    input::after{
+
+    input::after {
         content: 'edit';
         position: absolute
     }
@@ -108,8 +114,8 @@
     tab {
         z-index: 1;
 
-        transition: 0.2s;
         display: flex;
+        align-items: center;
         padding: 0.2em 0.1em;
         user-select: none;
 
@@ -117,6 +123,8 @@
         background-color: rgba(0, 0, 0, 0);
         gap: 0.2em;
         border-radius: 0 .5em .5em 0;
+        transition: 0.2s;
+        
     }
 
     tab.open {

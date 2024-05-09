@@ -1,6 +1,12 @@
 <script lang="ts">
-    import {throttle} from "lodash";
-    function dragMe(node:HTMLElement) {
+    import {elasticOut} from "svelte/easing";
+
+    export let animated: boolean = true;
+    export let draggable: boolean = true;
+    export let onclose: () => void | undefined;
+
+    function dragMe(node: HTMLElement) {
+        if (!draggable) return;
         let moving = false;
         let left = 0;
         let top = 0;
@@ -15,7 +21,7 @@
         });
 
         window.addEventListener('mousemove', (e) => {
-            if(moving){
+            if (moving) {
                 left += e.movementX;
                 top += e.movementY;
                 node.parentElement.style.top = `${top}px`;
@@ -27,13 +33,39 @@
             moving = false;
         });
     }
+
+    function appear() {
+        if (!animated) return;
+        return {
+            duration: 1000,
+            css: (t) => {
+                const eased = elasticOut(t);
+                return `
+                    transform: scale(${eased});
+                `;
+            }
+        };
+    }
+
+    function disappear() {
+        if (!animated) return;
+        return {
+            duration: 100,
+            css: (t) => `transform: scale(${t});`
+        };
+    }
 </script>
 
-<section >
+<section in:appear out:disappear>
     {#if $$slots.header}
-    <header use:dragMe>
-        <slot name="header"/>
-    </header>
+        <header use:dragMe>
+            <actions>
+                {#if onclose}
+                    <close class="material-symbols-rounded" on:click={onclose}>close</close>
+                {/if}
+            </actions>
+            <slot name="header"/>
+        </header>
     {/if}
     <content>
         <slot/>
@@ -46,40 +78,59 @@
 </section>
 
 <style>
+
     section {
+        height: 100%;
         transition: 0s;
-        overflow-x: hidden;
-        overflow-y: hidden;
         display: flex;
         flex-direction: column;
-        height: 100%;
         filter: drop-shadow(-1em 1em 0 color-mix(in srgb, black 20%, transparent));
-
     }
+
+    section > * {
+        transition: .2s;
+    }
+
     header, content {
         padding: 0.5em 1em;
     }
+
     header {
         border-radius: 1em 1em 0 0;
         color: white;
 
         background-color: var(--color);
-        text-align: right;
+        display: flex;
+        justify-content: space-between;
         font-weight: bolder;
         user-select: none;
     }
+
+    actions {
+        display: flex;
+        gap: .5em;
+        align-items: center;
+    }
+
+    actions > * {
+        font-size: 1em;
+    }
+
+
     content {
         background-color: var(--color-bg);
         color: var(--color-body);
+        overflow: hidden;
+        height: 100%;
     }
 
     content::-webkit-scrollbar-thumb {
         border-radius: 1em;
-        right:-1em;
+        right: -1em;
     }
 
     content::-webkit-scrollbar-track {
         border-radius: 0;
-        margin:1em;
+        margin: 1em;
     }
 </style>

@@ -9,7 +9,7 @@
     bar {
         height: 0.5vh;
         background-color: var(--color);
-        box-shadow: 1em 0 2em 0.5em black;
+        box-shadow: 0 0 1px 1px var(--color-bg);
 
         position: fixed;
         bottom: 0;

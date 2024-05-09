@@ -1,7 +1,7 @@
 <script lang="ts">
     import {fly} from "svelte/transition";
     import {backInOut} from "svelte/easing";
-    import { fade } from 'svelte/transition';
+    import {fade} from 'svelte/transition';
 
     import {HeroEntity, Spell} from "@defferrard/algoo-core/src/game";
     import {RESSOURCES_COLOR} from "@defferrard/algoo-core/src/game";
@@ -89,7 +89,7 @@
         padding: 0.5em;
         border-radius: 1em;
         z-index: 1;
-        box-shadow: inset 0 0 2em black, 0 0 5px black;
+        box-shadow: inset 0 0 2em black, 0 0 2px black;
         position: relative;
 
 
@@ -181,7 +181,6 @@
         float: right;
         display: inline-block;
         z-index: 1;
-        filter: drop-shadow(0 0 1em black);
     }
 
     @keyframes blink {

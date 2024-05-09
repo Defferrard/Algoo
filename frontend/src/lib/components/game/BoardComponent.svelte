@@ -123,7 +123,7 @@
         position: relative;
         height: 100%;
         width: 100%;
-        filter: drop-shadow(0 0 2px var(--color-table-shadow));
+        filter: drop-shadow(0 0 1px var(--color-table-shadow));
     }
 
     table {

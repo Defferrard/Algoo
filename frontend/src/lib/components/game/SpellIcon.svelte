@@ -23,7 +23,7 @@
         height: var(--size);
         --gradient: color-mix(in srgb, var(--color), var(--color-body-5) var(--color-gap));
         background: linear-gradient(135deg, var(--gradient) 0%, var(--color) 100%);
-
+        box-shadow: inset 0 0 2em black;
     }
 
     img {

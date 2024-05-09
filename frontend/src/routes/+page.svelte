@@ -5,10 +5,7 @@
     import StandardLayout from "$lib/components/layout/StandardLayout.svelte";
     import {loadingMutex} from "$lib/components";
     import type {Unsubscriber} from "svelte/store";
-    import {JSON} from "$lib/components/";
     import {Window} from "$lib/components/layout/";
-
-    const URL = "defferrard.dev";
 
     const [GAMES_DATA, GAMES_LOADING, GAMES_ERROR, GAMES_REFRESH] = GAME_ROOM_REPOSITORY.store.getAll();
     const loadingMutexGamesLoadingUnsubscribe: Unsubscriber = loadingMutex.boundStore(GAMES_LOADING);
@@ -33,38 +30,39 @@
 <StandardLayout>
     <center-flex>
         <container>
-        <Window>
-            <div slot="header">
-                Game Rooms
-            </div>
-            <button-bar>
-                <button on:click={GAMES_REFRESH} class="material-symbols-rounded icon-button">
-                    Refresh
-                </button>
-                <button on:click={createGameRoom} class="text-button">
-                    Create Game...
-                </button>
-            </button-bar>
-            <hr/>
-            <div>
-            <gamerooms>
-                {#each $GAMES_DATA || [] as gameRoom}
-                <button on:click={()=>goto(`/gamerooms/${gameRoom.uuid}`)}>
-                    <div>
-                        {#if Object.keys(gameRoom.players).length>0}
-                            {Object.values(gameRoom.players)[0].user.name}'s Game Room
-                        {:else}
-                            Empty Game Room
-                        {/if}
-                    </div>
-                    <div>
-                        ({Object.keys(gameRoom.players).length}/{gameRoom.maxPlayers})
-                    </div>
-                </button>
-                {/each}
-            </gamerooms>
-            </div>
-        </Window>
+            <Window on:close={()=>{}} animated={false}>
+                <div slot="header">
+                    Game Rooms
+                </div>
+                <button-bar>
+                    <button on:click={GAMES_REFRESH} class="material-symbols-rounded icon-button">
+                        Refresh
+                    </button>
+                    <button on:click={createGameRoom} class="text-button">
+                        Create Game...
+                    </button>
+                </button-bar>
+                <hr/>
+                <div>
+                    <gamerooms>
+                        {#each $GAMES_DATA || [] as gameRoom}
+                            <button on:click={()=>goto(`/gamerooms/${gameRoom.uuid}`)}>
+                                <div>
+                                    {#if Object.keys(gameRoom.players).length > 0}
+                                        {Object.values(gameRoom.players)[0].user.name}'s Game Room
+                                    {:else}
+                                        Empty Game Room
+                                    {/if}
+                                </div>
+                                <div>
+                                    ({Object.keys(gameRoom.players).length}/{gameRoom.maxPlayers})
+                                </div>
+                            </button>
+                        {/each}
+                    </gamerooms>
+                </div>
+                <a href="/game">Test Game here...</a>
+            </Window>
         </container>
     </center-flex>
 </StandardLayout>
@@ -101,9 +99,9 @@
         z-index: 1;
     }
 
-    gamerooms{
+    gamerooms {
         flex-direction: column;
-        display:block;
+        display: block;
         overflow: auto;
         height: 70vh;
     }
@@ -115,7 +113,7 @@
     .text-button, .icon-button {
         font-size: 1em;
         background-color: transparent;
-        color:var(--color);
+        color: var(--color);
         text-decoration: underline;
         text-decoration-color: transparent;
     }
@@ -137,6 +135,7 @@
     .icon-button:active {
         transform: rotate(360deg);
     }
+
     .text-button:hover, .text-button:active {
         text-decoration-color: var(--color);
     }
@@ -153,7 +152,8 @@
         text-decoration: underline;
         text-decoration-color: transparent;
     }
-    gamerooms > button:nth-child(even){
+
+    gamerooms > button:nth-child(even) {
         background-color: var(--color-body-5);
     }
 

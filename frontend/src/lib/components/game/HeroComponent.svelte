@@ -7,10 +7,10 @@
     import {getCSS} from "../Color";
 
     export let hero: HeroEntity;
-    export let lookAt: Coordinate = new Coordinate({x:0, y:0});
+    export let lookAt: Coordinate = new Coordinate({x: 0, y: 0});
     export let dropShadow: boolean = false;
     export let key: any = undefined;
-    let simplifiedLookAt: Coordinate = new Coordinate({x:0, y:0});
+    let simplifiedLookAt: Coordinate = new Coordinate({x: 0, y: 0});
 
     let front;
     let base;
@@ -28,13 +28,13 @@
     $: if (scellera) {
         const rect: DOMRect = scellera.getBoundingClientRect();
         let scelleraPosition: Coordinate = new Coordinate({
-            x:rect.left + rect.width / 2,
-            y:rect.top + rect.height / 2
+            x: rect.left + rect.width / 2,
+            y: rect.top + rect.height / 2
         });
         simplifiedLookAt = lookAt.minus(scelleraPosition);
         simplifiedLookAt = new Coordinate({
-            x:simplifiedLookAt.x / rect.width,
-            y:simplifiedLookAt.y / rect.height
+            x: simplifiedLookAt.x / rect.width,
+            y: simplifiedLookAt.y / rect.height
         })
         if (simplifiedLookAt.getLength() > 1) simplifiedLookAt = simplifiedLookAt.normalized();
     }
@@ -55,9 +55,9 @@
 <!-- ARIA Role : IMG -->
 <hero class={hero.stance}
       class:drop-shadow={dropShadow}
-        role="img"
-        on:mouseenter on:mouseleave
-        style:--team-color={getCSS(hero.team.color)}>
+      role="img"
+      on:mouseenter on:mouseleave
+      style:--team-color={getCSS(hero.team.color)}>
     <div in:_receive
          out:_send>
 
@@ -100,8 +100,8 @@
         height: 100%;
     }
 
-    hero.drop-shadow{
-        filter: drop-shadow(0 0 2px black);
+    hero.drop-shadow {
+        filter: drop-shadow(0 0 1px black);
     }
 
 

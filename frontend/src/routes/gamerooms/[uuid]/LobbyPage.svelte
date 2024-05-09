@@ -6,6 +6,7 @@
     import QRCode from "./QRCode.svelte";
     import {Player} from "@defferrard/algoo-core/src/game";
     import {Window} from "$lib/components/layout/";
+    import {fly} from "svelte/transition";
 
     export let roomUuid: string;
     export let messages: (string | { from: Player, message: string })[] = [];
@@ -22,7 +23,7 @@
     }
 
 </script>
-<section>
+<section in:fly={{delay: 200}} out:fly={{duration: 200}}>
     <chatbox>
         <Chatbox room={roomUuid} {messages}
                  on:send={e => {
@@ -34,7 +35,8 @@
         />
     </chatbox>
 
-        <Window>
+    <informations>
+        <Window animated={false}>
             <div slot="header">Game Room</div>
             <subsection>
                 <qrcode>
@@ -44,8 +46,6 @@
                     <b>Players ({Object.keys(players).length}/2) </b>
                     {#each Object.values(players) as player}
                         <player>
-                            <name>{player.user.name}</name>
-
                             <icon class="material-symbols-rounded" class:ready={player.isReady}>
                                 {#if player.isReady}
                                     task_alt
@@ -53,6 +53,7 @@
                                     progress_activity
                                 {/if}
                             </icon>
+                            <name>{player.user.name}</name>
                         </player>
                     {/each}
                     {#if Object.keys(players).length === 2}
@@ -62,13 +63,14 @@
                 </players>
             </subsection>
         </Window>
+    </informations>
 </section>
 
 
 <style>
     chatbox {
         align-self: stretch;
-        flex: 1;
+        flex: 1 1 100%;
     }
 
     section {
@@ -85,18 +87,18 @@
     }
 
     subsection {
-        padding-top: 1em;
-        align-items: center;
-
         display: flex;
         flex-direction: column;
+        align-items: center;
         gap: 1em;
-        height: 25em;
+
+        padding: 1em 0;
     }
 
     players {
         display: flex;
         flex-direction: column;
+        align-items: flex-start;
         gap: .2em;
     }
 
@@ -124,15 +126,14 @@
         section {
             flex-direction: column-reverse;
             gap: 1em;
-            padding: 1em;
+            padding: 2em 1em 2em 1em;
             align-self: stretch;
             height: calc(100% - 4em);
 
         }
 
         chatbox {
-            flex: none;
-            height: calc(100% - 10em);;
+            flex: 1 1 auto;
         }
 
         subsection {
@@ -140,6 +141,8 @@
             justify-content: flex-start;
             align-self: stretch;
             padding: 0 1em;
+
+            height: auto;
         }
 
         qrcode {

@@ -1,5 +1,6 @@
 <script lang="ts">
     import {StandardLayout} from "$lib/components/layout/index";
+    import GameView from "./GameView.svelte";
     import LobbyPage from "./LobbyPage.svelte";
     import {onDestroy, onMount} from "svelte";
     import {socket} from "$lib/stores/socket";
@@ -99,6 +100,23 @@
     {#if $gameRoom.state === GameRoomState.LOBBY}
         <LobbyPage roomUuid={roomUuid} {...{messages, players: $gameRoom.players}}/>
     {:else if $gameRoom.state === GameRoomState.PLAYING}
-
+        <GameView/>
     {/if}
 </StandardLayout>
+<float>
+    <div on:click={()=>{
+        $gameRoom.state = $gameRoom.state === GameRoomState.PLAYING ? GameRoomState.LOBBY : GameRoomState.PLAYING;
+    }}>Swap
+    </div>
+</float>
+
+<style>
+    float {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        padding: 10px;
+        cursor: pointer;
+        user-select: none;
+    }
+</style>

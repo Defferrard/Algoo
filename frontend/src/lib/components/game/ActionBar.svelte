@@ -52,7 +52,9 @@
     button.spell {
         --translate: 0.3em;
         background: none;
-        border: outset white .3em;
+        outline: outset white .3em;
+        outline-offset: -.3em;
+
         border-radius: 1em;
         overflow: hidden;
         margin: 0.2em;
@@ -61,18 +63,18 @@
         transform: rotate(15deg);
         z-index: 0;
 
-        min-height: 5.5em;
-        min-width: 5.5em;
+        min-height: 5em;
+        min-width: 5em;
 
-        box-shadow: 0 0 5px black;
+        box-shadow: 0 0 1px 1px black;
     }
 
     button.end_turn {
         --translate: 0.2em;
         color: var(--color);
         background-color: transparent;
-        border: outset 0.2em var(--color);
-        padding: 0.5em;
+        border: outset .4em var(--color);
+        padding: .5em;
         margin: 0 1em;
         border-radius: 1em;
         font-size: 3vh;
@@ -83,7 +85,7 @@
 
         transform: rotate(15deg);
 
-        box-shadow: 0 0 5px black;
+        box-shadow: 0 0 1px 1px black;
     }
 
     button.end_turn:hover:enabled {
@@ -93,7 +95,7 @@
     }
 
     button.end_turn:hover:enabled, button.spell:hover:enabled {
-        transform: translate(calc(0em - var(--translate)), calc(0em - var(--translate))) scale(1.4) rotate(285deg);
+        transform: translate(calc(0em - var(--translate)), calc(0em - var(--translate))) scale(1.4) rotate(0deg);
         z-index: 1;
         padding: 0;
     }
@@ -104,7 +106,7 @@
     }
 
     button:disabled {
-        filter: brightness(25%);
+        filter: brightness(25%) drop-shadow(0 0 1px black);
     }
 
 </style>

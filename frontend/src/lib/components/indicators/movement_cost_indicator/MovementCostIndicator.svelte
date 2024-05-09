@@ -52,7 +52,6 @@
         -webkit-text-stroke-color:black;
         color: white;
         font-weight: bold;
-        text-shadow: 0 0 0.2em var(--color-body);
         animation: float 2s ease-in-out infinite;
     }
 

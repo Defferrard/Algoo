@@ -1,10 +1,10 @@
 <script lang="ts">
-    import {fly} from "svelte/transition";
+    import {Window} from "$lib/components/layout";
     import {onMount} from "svelte";
     import {delay} from "$lib/utils/Functions";
 
     let display = false;
-    let title = "We are sorry…";
+    let title = "Error";
     let text = "An error has occurred.";
     let _e;
 
@@ -25,21 +25,15 @@
         display = false;
     }
 </script>
-
-
 {#if display}
-<section transition:fly>
-    <popup>
-        <header>
-            <h1>{title}</h1>
-            <button class="material-symbols-rounded" on:click={close}>close</button>
-        </header>
-        <div>
-            {text}
-        </div>
-
-    </popup>
-</section>
+    <section>
+        <Window>
+            <h1 slot="header">{title}</h1>
+            <div>
+                {text}
+            </div>
+        </Window>
+    </section>
 {/if}
 
 <style>
@@ -63,27 +57,31 @@
         min-width: 20em;
     }
 
-    header{
+    header {
         background-color: var(--color);
         padding: 0.5em 1em;
         display: flex;
         justify-content: space-between;
     }
+
     h1 {
         margin: 0;
         line-height: 2em;
     }
-    header>button{
+
+    header > button {
         background: none;
         color: white;
     }
-    header>button:hover{
-        transform:scale(1.3);
-        filter:none;
+
+    header > button:hover {
+        transform: scale(1.3);
+        filter: none;
     }
-    header>button:active{
-        transform:scale(0.9);
-        filter:none;
+
+    header > button:active {
+        transform: scale(0.9);
+        filter: none;
         opacity: 0.7;
     }
 

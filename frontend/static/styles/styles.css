@@ -24,21 +24,23 @@
     transition: inherit;
 }
 
- .light-theme{
+.light {
+    --color-theme: white;
     --color-bg: white;
     --color-bg-rgb: 255, 255, 255;
     --color-body: #2B2B29;
     --color-body-rgb: 43, 43, 41;
 }
 
-:root,.dark-theme{
+.dark {
+    --color-theme: black;
     --color-body: white;
     --color-body-rgb: 255, 255, 255;
     --color-bg: #2B2B29;
     --color-bg-rgb: 43, 43, 41;
 }
 
-:root, .light-theme, .dark-theme{
+:root, .light, .dark {
     --color-body-90: color-mix(in srgb, var(--color-body) 90%, var(--color-bg));
     --color-body-80: color-mix(in srgb, var(--color-body) 80%, var(--color-bg));
     --color-body-60: color-mix(in srgb, var(--color-body) 60%, var(--color-bg));
@@ -62,50 +64,10 @@
     --color-gap: 20%;
     --color-gaper: 50%;
 
-    --color-main: var(--color-blue);
-    --color-main-rgb: var(--color-blue-rgb);
-
-    --color-success: var(--color-green);
-    --color-success-rgb: var(--color-green-rgb);
-
-    --color-danger: var(--color-red);
-    --color-danger-rgb: var(--color-red-rgb);
-
-    --color-blue: #316BDE;
-    --color-blue-rgb: 49, 107, 222;
-
-    --color-red: #e53232;
-    --color-red-rgb: 229, 50, 50;
-
-    --color-green: #59A446;
-    --color-green-rgb: 89, 164, 70;
-
-    --color-yellow: #e5be32;
-    --color-yellow-rgb: 229, 190, 50;
-
-    --color-purple: #9632e5;
-    --color-purple-rgb: 150, 50, 229;
-
-    --color-orange: #E58832;
-    --color-orange-rgb: 222, 153, 49;
-
-    --color-pink: #E532DE;
-    --color-pink-rgb: 222, 49, 182;
-
-    --color-cyan: #32E5D0;
-    --color-cyan-rgb: 50, 229, 208;
-
-    --color-gray: #7585A5;
-    --color-gray-rgb: 117, 133, 165;
-
-    --color: var(--color-main);
-    --color-rgb: var(--color-main-rgb);
-
-
     --height: 100vh;
 }
 
-:root, body{
+:root, body {
     height: var(--height);
     width: 100vw;
     margin: 0;
@@ -145,16 +107,22 @@ button, input {
     padding: 0.3em 1em;
 }
 
-button{
+button {
     cursor: pointer;
 }
+
 button:hover {
     transform: translateY(-0.2em);
 }
+
 button:active {
     transform: translateY(0.2em);
 }
 
 icon, button, img, br {
     user-select: none;
+}
+
+a {
+    color: var(--color);
 }
