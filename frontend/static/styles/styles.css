@@ -56,7 +56,6 @@
     transition: 0.2s;
     margin: 0;
     padding: 0;
-    overflow: hidden;
 
     font-family: roboto, sans-serif;
     color: var(--color-body);
@@ -71,6 +70,7 @@
     height: var(--height);
     width: 100vw;
     margin: 0;
+    overflow: hidden;
 }
 
 lighter {
