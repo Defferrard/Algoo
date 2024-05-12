@@ -4,7 +4,6 @@ import {Server, Socket} from 'socket.io';
 import {LOGGER} from "../utils/logger";
 import {gameRoomRepository} from "../repositories";
 
-
 export default class SocketUser extends User {
 
     readonly #server: Server;

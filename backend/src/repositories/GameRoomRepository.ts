@@ -1,5 +1,6 @@
 import {GameRoom, GameRoomState, Player} from "@defferrard/algoo-core/src/game";
 import {GameRoomNotFoundException} from "@defferrard/algoo-core/src/exceptions/gameRoom";
+import {Service} from "typedi";
 
 type TimeoutConst = {
     key: string,
@@ -9,6 +10,7 @@ type TimeoutConst = {
 const DELETE_ROOM_TIMEOUT: TimeoutConst = {key: "delete_room_timeout", value: 60_000};
 const START_GAME_TIMEOUT: TimeoutConst = {key: "start_game_timeout", value: 10_000};
 
+@Service()
 export class GameRoomRepository {
     private readonly _rooms: { [key: string]: GameRoom };
     private readonly _timeouts: { [key: string]: { [key: string]: NodeJS.Timeout } }; // 1st Key = Room UUID, 2nd Key = Timeout Type
@@ -76,12 +78,10 @@ export class GameRoomRepository {
     }
 
     cancelStartGame(roomUuid: string, next: () => void): void {
-        if(this._timeouts[roomUuid][START_GAME_TIMEOUT.key]) {
+        if (this._timeouts[roomUuid][START_GAME_TIMEOUT.key]) {
             clearTimeout(this._timeouts[roomUuid][START_GAME_TIMEOUT.key]);
             delete this._timeouts[roomUuid][START_GAME_TIMEOUT.key];
             next();
         }
     }
 }
-
-export default new GameRoomRepository();

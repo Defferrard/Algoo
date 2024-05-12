@@ -7,6 +7,11 @@ export enum MessageType {
     CONNECT = 'connect', // When client has been connected
     CONNECTION = 'connection', // When server get a client connection
     DISCONNECT = 'disconnect', // When server get a client disconnect
+
+
+    /**
+     * @deprecated Login is now handled by the HTTP server
+     */
     LOGIN = 'login', // Logging in with uuid
 
     GAME_ROOM_JOIN = 'game_room_join', // Joining a room

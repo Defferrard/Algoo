@@ -11,7 +11,7 @@
     "test": "tsc && nyc --reporter=text mocha --spec ./build/test/unittest.js --reporter mocha-junit-reporter --reporter-options mochaFile=junit.xml --exit",
     "build": "npx tsc",
     "start": "node ./build/index.js",
-    "dev": "npx nodemon -w ./ -w ../core index.ts"
+    "dev": "npx nodemon -w ./ -w ../core src/index.ts"
   },
   "dependencies": {
     "@defferrard/algoo-core": "^0.1.0",
@@ -22,8 +22,11 @@
     "express-session": "^1.17.3",
     "moment": "^2.29.4",
     "passport": "^0.6.0",
+    "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
+    "socket-controllers": "^0.3.1",
     "socket.io": "^4.7.4",
+    "typedi": "^0.10.0",
     "uuid": "^9.0.0",
     "winston": "^3.8.2"
   },
@@ -35,7 +38,7 @@
     "@types/express-session": "^1.17.6",
     "@types/mocha": "^10.0.1",
     "@types/passport": "^1.0.12",
-    "@types/passport-local": "^1.0.35",
+    "@types/passport-jwt": "^4.0.1",
     "@types/superagent": "^4.1.16",
     "@types/supertest": "^2.0.12",
     "@types/uuid": "^9.0.2",
@@ -49,6 +52,7 @@
     "nyc": "^15.1.0",
     "superagent": "^8.0.9",
     "supertest": "^6.2.3",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0"
   }
 }
