@@ -1,32 +1,33 @@
-<script lang="ts">
-    import {socket} from '$lib/stores/socket';
-    import {localUser} from '$lib/stores/localUser';
+<script lang='ts'>
+    import { localUser } from '$lib/stores/localUser';
+    import { socket } from '$lib/stores/socket';
 
     export let open = false;
 </script>
 
 
 <tab class:open>
-    <button class="material-symbols-rounded" on:click={()=> open = !open}>
-        settings
-    </button>
-    {#if $socket.connected}
-        <username>
-            {$localUser.name}
-        </username>
+  <button class='material-symbols-rounded' on:click={()=> open = !open}>
+    settings
+  </button>
+  {#if $socket?.connected}
+    <username>
+      {$localUser.name}
+    </username>
+  {:else}
+    <input value={$localUser.name}
+           on:change={(e)=> localUser.setUsername(e.target.value)} />
+
+  {/if}
+
+
+  <icon class='material-symbols-rounded' class:connected={$socket?.connected}>
+    {#if $socket?.connected}
+      link
     {:else}
-        <input value={$localUser.name} on:change={(e)=> localUser.setUsername(e.target.value)}/>
-
+      link_off
     {/if}
-
-
-    <icon class="material-symbols-rounded" class:connected={$socket.connected}>
-        {#if $socket.connected}
-            link
-        {:else}
-            link_off
-        {/if}
-    </icon>
+  </icon>
 
 </tab>
 
@@ -124,7 +125,7 @@
         gap: 0.2em;
         border-radius: 0 .5em .5em 0;
         transition: 0.2s;
-        
+
     }
 
     tab.open {

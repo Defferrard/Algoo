@@ -1,80 +1,81 @@
-<script lang="ts">
-    import {elasticOut} from "svelte/easing";
+<script lang='ts'>
+    import { elasticOut } from 'svelte/easing';
 
     export let animated: boolean = true;
-    export let draggable: boolean = true;
-    export let onclose: () => void | undefined;
+  export let draggable: boolean = true;
+  export let onclose: (() => void) | undefined = undefined;
 
-    function dragMe(node: HTMLElement) {
-        if (!draggable) return;
-        let moving = false;
-        let left = 0;
-        let top = 0;
+  function dragMe(node: HTMLElement) {
+    if (!draggable) return;
+    let moving = false;
+    let left = 0;
+    let top = 0;
 
-        node.parentElement.style.position = 'relative';
+    node.parentElement.style.position = 'relative';
+    node.parentElement.style.top = `${top}px`;
+    node.parentElement.style.left = `${left}px`;
+    node.style.userSelect = 'none';
+
+    node.addEventListener('mousedown', () => {
+      moving = true;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (moving) {
+        left += e.movementX;
+        top += e.movementY;
         node.parentElement.style.top = `${top}px`;
         node.parentElement.style.left = `${left}px`;
-        node.style.userSelect = 'none';
+      }
+    });
 
-        node.addEventListener('mousedown', () => {
-            moving = true;
-        });
+    window.addEventListener('mouseup', () => {
+      moving = false;
+    });
+  }
 
-        window.addEventListener('mousemove', (e) => {
-            if (moving) {
-                left += e.movementX;
-                top += e.movementY;
-                node.parentElement.style.top = `${top}px`;
-                node.parentElement.style.left = `${left}px`;
-            }
-        });
-
-        window.addEventListener('mouseup', () => {
-            moving = false;
-        });
-    }
-
-    function appear() {
-        if (!animated) return;
-        return {
-            duration: 1000,
-            css: (t) => {
-                const eased = elasticOut(t);
-                return `
+  function appear() {
+    if (!animated) return;
+    return {
+      duration: 1000,
+      css: (t) => {
+        const eased = elasticOut(t);
+        return `
                     transform: scale(${eased});
                 `;
-            }
-        };
-    }
+      },
+    };
+  }
 
-    function disappear() {
-        if (!animated) return;
-        return {
-            duration: 100,
-            css: (t) => `transform: scale(${t});`
-        };
-    }
+  function disappear() {
+    if (!animated) return;
+    return {
+      duration: 100,
+      css: (t) => `transform: scale(${t});`,
+    };
+  }
 </script>
 
 <section in:appear out:disappear>
-    {#if $$slots.header}
-        <header use:dragMe>
-            <actions>
-                {#if onclose}
-                    <close class="material-symbols-rounded" on:click={onclose}>close</close>
-                {/if}
-            </actions>
-            <slot name="header"/>
-        </header>
-    {/if}
-    <content>
-        <slot/>
-    </content>
-    {#if $$slots.footer}
-        <footer>
-            <slot name="footer"/>
-        </footer>
-    {/if}
+  {#if $$slots.header}
+    <header use:dragMe>
+      <actions>
+        {#if onclose}
+          <close class='material-symbols-rounded' on:click={onclose}>close
+          </close>
+        {/if}
+      </actions>
+      <slot name='header' />
+    </header>
+  {/if}
+  <content>
+    <slot />
+  </content>
+  {#if $$slots.footer}
+    <footer>
+      <slot name='footer' />
+    </footer>
+  {/if}
 </section>
 
 <style>

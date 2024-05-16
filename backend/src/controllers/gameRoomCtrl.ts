@@ -1,22 +1,25 @@
-import {NextFunction, Request, Response} from "express";
 import {GameRoomRepository} from "$/repositories";
 import {GameRoom} from "@defferrard/algoo-core/src/game";
+import {Get, JsonController, Post} from "routing-controllers";
 import {Service} from "typedi";
 
 @Service()
+@JsonController('/rooms')
 export class GameRoomCtrl {
     constructor(
         public gameRoomRepository: GameRoomRepository
     ) {
     }
 
-    getRooms(req: Request, res: Response, next: NextFunction) {
-        res.send(this.gameRoomRepository.rooms)
+    @Get()
+    getRooms(): GameRoom[] {
+        return this.gameRoomRepository.rooms;
     }
 
-    createRoom(req: Request, res: Response, next: NextFunction) {
+    @Post()
+    createRoom(): GameRoom {
         const ROOM: GameRoom = new GameRoom();
         this.gameRoomRepository.push(ROOM);
-        res.send(ROOM);
+        return ROOM;
     }
 }

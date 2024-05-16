@@ -1,6 +1,6 @@
-import { createLogger, transports, format, Logger} from "winston";
+import {createLogger, transports, format, Logger} from "winston";
 import moment from "moment";
-import {Request} from "express";
+import {NextFunction, Request, Response} from "express";
 
 const OPTIONS = {
     console: {
@@ -9,7 +9,7 @@ const OPTIONS = {
         format: format.combine(
             format.timestamp(),
             format.colorize(),
-            format.printf(({ timestamp, level, message }) => {
+            format.printf(({timestamp, level, message}) => {
                 return `[${timestamp}] ${level}: ${message}`;
             })
         )
@@ -19,7 +19,7 @@ const OPTIONS = {
         level: 'debug',
         format: format.combine(
             format.timestamp(),
-            format.printf(({ timestamp, level, message }) => {
+            format.printf(({timestamp, level, message}) => {
                 return `[${timestamp}] ${level}: ${message}`;
             })
         )
@@ -29,7 +29,7 @@ const OPTIONS = {
 /**
  * @description Winston logger instance
  */
-export const LOGGER : Logger = createLogger({
+export const LOGGER: Logger = createLogger({
     transports: [
         new transports.Console(OPTIONS.console),
         new transports.File(OPTIONS.verbose)],
@@ -42,6 +42,11 @@ export const LOGGER : Logger = createLogger({
  * @description Get the IP of the request
  * @param req Express Request
  */
-export function getIP(req: Request){
+export function getIP(req: Request) {
     return req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+}
+
+export function middleware(req: Request, res: Response, next: NextFunction) {
+    LOGGER.info(`${getIP(req)}: [${req.method}] ${req.url}`);
+    next();
 }

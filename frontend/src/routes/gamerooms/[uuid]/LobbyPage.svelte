@@ -1,69 +1,66 @@
-<script lang="ts">
-    import {page} from '$app/stores';
-    import {socket} from '$lib/stores/socket';
-    import {MessageType} from "@defferrard/algoo-core/src/socket";
-    import Chatbox from "./Chatbox.svelte";
-    import QRCode from "./QRCode.svelte";
-    import {Player} from "@defferrard/algoo-core/src/game";
-    import {Window} from "$lib/components/layout/";
-    import {fly} from "svelte/transition";
+<script lang='ts'>
+  import { page } from '$app/stores';
+  import { Window } from '$lib/components/layout/';
+  import { socket } from '$lib/stores/socket';
+  import { Player } from '@defferrard/algoo-core/src/game';
+  import { MessageType } from '@defferrard/algoo-core/src/socket';
+  import { fly } from 'svelte/transition';
+  import Chatbox from './Chatbox.svelte';
+  import QRCode from './QRCode.svelte';
 
-    export let roomUuid: string;
-    export let messages: (string | { from: Player, message: string })[] = [];
+  export let roomUuid: string;
+  export let messages: (string | { from: Player, message: string })[] = [];
 
 
-    export let players: { [key: string]: Player } = {};
+  export let players: { [key: string]: Player } = {};
 
-    let isReady: boolean = false;
+  let isReady: boolean = false;
 
-    function setReady() {
-        isReady = !isReady;
-        socket.emit(MessageType.GAME_ROOM_READY, {roomUuid: roomUuid, isReady});
-        // goto("/game")
-    }
+  function setReady() {
+    isReady = !isReady;
+    socket.emit(MessageType.GAME_ROOM_READY, { roomUuid: roomUuid, isReady });
+  }
 
 </script>
 <section in:fly={{delay: 200}} out:fly={{duration: 200}}>
-    <chatbox>
-        <Chatbox room={roomUuid} {messages}
-                 on:send={e => {
-                socket.emit(MessageType.GAME_ROOM_MESSAGE, {
-                    roomUuid: roomUuid,
-                    message: e.detail.message
-                });
+  <chatbox>
+    <Chatbox room={roomUuid} {messages}
+             on:send={e => {
+                socket.emit(MessageType.GAME_ROOM_MESSAGE, e.detail.message);
             }}
-        />
-    </chatbox>
+    />
+  </chatbox>
 
-    <informations>
-        <Window animated={false}>
-            <div slot="header">Game Room</div>
-            <subsection>
-                <qrcode>
-                    <QRCode value={$page.url}/>
-                </qrcode>
-                <players>
-                    <b>Players ({Object.keys(players).length}/2) </b>
-                    {#each Object.values(players) as player}
-                        <player>
-                            <icon class="material-symbols-rounded" class:ready={player.isReady}>
-                                {#if player.isReady}
-                                    task_alt
-                                {:else}
-                                    progress_activity
-                                {/if}
-                            </icon>
-                            <name>{player.user.name}</name>
-                        </player>
-                    {/each}
-                    {#if Object.keys(players).length === 2}
-                        <br/>
-                        <button on:click={setReady}>I'm ready !</button>
-                    {/if}
-                </players>
-            </subsection>
-        </Window>
-    </informations>
+  <informations>
+    <Window animated={false}>
+      <div slot='header'>Game Room</div>
+      <subsection>
+        <qrcode>
+          <QRCode value={$page.url} />
+        </qrcode>
+        <players>
+          <b>Players ({Object.keys(players).length}/2) </b>
+          {#each Object.values(players) as player}
+            <player>
+              <icon class='material-symbols-rounded'
+                    class:ready={player.isReady}>
+                {#if player.isReady}
+                  task_alt
+                {:else}
+                  progress_activity
+                {/if}
+              </icon>
+              <name>{player.user.name}</name>
+            </player>
+          {/each}
+          {#if Object.keys(players).length === 2}
+            <br />
+            <button on:click={setReady}>I'm ready !</button>
+          {/if}
+        </players>
+      </subsection>
+    </Window>
+  </informations>
 </section>
 
 

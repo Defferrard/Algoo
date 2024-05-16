@@ -1,81 +1,85 @@
-import 'reflect-metadata';
+import { PORT } from '$/const';
+import { User } from '@defferrard/algoo-core/src/socket';
+import { validationMetadatasToSchemas } from 'class-validator-jsonschema';
 import dotenv from 'dotenv';
-import express, {Express, NextFunction} from 'express';
-import {Server, Socket} from 'socket.io';
-import {LOGGER} from "./utils/logger";
-import {createServer, type IncomingMessage, type ServerResponse} from "http";
+import express, { Express, NextFunction, Request, Response } from 'express';
+import { createServer } from 'http';
+import { SchemaObject } from 'openapi3-ts/src/model/OpenApi';
+import passport from 'passport';
+import 'reflect-metadata';
+import {
+  Action,
+  createExpressServer,
+  getMetadataArgsStorage,
+  RoutingControllersOptions,
+  useContainer,
+} from 'routing-controllers';
+import { routingControllersToSpec } from 'routing-controllers-openapi';
+import { SocketControllers } from 'socket-controllers';
+import { Server } from 'socket.io';
+import * as swaggerUiExpress from 'swagger-ui-express';
+import { Container } from 'typedi';
 
-import {SocketMap} from "./socket";
-import {router} from "./routes"
-import {authenticate, router as auth} from "./auth";
-import {SocketControllers} from "socket-controllers";
-import {Container} from 'typedi';
-
+import { authenticate, router as auth } from './auth';
+import { LOGGER, middleware as loggerMiddleware } from './utils/logger';
 
 dotenv.config();
 
-export const APP: Express = express();
-const PORT: number = +(process.env.PORT || 8080);
+useContainer(Container);
+const routingControllersOptions: RoutingControllersOptions = {
+  routePrefix: '/api/v1',
+  middlewares: [loggerMiddleware],
+  controllers: [__dirname + '/controllers/*'],
+  validation: {
+    whitelist: true,
+  },
+  authorizationChecker: async (action: Action, _roles: any[]) =>
+    new Promise<boolean>((resolve: Function, reject: Function) => {
+      passport.authenticate('jwt', (err?: Error, user?: User) => {
+        if (err) return reject(err);
+        if (!user) return resolve(false);
+        action.request.user = user;
+        return resolve(true);
+      })(action.request, action.response, action.next);
+    }),
+  currentUserChecker: (action: Action) => action.request.user,
+};
+const APP: Express = createExpressServer(routingControllersOptions);
 const HTTP_SERVER = createServer(APP);
 const IO: Server = new Server(HTTP_SERVER, {
-    path: '/socket.io'
+  path: '/socket.io',
 });
 Container.set(Server, IO);
-IO.engine.use((req: IncomingMessage & {
-    _query: { sid: string | undefined }
-}, res: ServerResponse, next: NextFunction) => {
-    const isHandshake: boolean = req._query.sid === undefined;
-    if (isHandshake) {
-        authenticate(req, res, next);
-    } else {
-        next();
-    }
+IO.engine.use((req: Request & {
+  _query: { sid: string | undefined }
+}, res: Response, next: NextFunction) => {
+  const isHandshake: boolean = req._query.sid === undefined;
+  if (isHandshake) {
+    authenticate(req, res, next);
+  } else {
+    next();
+  }
 });
-
-const SOCKET_MAP: SocketMap = new SocketMap();
-const SOCKET_ON_CONNECTION: Socket[] = [];
 
 new SocketControllers({
-    io: IO,
-    container: Container,
-    controllers: [__dirname + '/socket/ctrl/*'],
-})
-
-APP.use(express.json())
-    .use((req, res, next) => {
-        LOGGER.info(`${req.method} ${req.url}`);
-        next();
-    })
-    .use('/api/v1', router)
-    .use(auth);
-// IO.on(MessageType.CONNECTION, (socket: Socket) => {
-//     let socketUser: SocketUser;
-//     LOGGER.info('Socket connected, waiting for log in.');
-//     SOCKET_ON_CONNECTION.push(socket);
-//     delay(() => {
-//         if (SOCKET_ON_CONNECTION.includes(socket)) {
-//             LOGGER.info('Timeout, socket did not login in time');
-//             socket.disconnect(true);
-//         }
-//     }, 10000);
-//
-//
-//     socket.on(MessageType.LOGIN, (user: User, callback) => {
-//         LOGGER.info(`Socket ${user.uuid} logged in`);
-//         SOCKET_ON_CONNECTION.splice(SOCKET_ON_CONNECTION.indexOf(socket), 1);
-//         socketUser = new SocketUser(user, socket, IO);
-//         SOCKET_MAP.push(socketUser);
-//         callback({status: SocketStatus.OK});
-//     }).on(MessageType.DISCONNECT, () => {
-//         LOGGER.info('Socket disconnected');
-//         SOCKET_ON_CONNECTION.splice(SOCKET_ON_CONNECTION.indexOf(socket), 1);
-//         if (socketUser) {
-//             socketUser.disconnect();
-//         }
-//     });
-// });
-
-HTTP_SERVER.listen(PORT, () => {
-    LOGGER.info(`Server is running at http://localhost:${PORT}`);
+  io: IO,
+  container: Container,
+  controllers: [__dirname + '/socket/controllers/*'],
 });
-
+const schemas: SchemaObject = validationMetadatasToSchemas({
+  refPointerPrefix: '#/components/schemas/',
+});
+const spec = routingControllersToSpec(getMetadataArgsStorage(), routingControllersOptions, {
+  components: {
+    schemas,
+  },
+});
+APP.use(express.json())
+  .use(auth)
+  .get('/api/v1', (req, res) => {
+    res.redirect('/api/v1/docs');
+  })
+  .use('/api/v1/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(spec));
+HTTP_SERVER.listen(PORT, () => {
+  LOGGER.info(`Server is running at http://localhost:${PORT}`);
+});
