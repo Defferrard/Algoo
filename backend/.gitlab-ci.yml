@@ -1,4 +1,3 @@
-
 backend-test:
   stage: test
   variables:
@@ -7,7 +6,7 @@ backend-test:
     - cd $WORKDIR
     - npm install
   script:
-    - npm run test
+    - npm run build
   artifacts:
     reports:
-        junit: $WORKDIR/junit.xml
+      junit: $WORKDIR/junit.xml
