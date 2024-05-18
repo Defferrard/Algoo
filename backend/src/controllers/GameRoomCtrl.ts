@@ -1,7 +1,7 @@
 import { GameRoom } from '@defferrard/algoo-core/src/game';
 import { Get, JsonController, Post } from 'routing-controllers';
 import { Service } from 'typedi';
-import { GameRoomRepository } from '../repositories';
+import { GameRoomRepository } from '~/repositories';
 
 @Service()
 @JsonController('/rooms')

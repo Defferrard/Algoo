@@ -9,7 +9,7 @@ import {
   Post,
 } from 'routing-controllers';
 import { Service } from 'typedi';
-import { AuthService } from '../services/AuthService';
+import { AuthService } from '~/services/AuthService';
 
 @Service()
 @JsonController('/auth')
