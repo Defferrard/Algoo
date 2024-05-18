@@ -1,10 +1,13 @@
+import GameManagerDTO from '@defferrard/algoo-core/src/dto/GameManagerDTO';
 import {
-    GameRoomNotFoundException,
+  GameRoomNotFoundException,
 } from '@defferrard/algoo-core/src/exceptions/gameRoom';
 import {
-    GameRoom,
-    GameRoomState,
-    Player,
+  GameManager,
+  GameRoom,
+  GameRoomState,
+  generateRandomBoard,
+  Player,
 } from '@defferrard/algoo-core/src/game';
 import { Service } from 'typedi';
 
@@ -83,8 +86,12 @@ export class GameRoomRepository {
     let gameRoom: GameRoom = this.get(roomUuid);
 
     this._timeouts[roomUuid][START_GAME_TIMEOUT.key] = setTimeout(() => {
-      gameRoom.startGame();
-      next(gameRoom.gameManager.board);
+      const dto: GameManagerDTO = {
+        tiles: generateRandomBoard(10, 10, 0.3),
+      };
+      const gameManager = new GameManager(dto);
+      gameRoom.startGame(gameManager);
+      next(dto);
     }, delay);
     return delay;
   }

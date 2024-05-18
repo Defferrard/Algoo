@@ -1,14 +1,15 @@
 import {
-    GameRoom,
-    GameRoomState,
-    Player,
+  GameManager,
+  GameRoom,
+  GameRoomState,
+  Player,
 } from '@defferrard/algoo-core/src/game';
 import type {
-    Invalidator,
-    Readable,
-    Subscriber,
-    Unsubscriber,
-    Updater,
+  Invalidator,
+  Readable,
+  Subscriber,
+  Unsubscriber,
+  Updater,
 } from 'svelte/store';
 import { writable } from 'svelte/store';
 import { v4 as uuidV4 } from 'uuid';
@@ -61,8 +62,8 @@ export default class GameRoomReadable extends GameRoom implements Readable<GameR
     return res;
   }
 
-  startGame() {
-    super.startGame();
+  startGame(gameManager: GameManager) {
+    super.startGame(gameManager);
     this.set(this);
   }
 }

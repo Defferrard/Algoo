@@ -1,9 +1,11 @@
 <script lang='ts'>
   import { StandardLayout } from '$lib/components/layout/index';
+  import { UIGameManager } from '$lib/game';
   import { GameRoomReadable } from '$lib/stores';
   import { authStore } from '$lib/stores/auth';
   import { localUser } from '$lib/stores/localUser';
   import { socket } from '$lib/stores/socket';
+  import GameManagerDTO from '@defferrard/algoo-core/src/dto/GameManagerDTO';
   import { Player } from '@defferrard/algoo-core/src/game';
   import { GameRoomState } from '@defferrard/algoo-core/src/game/GameRoom.js';
   import { MessageType, User } from '@defferrard/algoo-core/src/socket';
@@ -15,6 +17,7 @@
   let roomUuid = data.uuid;
 
   let gameRoom: GameRoomReadable = new GameRoomReadable(undefined, roomUuid);
+  let gameManager: UIGameManager;
   let timeouts: { [key: string]: NodeJS.Timeout } = {}; // Key = Timeout Type
   let messages: (string | { from: Player, message: string })[] = [`Welcome to the Game Room ${roomUuid}`];
   const [jwt, loading, error, login] = authStore();
@@ -77,8 +80,10 @@
       },
     },
     {
-      messageType: MessageType.GAME_ROOM_START, handler: () => {
-        gameRoom.startGame();
+      messageType: MessageType.GAME_ROOM_START,
+      handler: (dto: GameManagerDTO) => {
+        gameManager = new UIGameManager(dto);
+        gameRoom.startGame(gameManager);
       },
     },
   ];
@@ -107,7 +112,7 @@
     <LobbyPage roomUuid={roomUuid}
                {...{ messages, players: $gameRoom.players }} />
   {:else if $gameRoom.state === GameRoomState.PLAYING}
-    <GameView />
+    <GameView {...{ gameManager }} />
   {/if}
 </StandardLayout>
 <float>

@@ -1,7 +1,7 @@
 import { v4 as uuidV4 } from 'uuid';
 import {
-    FullGameRoomException,
-    PlayerAlreadyInGameRoomException,
+  FullGameRoomException,
+  PlayerAlreadyInGameRoomException,
 } from '../exceptions/gameRoom';
 import { GameManager, Player } from './index';
 
@@ -77,7 +77,8 @@ export default class GameRoom {
     return Object.values(this.players).every(player => player.isReady);
   }
 
-  startGame(): void {
+  startGame(gameManager: GameManager): void {
+    this.#gameManager = gameManager;
     this.state = GameRoomState.PLAYING;
   }
 }

@@ -1,4 +1,4 @@
-import { UsernameDTO } from '@defferrard/algoo-core/src/dto/UsernameDTO';
+import UsernameDTO from '@defferrard/algoo-core/src/dto/UsernameDTO';
 import { User } from '@defferrard/algoo-core/src/socket';
 import {
   Authorized,
