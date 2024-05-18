@@ -45,6 +45,9 @@ spec:
           ports:
             - containerPort: 8080
               protocol: TCP
+          env:
+            - name: JWT_SECRET
+              value: "secret"
       imagePullSecrets:
         - name: local-registry
 ---

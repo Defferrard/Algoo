@@ -1,4 +1,3 @@
-import { PORT } from '$/const';
 import { User } from '@defferrard/algoo-core/src/socket';
 import { validationMetadatasToSchemas } from 'class-validator-jsonschema';
 import dotenv from 'dotenv';
@@ -20,6 +19,7 @@ import * as swaggerUiExpress from 'swagger-ui-express';
 import { Container } from 'typedi';
 
 import { authenticate, router as auth } from './auth';
+import { PORT } from './const';
 import { LOGGER, middleware as loggerMiddleware } from './utils/logger';
 
 dotenv.config();

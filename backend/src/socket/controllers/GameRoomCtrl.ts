@@ -1,6 +1,3 @@
-import { GameRoomRepository, SocketRepository } from '$/repositories';
-import { BasicCtrl } from '$/socket/controllers/BasicCtrl';
-import { LOGGER } from '$/utils/logger';
 import { GameRoom, Player } from '@defferrard/algoo-core/src/game';
 import { MessageType } from '@defferrard/algoo-core/src/socket';
 import { isUUID } from 'class-validator';
@@ -19,6 +16,9 @@ import {
 } from 'socket-controllers';
 import { Server, Socket } from 'socket.io';
 import { Service } from 'typedi';
+import { GameRoomRepository, SocketRepository } from '../../repositories';
+import { BasicCtrl } from '../../socket/controllers/BasicCtrl';
+import { LOGGER } from '../../utils/logger';
 
 const GAME_ROOM_UUID = 'gameRoomUUID';
 

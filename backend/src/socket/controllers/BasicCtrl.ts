@@ -1,5 +1,3 @@
-import { SocketRepository } from '$/repositories';
-import { LOGGER } from '$/utils/logger';
 import { MessageType, User } from '@defferrard/algoo-core/src/socket';
 import { Request } from 'express';
 import {
@@ -13,6 +11,8 @@ import {
   DefaultEventsMap,
   StrictEventEmitter,
 } from 'socket.io/dist/typed-events';
+import { SocketRepository } from '../../repositories';
+import { LOGGER } from '../../utils/logger';
 
 export abstract class BasicCtrl {
   protected constructor(public socketRepository: SocketRepository) {
