@@ -4,7 +4,6 @@ import { validationMetadatasToSchemas } from 'class-validator-jsonschema';
 import dotenv from 'dotenv';
 import express, { Express, NextFunction, Request, Response } from 'express';
 import { createServer } from 'http';
-import { SchemaObject } from 'openapi3-ts/src/model/OpenApi';
 import passport from 'passport';
 import 'reflect-metadata';
 import {
@@ -66,7 +65,7 @@ new SocketControllers({
   container: Container,
   controllers: [__dirname + '/socket/controllers/*'],
 });
-const schemas: SchemaObject = validationMetadatasToSchemas({
+const schemas: any = validationMetadatasToSchemas({
   refPointerPrefix: '#/components/schemas/',
 });
 const spec = routingControllersToSpec(getMetadataArgsStorage(), routingControllersOptions, {
