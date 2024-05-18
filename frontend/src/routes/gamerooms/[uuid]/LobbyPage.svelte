@@ -18,7 +18,7 @@
 
   function setReady() {
     isReady = !isReady;
-    socket.emit(MessageType.GAME_ROOM_READY, { roomUuid: roomUuid, isReady });
+    socket.emit(MessageType.GAME_ROOM_READY, isReady);
   }
 
 </script>

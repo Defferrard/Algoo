@@ -30,10 +30,6 @@ export abstract class BasicCtrl {
     ack(socket.data.user);
   }
 
-  protected onDisconnect(@ConnectedSocket() socket: Socket): void {
-    LOGGER.info(`Socket ${socket.id} disconnected`);
-  }
-
   broadcast(
     io: StrictEventEmitter<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>,
     event: MessageType,

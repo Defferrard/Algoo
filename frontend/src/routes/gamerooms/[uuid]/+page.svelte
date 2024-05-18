@@ -59,7 +59,8 @@
       },
     },
     {
-      messageType: MessageType.GAME_ROOM_STARTING, handler: (timer: number) => {
+      messageType: MessageType.GAME_ROOM_STARTING,
+      handler: ({ timer }: { timer: number }) => {
         timeouts[MessageType.GAME_ROOM_STARTING] = setInterval(() => {
           if (timer > 0) {
             pushMessage('Game starting in ' + timer / 1000 + ' seconds');
