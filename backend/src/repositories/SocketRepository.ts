@@ -1,4 +1,4 @@
-import { User } from '@defferrard/algoo-core/src/socket';
+import { MessageType, User } from '@defferrard/algoo-core/src/socket';
 import { Server, Socket } from 'socket.io';
 import { Service } from 'typedi';
 
@@ -18,11 +18,7 @@ export class SocketRepository {
     socket.join(SOCKET_ROOM_PREFIX + user.uuid);
   }
 
-  emitTo(uuid: string) {
-    return this.io.to(SOCKET_ROOM_PREFIX + uuid).emit;
-  }
-
-  isConnected(uuid: string): boolean {
-    return false;
+  broadcast(room: string, event: MessageType, message: any = '') {
+    this.io.of(`/rooms/${room}`).emit(event, message);
   }
 }
