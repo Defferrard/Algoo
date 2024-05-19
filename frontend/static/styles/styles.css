@@ -24,7 +24,8 @@
     transition: inherit;
 }
 
-.light {
+
+.light, .system {
     --color-theme: white;
     --color-bg: white;
     --color-bg-rgb: 255, 255, 255;
@@ -38,6 +39,17 @@
     --color-body-rgb: 255, 255, 255;
     --color-bg: #2B2B29;
     --color-bg-rgb: 43, 43, 41;
+}
+
+
+@media (prefers-color-scheme: dark) {
+    .system {
+        --color-theme: black;
+        --color-body: white;
+        --color-body-rgb: 255, 255, 255;
+        --color-bg: #2B2B29;
+        --color-bg-rgb: 43, 43, 41;
+    }
 }
 
 :root, .light, .dark {

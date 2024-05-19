@@ -1,33 +1,50 @@
 <script lang='ts'>
-    import { localUser } from '$lib/stores/localUser';
-    import { socket } from '$lib/stores/socket';
+    import {localUser} from '$lib/stores/localUser';
+    import {socket} from '$lib/stores/socket';
+    import {theme} from "$lib/stores/theme";
+    import {Theme} from "$lib/utils/Theme";
 
     export let open = false;
+
+    function swapTheme() {
+        theme.swap();
+    }
 </script>
 
 
 <tab class:open>
-  <button class='material-symbols-rounded' on:click={()=> open = !open}>
-    settings
-  </button>
-  {#if $socket?.connected}
-    <username>
-      {$localUser.name}
-    </username>
-  {:else}
-    <input value={$localUser.name}
-           on:change={(e)=> localUser.setUsername(e.target.value)} />
-
-  {/if}
-
-
-  <icon class='material-symbols-rounded' class:connected={$socket?.connected}>
+    <button class='material-symbols-rounded' on:click={()=> open = !open}>
+        settings
+    </button>
     {#if $socket?.connected}
-      link
+        <username>
+            {$localUser.name}
+        </username>
     {:else}
-      link_off
+        <input value={$localUser.name}
+               on:change={(e)=> localUser.setUsername(e.target.value)}/>
+
     {/if}
-  </icon>
+
+
+    <icon class='material-symbols-rounded' class:connected={$socket?.connected}>
+        {#if $socket?.connected}
+            link
+        {:else}
+            link_off
+        {/if}
+    </icon>
+
+
+    <button class='material-symbols-rounded' on:click={swapTheme}>
+        {#if $theme === Theme.LIGHT}
+            light_mode
+        {:else if $theme === Theme.DARK}
+            dark_mode
+        {:else} <!-- Theme.SYSTEM -->
+            devices
+        {/if}
+    </button>
 
 </tab>
 

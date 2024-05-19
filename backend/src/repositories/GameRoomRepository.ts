@@ -1,20 +1,19 @@
 import GameManagerDTO from '@defferrard/algoo-core/src/dto/GameManagerDTO';
-import {
-  GameRoomNotFoundException,
-} from '@defferrard/algoo-core/src/exceptions/gameRoom';
+import { GameRoomNotFoundException } from '@defferrard/algoo-core/src/exceptions/gameRoom';
 import {
   GameManager,
   GameRoom,
   GameRoomState,
-  generateRandomBoard,
   Player,
+  generateRandomBoard,
 } from '@defferrard/algoo-core/src/game';
 import { Service } from 'typedi';
 
+
 type TimeoutConst = {
-  key: string,
-  value: number
-}
+  key: string;
+  value: number;
+};
 
 const DELETE_ROOM_TIMEOUT: TimeoutConst = {
   key: 'delete_room_timeout',
@@ -28,7 +27,9 @@ const START_GAME_TIMEOUT: TimeoutConst = {
 @Service()
 export class GameRoomRepository {
   private readonly _rooms: { [key: string]: GameRoom };
-  private readonly _timeouts: { [key: string]: { [key: string]: NodeJS.Timeout } }; // 1st Key = Room UUID, 2nd Key = Timeout Type
+  private readonly _timeouts: {
+    [key: string]: { [key: string]: NodeJS.Timeout };
+  }; // 1st Key = Room UUID, 2nd Key = Timeout Type
 
   constructor() {
     this._rooms = {};
@@ -77,12 +78,20 @@ export class GameRoomRepository {
     }
   }
 
-  setPlayerReady(roomUuid: string, playerUuid: string, isReady: boolean): boolean {
+  setPlayerReady(
+    roomUuid: string,
+    playerUuid: string,
+    isReady: boolean,
+  ): boolean {
     let gameRoom: GameRoom = this.get(roomUuid);
     return gameRoom.setPlayerReady(playerUuid, isReady);
   }
 
-  startGame(roomUuid: string, next: (data: any) => void, delay: number = START_GAME_TIMEOUT.value): number {
+  startGame(
+    roomUuid: string,
+    next: (data: any) => void,
+    delay: number = START_GAME_TIMEOUT.value,
+  ): number {
     let gameRoom: GameRoom = this.get(roomUuid);
 
     this._timeouts[roomUuid][START_GAME_TIMEOUT.key] = setTimeout(() => {
