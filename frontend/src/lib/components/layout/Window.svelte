@@ -1,7 +1,7 @@
 <script lang='ts'>
-    import { elasticOut } from 'svelte/easing';
+  import { elasticOut } from 'svelte/easing';
 
-    export let animated: boolean = true;
+  export let animated: boolean = true;
   export let draggable: boolean = true;
   export let onclose: (() => void) | undefined = undefined;
 
@@ -61,8 +61,11 @@
     <header use:dragMe>
       <actions>
         {#if onclose}
-          <close class='material-symbols-rounded' on:click={onclose}>close
-          </close>
+          <button class='material-symbols-rounded close'
+                  on:click|stopPropagation={onclose}
+                  on:mousedown|stopPropagation>
+            close
+          </button>
         {/if}
       </actions>
       <slot name='header' />
@@ -105,16 +108,32 @@
         justify-content: space-between;
         font-weight: bolder;
         user-select: none;
+        overflow: hidden;
     }
 
     actions {
         display: flex;
         gap: .5em;
         align-items: center;
+        margin: -0.5em -1em;
     }
 
-    actions > * {
+    actions > button {
         font-size: 1em;
+        height: 100%;
+        border-radius: 0;
+    }
+
+    actions > button.close:hover {
+        background-color: var(--color-red);
+        transform: inherit;
+        filter: brightness(1.2);
+    }
+
+    actions > button.close:active {
+        background-color: var(--color-red);
+        transform: inherit;
+        filter: brightness(.8);
     }
 
 

@@ -1,70 +1,71 @@
-<script lang="ts">
-    import {goto} from '$app/navigation';
-    import {GAME_ROOM_REPOSITORY} from "$lib/repositories";
-    import {onDestroy, onMount} from "svelte";
-    import StandardLayout from "$lib/components/layout/StandardLayout.svelte";
-    import {loadingMutex} from "$lib/components";
-    import type {Unsubscriber} from "svelte/store";
-    import {Window} from "$lib/components/layout/";
+<script lang='ts'>
+  import { goto } from '$app/navigation';
+  import { loadingMutex } from '$lib/components';
+  import { Window } from '$lib/components/layout/';
+  import StandardLayout from '$lib/components/layout/StandardLayout.svelte';
+  import { GAME_ROOM_REPOSITORY } from '$lib/repositories';
+  import { onDestroy, onMount } from 'svelte';
+  import type { Unsubscriber } from 'svelte/store';
 
-    const [GAMES_DATA, GAMES_LOADING, GAMES_ERROR, GAMES_REFRESH] = GAME_ROOM_REPOSITORY.store.getAll();
-    const loadingMutexGamesLoadingUnsubscribe: Unsubscriber = loadingMutex.boundStore(GAMES_LOADING);
+  const [GAMES_DATA, GAMES_LOADING, GAMES_ERROR, GAMES_REFRESH] = GAME_ROOM_REPOSITORY.store.getAll();
+  const loadingMutexGamesLoadingUnsubscribe: Unsubscriber = loadingMutex.boundStore(GAMES_LOADING);
 
-    function createGameRoom() {
-        GAME_ROOM_REPOSITORY.request.create("test").then((res) => {
-            res.json().then((data) => {
-                goto(`/gamerooms/${data.uuid}`)
-            });
-        });
-    }
-
-    onMount(() => {
-        GAMES_REFRESH();
+  function createGameRoom() {
+    GAME_ROOM_REPOSITORY.request.create('test').then((res) => {
+      res.json().then((data) => {
+        goto(`/gamerooms/${data.uuid}`);
+      });
     });
+  }
 
-    onDestroy(() => {
-        loadingMutexGamesLoadingUnsubscribe();
-    });
+  onMount(() => {
+    GAMES_REFRESH();
+  });
+
+  onDestroy(() => {
+    loadingMutexGamesLoadingUnsubscribe();
+  });
 </script>
 
 <StandardLayout>
-    <center-flex>
-        <container>
-            <Window on:close={()=>{}} animated={false}>
-                <div slot="header">
-                    Game Rooms
-                </div>
-                <button-bar>
-                    <button on:click={GAMES_REFRESH} class="material-symbols-rounded icon-button">
-                        Refresh
-                    </button>
-                    <button on:click={createGameRoom} class="text-button">
-                        Create Game...
-                    </button>
-                </button-bar>
-                <hr/>
+  <center-flex>
+    <container>
+      <Window animated={false}>
+        <div slot='header'>
+          Game Rooms
+        </div>
+        <button-bar>
+          <button on:click={GAMES_REFRESH}
+                  class='material-symbols-rounded icon-button'>
+            Refresh
+          </button>
+          <button on:click={createGameRoom} class='text-button'>
+            Create Game...
+          </button>
+        </button-bar>
+        <hr />
+        <div>
+          <gamerooms>
+            {#each $GAMES_DATA || [] as gameRoom}
+              <button on:click={()=>goto(`/gamerooms/${gameRoom.uuid}`)}>
                 <div>
-                    <gamerooms>
-                        {#each $GAMES_DATA || [] as gameRoom}
-                            <button on:click={()=>goto(`/gamerooms/${gameRoom.uuid}`)}>
-                                <div>
-                                    {#if Object.keys(gameRoom.players).length > 0}
-                                        {Object.values(gameRoom.players)[0].user.name}'s Game Room
-                                    {:else}
-                                        Empty Game Room
-                                    {/if}
-                                </div>
-                                <div>
-                                    ({Object.keys(gameRoom.players).length}/{gameRoom.maxPlayers})
-                                </div>
-                            </button>
-                        {/each}
-                    </gamerooms>
+                  {#if Object.keys(gameRoom.players).length > 0}
+                    {Object.values(gameRoom.players)[0].user.name}'s Game Room
+                  {:else}
+                    Empty Game Room
+                  {/if}
                 </div>
-                <a href="/game">Test Game here...</a>
-            </Window>
-        </container>
-    </center-flex>
+                <div>
+                  ({Object.keys(gameRoom.players).length}/{gameRoom.maxPlayers})
+                </div>
+              </button>
+            {/each}
+          </gamerooms>
+        </div>
+        <a href='/game'>Test Game here...</a>
+      </Window>
+    </container>
+  </center-flex>
 </StandardLayout>
 
 <style>

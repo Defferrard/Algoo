@@ -1,39 +1,39 @@
-<script lang="ts">
-    import {Window} from "$lib/components/layout";
-    import {onMount} from "svelte";
-    import {delay} from "$lib/utils/Functions";
+<script lang='ts'>
+    import { Window } from '$lib/components/layout';
+    import { delay } from '$lib/utils/Functions';
+    import { onMount } from 'svelte';
 
     let display = false;
-    let title = "Error";
-    let text = "An error has occurred.";
-    let _e;
+  let title = 'Error';
+  let text = 'An error has occurred.';
+  let _e;
 
-    onMount(() => {
-        window.onunhandledrejection = (e: any) => {
-            _e = e;
-            display = true;
-            console.log(e)
-            text = e.reason?.message || e.message;
-            // Focus on the alert
-            delay(5000).then(() => {
-                close();
-            });
-        };
-    });
+  onMount(() => {
+    window.onunhandledrejection = (e: any) => {
+      _e = e;
+      display = true;
+      console.log(e);
+      text = e.reason?.message || e.message;
+      // Focus on the alert
+      delay(5000).then(() => {
+        close();
+      });
+    };
+  });
 
-    function close() {
-        display = false;
-    }
+  function close() {
+    display = false;
+  }
 </script>
 {#if display}
-    <section>
-        <Window>
-            <h1 slot="header">{title}</h1>
-            <div>
-                {text}
-            </div>
-        </Window>
-    </section>
+  <section>
+    <Window onclose={close}>
+      <h1 slot='header'>{title}</h1>
+      <div>
+        {text}
+      </div>
+    </Window>
+  </section>
 {/if}
 
 <style>
@@ -47,42 +47,9 @@
         justify-content: center;
     }
 
-    popup {
-        overflow: hidden;
-        background-color: color-mix(in srgb, var(--color-body), transparent 10%);
-        outline: 0.2em solid var(--color);
-        outline-offset: .2em;
-        border-radius: 1em;
-        width: 50vw;
-        min-width: 20em;
-    }
-
-    header {
-        background-color: var(--color);
-        padding: 0.5em 1em;
-        display: flex;
-        justify-content: space-between;
-    }
-
     h1 {
         margin: 0;
         line-height: 2em;
-    }
-
-    header > button {
-        background: none;
-        color: white;
-    }
-
-    header > button:hover {
-        transform: scale(1.3);
-        filter: none;
-    }
-
-    header > button:active {
-        transform: scale(0.9);
-        filter: none;
-        opacity: 0.7;
     }
 
     div {

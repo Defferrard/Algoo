@@ -1,36 +1,36 @@
-<script lang="ts">
-    import {LoadingPage} from "$lib/components/";
-    import {getCSS, getCSSRGB} from "$lib/components/Color";
-    import {Header, ExceptionHandler} from "$lib/components/layout/index";
-    import {Theme} from "$lib/utils/Theme";
-    import {Color} from "@defferrard/algoo-core/src/game";
+<script lang='ts'>
+    import { LoadingPage } from '$lib/components/';
+    import { getCSS, getCSSRGB } from '$lib/components/Color';
+    import { ExceptionHandler, Header } from '$lib/components/layout/index';
+    import { Theme } from '$lib/utils/Theme';
+    import { Color } from '@defferrard/algoo-core/src/game';
 
 
     const colors: Color[] = Object.values(Color) as any as Color[];
-    let colorIndex: number = Math.floor(Math.random() * colors.length);
+  let colorIndex: number = Math.floor(Math.random() * colors.length);
 
-    // Funny code to change the color of the board every 100ms
-    //  setInterval(() => {
-    //      colorIndex = (colorIndex + 1) % colors.length;
-    //  }, 100);
+  // Funny code to change the color of the board every 100ms
+  //  setInterval(() => {
+  //      colorIndex = (colorIndex + 1) % colors.length;
+  //  }, 100);
 
 
 </script>
 
-<svelte:element this="html"
-                lang="en"
-                class={Theme.DARK}
+<svelte:element this='html'
+                lang='en'
+                class={Theme.LIGHT}
                 style:--color={getCSS(colors[colorIndex])}
                 style:--color-rgb={getCSSRGB(colors[colorIndex])}
 />
 
 <section>
-    <content>
-        <ExceptionHandler/>
-        <Header/>
-        <LoadingPage/>
-        <slot/>
-    </content>
+  <content>
+    <ExceptionHandler />
+    <Header />
+    <LoadingPage />
+    <slot />
+  </content>
 </section>
 
 <style>
