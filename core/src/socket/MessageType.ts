@@ -1,10 +1,10 @@
 export enum MessageType {
-
   ////////////////
   // CONNECTION //
   ////////////////
 
   CONNECT = 'connect', // When client has been connected
+  CONNECT_ERROR = 'connect_error',
   CONNECTION = 'connection', // When server get a client connection
   DISCONNECT = 'disconnect', // When server get a client disconnect
   WHO_AM_I = 'who_am_i', // When client wants to know who he is
