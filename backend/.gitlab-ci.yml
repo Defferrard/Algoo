@@ -6,7 +6,7 @@ backend-test:
     - cd $WORKDIR
     - npm install
   script:
-    - npm run build
+    - npm run test:ci
   artifacts:
     reports:
       junit: $WORKDIR/junit.xml
