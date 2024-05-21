@@ -2,6 +2,7 @@ backend-test:
   stage: test
   variables:
     WORKDIR: backend
+    JWT_SECRET: $CI_COMMIT_SHA
   before_script:
     - cd $WORKDIR
     - npm install
