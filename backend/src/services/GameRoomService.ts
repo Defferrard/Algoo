@@ -10,8 +10,7 @@ export default class GameRoomService {
   constructor(
     public gameRoomRepository: GameRoomRepository,
     public socketRepository: SocketRepository,
-  ) {
-  }
+  ) {}
 
   joinRoom(socket: Socket, user: User, room: string) {
     try {
@@ -27,7 +26,11 @@ export default class GameRoomService {
       socket.broadcast.emit(MessageType.GAME_ROOM_JOIN, player);
       return gameRoom.players;
     } catch (e) {
-      return socket.disconnect();
+      // This async function is needed to avoid an exception due to disconnect a socket during it connection thread on a namespace.
+      const callLater = async () => {
+        socket.disconnect();
+      };
+      callLater();
     }
   }
 
@@ -40,14 +43,11 @@ export default class GameRoomService {
   }
 
   sendMessage({ data: { room, player } }: PlayerSocket, message: string) {
-    this.socketRepository.broadcast(
-      room,
-      MessageType.GAME_ROOM_LEAVE,
-      {
-        datetime: new Date(),
-        from: player,
-        message,
-      });
+    this.socketRepository.broadcast(room, MessageType.GAME_ROOM_MESSAGE, {
+      datetime: new Date(),
+      from: player,
+      message,
+    });
   }
 
   isReady(socket: PlayerSocket, isReady: boolean) {
@@ -67,9 +67,11 @@ export default class GameRoomService {
       this.socketRepository.broadcast(
         room,
         MessageType.GAME_ROOM_STARTING,
-        this.gameRoomRepository.startGame( // Will return the timer before starting the game to players
+        this.gameRoomRepository.startGame(
+          // Will return the timer before starting the game to players
           room,
-          (data) => { // Callback function, called when the game starts
+          (data) => {
+            // Callback function, called when the game starts
             this.socketRepository.broadcast(room, MessageType.GAME_ROOM_START, data);
           },
         ),
@@ -78,8 +80,7 @@ export default class GameRoomService {
       this.gameRoomRepository.cancelStartGame(
         room,
         // Callback function, called when the game is cancelled
-        () => this.socketRepository.broadcast(room, MessageType.CANCEL_GAME_ROOM_STARTING,
-        ),
+        () => this.socketRepository.broadcast(room, MessageType.CANCEL_GAME_ROOM_STARTING),
       );
     }
   }

@@ -2,9 +2,9 @@ import express, { Express } from 'express';
 import { createExpressServer } from 'routing-controllers';
 import * as swaggerUiExpress from 'swagger-ui-express';
 import { router as auth } from '~/auth';
-import { routingControllersOptions } from '~/routingControllersOptions';
 
-import { openApiSpec } from '../openAPI';
+import { openApiSpec } from '~/openAPI';
+import { routingControllersOptions } from '~/routingControllersOptions';
 
 
 export const app: Express = createExpressServer(routingControllersOptions);

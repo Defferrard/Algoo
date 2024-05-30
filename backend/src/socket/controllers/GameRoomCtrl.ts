@@ -6,6 +6,7 @@ import {
   EmitOnSuccess,
   MessageBody,
   NspParam,
+  NspParams,
   OnConnect,
   OnDisconnect,
   OnMessage,
@@ -22,19 +23,11 @@ const GAME_ROOM_UUID = 'gameRoomUUID';
 @Service()
 @SocketController(`/rooms/:${GAME_ROOM_UUID}`)
 export class GameRoomCtrl {
-
-  constructor(
-    public service: GameRoomService,
-  ) {
-  }
+  constructor(public service: GameRoomService) {}
 
   @OnConnect()
   @EmitOnSuccess(MessageType.PUT_GAME_ROOM)
-  onJoinRoom(
-    @ConnectedSocket() socket: Socket,
-    @SocketRequest() req: Request,
-    @NspParam(GAME_ROOM_UUID) room: string,
-  ) {
+  onJoinRoom(@ConnectedSocket() socket: Socket, @SocketRequest() req: Request, @NspParam(GAME_ROOM_UUID) room: string) {
     if (!isUUID(room)) {
       return socket.disconnect();
     }
@@ -44,27 +37,19 @@ export class GameRoomCtrl {
   }
 
   @OnDisconnect()
-  onLeaveRoom(
-    @ConnectedSocket() socket: Socket,
-  ) {
+  onLeaveRoom(@ConnectedSocket() socket: Socket) {
     this.service.leaveRoom(socket);
     LOGGER.info(`Socket ${socket.id} disconnected`);
   }
 
   @OnMessage(MessageType.GAME_ROOM_MESSAGE)
-  onMessage(
-    @ConnectedSocket() socket: Socket,
-    @MessageBody() message: string,
-  ) {
+  onMessage(@ConnectedSocket() socket: Socket, @MessageBody() message: string) {
     LOGGER.info(`Socket ${socket.id} sent message ${message}`);
     this.service.sendMessage(socket, message);
   }
 
   @OnMessage(MessageType.GAME_ROOM_READY)
-  onReady(
-    @ConnectedSocket() socket: Socket,
-    @MessageBody() isReady: boolean,
-  ) {
+  onReady(@ConnectedSocket() socket: Socket, @MessageBody() isReady: boolean) {
     LOGGER.info(`Socket ${socket.id} is ready: ${isReady}`);
     this.service.isReady(socket, isReady);
   }

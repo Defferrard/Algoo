@@ -1,7 +1,5 @@
 {
-  "extends": [
-    "../tsconfig.json"
-  ],
+  "extends": ["../tsconfig.json"],
   "compilerOptions": {
     "target": "ES2022",
     "module": "commonjs",
@@ -17,8 +15,6 @@
     "strictPropertyInitialization": false
   },
   "ts-node": {
-    "require": [
-      "tsconfig-paths/register"
-    ]
+    "require": ["tsconfig-paths/register"]
   }
 }
