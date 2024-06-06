@@ -1,11 +1,11 @@
 import { UIGameManager } from '$lib/game';
-import { socket } from '$lib/stores/socket';
+import { EventLifecycle, socket } from '$lib/stores/socket';
 import type { Board } from '@defferrard/algoo-core/src/board';
 import type GameManagerDTO from '@defferrard/algoo-core/src/dto/GameManagerDTO';
 import { GameRoom, type Player } from '@defferrard/algoo-core/src/game';
 import { MessageType } from '@defferrard/algoo-core/src/socket';
 import 'reflect-metadata';
-import type { Readable, Writable } from 'svelte/store';
+import type { Invalidator, Readable, Subscriber, Unsubscriber, Writable } from 'svelte/store';
 import { writable } from 'svelte/store';
 
 export type Message = string | { from: Player; message: string };
@@ -37,38 +37,48 @@ function SocketController() {
     };
   };
 }
-
 @SocketController()
-export class GameRoomView {
+export class GameRoomView implements Readable<GameRoomView> {
   private readonly _timeouts: { [key: string]: NodeJS.Timeout } = {}; // Key = Timeout Type
-  private readonly _messages: Writable<Message[]> = writable([]);
-  private readonly _gameRoom: GameRoom = new GameRoom();
-  private readonly _board: Writable<Board | undefined> = writable(undefined);
+  messages: Message[] = [];
+  readonly gameRoom: GameRoom = new GameRoom();
+  board?: Board;
+  private _store: Writable<GameRoomView>;
+  constructor() {
+    this._store = writable(this);
+  }
+  subscribe(run: Subscriber<GameRoomView>, invalidate?: Invalidator<GameRoomView> | undefined): Unsubscriber {
+    return this._store.subscribe(run, invalidate);
+  }
+
+  private _notify() {
+    this._store.set(this);
+  }
 
   @On(MessageType.GAME_ROOM_MESSAGE)
   pushMessage(message: Message): void {
     console.log(message);
-    this._messages.update((messages: Message[]) => [...messages, message]);
+    this.messages = [...this.messages, message];
   }
 
   @On(MessageType.GAME_ROOM_JOIN)
   join(player: Player): void {
-    this._gameRoom.addPlayer(player);
+    this.gameRoom.addPlayer(player);
     this.pushMessage(player.user.name + ' joined the room');
   }
 
   @On(MessageType.GAME_ROOM_LEAVE)
   leave(player: Player): void {
     console.log(player);
-    this._gameRoom.removePlayer(player.user.uuid);
+    this.gameRoom.removePlayer(player.user.uuid);
     this.pushMessage(player.user.name + ' left the room');
   }
 
   @On(MessageType.GAME_ROOM_READY)
   setPlayerReady({ from, isReady }: { from: Player; isReady: boolean }): void {
     const uuid: string = from.user.uuid;
-    const player: Player = this._gameRoom.getPlayer(uuid)!;
-    this._gameRoom.setPlayerReady(uuid, isReady);
+    const player: Player = this.gameRoom.getPlayer(uuid)!;
+    this.gameRoom.setPlayerReady(uuid, isReady);
     this.pushMessage(player.user.name + ' is ' + (isReady ? 'ready' : 'not ready'));
   }
 
@@ -92,35 +102,25 @@ export class GameRoomView {
   @On(MessageType.PUT_GAME_ROOM)
   setGameRoomState(state: Player[]) {
     for (let player of Object.values(state)) {
-      this._gameRoom.addPlayer(player);
+      this.gameRoom.addPlayer(player);
     }
   }
 
   @On(MessageType.GAME_ROOM_START)
   startGame(dto: GameManagerDTO): void {
     let gameManager = new UIGameManager(dto);
-    this._gameRoom.startGame(gameManager);
+    this.gameRoom.startGame(gameManager);
   }
 
   connect(room: string, jwt: string) {
+    socket.onLifeCycle(EventLifecycle.POST_HANDLER, this._notify.bind(this));
     socket.connect(room, jwt);
   }
 
   disconnect() {
     socket.disconnect();
   }
-
-  get messages(): Readable<Message[]> {
-    return this._messages;
-  }
-
-  get board(): Readable<Board | undefined> {
-    return this._board;
-  }
-
-  get gameRoom(): GameRoom {
-    return this._gameRoom;
-  }
 }
 
-export default new GameRoomView();
+const gameRoomView = new GameRoomView() as unknown as Readable<GameRoomView>;
+gameRoomView.subscribe(() => {});

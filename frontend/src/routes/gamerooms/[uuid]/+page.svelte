@@ -6,18 +6,17 @@
   import { GameRoomState } from '@defferrard/algoo-core/src/game/GameRoom.js';
   import type { User } from '@defferrard/algoo-core/src/socket';
   import { onDestroy, onMount } from 'svelte';
-  import type { Readable } from 'svelte/store';
 
-  import gameRoomView from './GameRoomView';
+  import { GameRoomView } from './GameRoomView';
 
   import LobbyPage from './LobbyPage.svelte';
+  import type { Readable } from 'svelte/store';
 
   export let data;
 
   let roomUuid = data.uuid;
+  let gameRoomView = new GameRoomView() as unknown as GameRoomView & Readable<GameRoomView>;
 
-  let messages: Readable<(string | { from: Player; message: string })[]> =
-    gameRoomView.messages;
   const [jwt, loading, error, login] = authStore();
 
   $: if ($jwt) {
@@ -35,15 +34,15 @@
 </script>
 
 <StandardLayout>
-  {#if gameRoomView.gameRoom.state === GameRoomState.LOBBY}
+  {#if $gameRoomView.gameRoom.state === GameRoomState.LOBBY}
     <LobbyPage
       {roomUuid}
       {...{
-        messages: $messages,
-        players: gameRoomView.gameRoom.players,
+        messages: $gameRoomView.messages,
+        players: $gameRoomView.gameRoom.players,
       }}
     />
-  {:else if gameRoomView.gameRoom.state === GameRoomState.PLAYING}
+  {:else if $gameRoomView.gameRoom.state === GameRoomState.PLAYING}
     <!--    <GameView {...{ gameManager }} />-->
   {/if}
 </StandardLayout>
@@ -51,9 +50,7 @@
   <button
     on:click={() => {
       gameRoomView.gameRoom.state =
-        gameRoomView.gameRoom.state === GameRoomState.PLAYING
-          ? GameRoomState.LOBBY
-          : GameRoomState.PLAYING;
+        gameRoomView.gameRoom.state === GameRoomState.PLAYING ? GameRoomState.LOBBY : GameRoomState.PLAYING;
     }}
     >Swap
   </button>
