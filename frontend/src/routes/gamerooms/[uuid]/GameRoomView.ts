@@ -4,7 +4,6 @@ import type { Board } from '@defferrard/algoo-core/src/board';
 import type { ChatMessageDTO, GameManagerDTO, IsReadyMessageDTO } from '@defferrard/algoo-core/src/dto';
 import { GameRoom, type Player } from '@defferrard/algoo-core/src/game';
 import { MessageType } from '@defferrard/algoo-core/src/socket';
-import 'reflect-metadata';
 import type { Invalidator, Readable, Subscriber, Unsubscriber, Writable } from 'svelte/store';
 import { writable } from 'svelte/store';
 
