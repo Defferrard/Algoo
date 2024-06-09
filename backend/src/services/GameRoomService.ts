@@ -1,3 +1,4 @@
+import { IsReadyMessageDTO, MessageDTO } from '@defferrard/algoo-core/src/dto';
 import { GameRoom, Player } from '@defferrard/algoo-core/src/game';
 import { MessageType, User } from '@defferrard/algoo-core/src/socket';
 import { Socket } from 'socket.io';
@@ -55,6 +56,12 @@ export default class GameRoomService {
     // Set the player's ready status
     let gameRoomReady: boolean = this.gameRoomRepository.setPlayerReady(room, player.user.uuid, isReady);
     // Broadcast that the player is ready to all players in the room
+    const message: IsReadyMessageDTO = {
+      datetime: new Date(),
+      from: socket.data.player,
+      isReady,
+    };
+
     this.socketRepository.broadcast(room, MessageType.GAME_ROOM_READY, {
       datetime: new Date(),
       from: socket.data.player,

@@ -1,11 +1,7 @@
 import type { Coordinate } from '../board/';
 import { Board, Entity, TileType } from '../board/';
-import type GameManagerDTO from '../dto/GameManagerDTO';
-import {
-    TeamAlreadyExistsException,
-    TeamNotEmptyException,
-    TeamNotExistsException,
-} from '../exceptions';
+import type { GameManagerDTO } from '../dto/GameManagerDTO';
+import { TeamAlreadyExistsException, TeamNotEmptyException, TeamNotExistsException } from '../exceptions';
 import { InvalidEntityException } from '../exceptions/gameManager';
 import { ActionResume } from '../strategy';
 import type { Resources, Spell } from './';
@@ -36,7 +32,7 @@ export default class GameManager {
   }
 
   pushTeam(team: Team): void {
-    if (this._teams.find(t => t.uuid === team.uuid)) throw new TeamAlreadyExistsException(team);
+    if (this._teams.find((t) => t.uuid === team.uuid)) throw new TeamAlreadyExistsException(team);
     if (team.entities.length > 0) throw new TeamNotEmptyException(team);
     this._teams.push(team);
   }
@@ -44,7 +40,7 @@ export default class GameManager {
   pushEntity(entity: Entity<Resources>, coordinate: Coordinate): void {
     if (!entity.team) throw new InvalidEntityException(entity);
 
-    const TEAM = this._teams.find(t => t.uuid === entity.team?.uuid)!;
+    const TEAM = this._teams.find((t) => t.uuid === entity.team?.uuid)!;
     if (!TEAM) throw new TeamNotExistsException(TEAM);
 
     this._board.pushEntity(entity, coordinate);
@@ -66,7 +62,7 @@ export default class GameManager {
   }
 
   deleteEntity(entity: Entity<Resources>): void {
-    this._teams.find(t => t.entities.find(e => e.uuid === entity.uuid)!)!.deleteEntity(entity);
+    this._teams.find((t) => t.entities.find((e) => e.uuid === entity.uuid)!)!.deleteEntity(entity);
     this._board.deleteEntity(entity);
   }
 
@@ -85,7 +81,7 @@ export default class GameManager {
     if (this._teams.length <= 0) return undefined;
     const TEAM_INDEX = this._turnIndex % this._teams.length;
     if (this._teams[TEAM_INDEX].entities.length <= 0) return undefined;
-    const HERO_INDEX = Math.floor(this._turnIndex / this._teams.length % this._teams[TEAM_INDEX].entities.length);
+    const HERO_INDEX = Math.floor((this._turnIndex / this._teams.length) % this._teams[TEAM_INDEX].entities.length);
     return this._teams[TEAM_INDEX].entities[HERO_INDEX];
   }
 

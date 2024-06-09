@@ -1,6 +1,5 @@
 import { TileType } from '../board';
 
-export default class GameManagerDTO {
+export class GameManagerDTO {
   tiles: TileType[][];
-
 }

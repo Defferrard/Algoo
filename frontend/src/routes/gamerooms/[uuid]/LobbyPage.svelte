@@ -2,7 +2,7 @@
   import { page } from '$app/stores';
   import { Window } from '$lib/components/layout/';
   import { socket } from '$lib/stores/socket';
-  import { Player } from '@defferrard/algoo-core/src/game';
+  import type { Player } from '@defferrard/algoo-core/src/game';
   import { MessageType } from '@defferrard/algoo-core/src/socket';
   import { fly } from 'svelte/transition';
   import Chatbox from './Chatbox.svelte';

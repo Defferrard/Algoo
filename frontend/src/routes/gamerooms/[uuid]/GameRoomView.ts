@@ -1,19 +1,19 @@
 import { UIGameManager } from '$lib/game';
 import { EventLifecycle, socket } from '$lib/stores/socket';
 import type { Board } from '@defferrard/algoo-core/src/board';
-import type GameManagerDTO from '@defferrard/algoo-core/src/dto/GameManagerDTO';
+import type { ChatMessageDTO, GameManagerDTO, IsReadyMessageDTO } from '@defferrard/algoo-core/src/dto';
 import { GameRoom, type Player } from '@defferrard/algoo-core/src/game';
 import { MessageType } from '@defferrard/algoo-core/src/socket';
 import 'reflect-metadata';
 import type { Invalidator, Readable, Subscriber, Unsubscriber, Writable } from 'svelte/store';
 import { writable } from 'svelte/store';
 
-export type Message = string | { from: Player; message: string };
+export type Message = string | ChatMessageDTO;
 
 type event = { message: MessageType; handler: Function };
 
 function On(eventName: MessageType) {
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  return function (target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
     const event: event = {
       message: eventName,
       handler: descriptor.value,
@@ -75,7 +75,7 @@ export class GameRoomView implements Readable<GameRoomView> {
   }
 
   @On(MessageType.GAME_ROOM_READY)
-  setPlayerReady({ from, isReady }: { from: Player; isReady: boolean }): void {
+  setPlayerReady({ from, isReady }: IsReadyMessageDTO): void {
     const uuid: string = from.user.uuid;
     const player: Player = this.gameRoom.getPlayer(uuid)!;
     this.gameRoom.setPlayerReady(uuid, isReady);

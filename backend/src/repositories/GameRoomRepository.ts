@@ -1,14 +1,7 @@
-import GameManagerDTO from '@defferrard/algoo-core/src/dto/GameManagerDTO';
+import { GameManagerDTO } from '@defferrard/algoo-core/src/dto/GameManagerDTO';
 import { GameRoomNotFoundException } from '@defferrard/algoo-core/src/exceptions/gameRoom';
-import {
-  GameManager,
-  GameRoom,
-  GameRoomState,
-  Player,
-  generateRandomBoard,
-} from '@defferrard/algoo-core/src/game';
+import { GameManager, GameRoom, GameRoomState, Player, generateRandomBoard } from '@defferrard/algoo-core/src/game';
 import { Service } from 'typedi';
-
 
 type TimeoutConst = {
   key: string;
@@ -78,20 +71,12 @@ export class GameRoomRepository {
     }
   }
 
-  setPlayerReady(
-    roomUuid: string,
-    playerUuid: string,
-    isReady: boolean,
-  ): boolean {
+  setPlayerReady(roomUuid: string, playerUuid: string, isReady: boolean): boolean {
     let gameRoom: GameRoom = this.get(roomUuid);
     return gameRoom.setPlayerReady(playerUuid, isReady);
   }
 
-  startGame(
-    roomUuid: string,
-    next: (data: any) => void,
-    delay: number = START_GAME_TIMEOUT.value,
-  ): number {
+  startGame(roomUuid: string, next: (data: any) => void, delay: number = START_GAME_TIMEOUT.value): number {
     let gameRoom: GameRoom = this.get(roomUuid);
 
     this._timeouts[roomUuid][START_GAME_TIMEOUT.key] = setTimeout(() => {
