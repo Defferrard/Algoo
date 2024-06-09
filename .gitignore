@@ -11,3 +11,7 @@
 
 **/.nyc_output
 **/mochawesome-report
+**/junit.xml
+
+**/.env
+**/.*

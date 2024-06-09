@@ -1,0 +1,40 @@
+:root {
+    --color-main: var(--color-blue);
+    --color-main-rgb: var(--color-blue-rgb);
+
+    --color-success: var(--color-green);
+    --color-success-rgb: var(--color-green-rgb);
+
+    --color-danger: var(--color-red);
+    --color-danger-rgb: var(--color-red-rgb);
+
+    --color-blue: #316BDE;
+    --color-blue-rgb: 49, 107, 222;
+
+    --color-red: #b62f2f;
+    --color-red-rgb: 182, 47, 47;
+
+    --color-green: #59A446;
+    --color-green-rgb: 89, 164, 70;
+
+    --color-yellow: #e0c561;
+    --color-yellow-rgb: 224, 197, 97;
+
+    --color-purple: #9632e5;
+    --color-purple-rgb: 150, 50, 229;
+
+    --color-orange: #f3a35b;
+    --color-orange-rgb: 243, 163, 91;
+
+    --color-pink: #ee99e7;
+    --color-pink-rgb: 238, 153, 231;
+
+    --color-cyan: #3e9381;
+    --color-cyan-rgb: 62, 147, 129;
+
+    --color-gray: #4d5362;
+    --color-gray-rgb: 77, 83, 98;
+
+    --color: var(--color-main);
+    --color-rgb: var(--color-main-rgb);
+}

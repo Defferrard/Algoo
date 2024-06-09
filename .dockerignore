@@ -1,0 +1,16 @@
+**/node_modules/
+
+**/logs/
+**/dist/
+**/build/
+
+**/.idea/
+
+**/.npmrc
+**/package-lock.json
+
+**/.nyc_output
+**/mochawesome-report
+**/junit.xml
+**/*.test.*
+**/test/

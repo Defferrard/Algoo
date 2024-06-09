@@ -7,13 +7,18 @@
     "npm": "^9.6.4"
   },
   "scripts": {
+    "build": "npx tsc"
   },
   "dependencies": {
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
     "lodash": "^4.17.21",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.196",
-    "@types/uuid": "^9.0.2"
+    "@types/uuid": "^9.0.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.3.3"
   }
 }

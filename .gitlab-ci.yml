@@ -2,26 +2,41 @@ image: node:latest
 
 stages:
   - test
-  - build
+  - package
 
-frontend-test:
-  stage: test
-  before_script:
-    - cd frontend
-    - npm install
-  script:
-    - npm run test
-  artifacts:
-    paths:
-      - frontend/dist
+include:
+  - local: '/backend/.gitlab-ci.yml'
+  - local: '/frontend/.gitlab-ci.yml'
 
-backend-test:
-  stage: test
+variables:
+  WORKDIR: .
+
+backend-package:
+  stage: package
+  image: docker:25.0.3-dind
+  services:
+    - docker:25.0.3-dind
+  variables:
+    IMAGE_NAME: algoo-backend
+    DOCKERFILE: ./Backend.Dockerfile
   before_script:
-    - cd backend
-    - npm install
+    - cd $WORKDIR
   script:
-    - npm run test
-  artifacts:
-    paths:
-      - backend/mochawesome-report
+    - "docker login $DOCKER_REGISTRY -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_PASSWORD"
+    - "docker build --network host -t $DOCKER_REGISTRY/$IMAGE_NAME:latest . -f $DOCKERFILE"
+    - "docker push $DOCKER_REGISTRY/$IMAGE_NAME:latest"
+
+frontend-package:
+  stage: package
+  image: docker:25.0.3-dind
+  services:
+    - docker:25.0.3-dind
+  variables:
+    IMAGE_NAME: algoo-frontend
+    DOCKERFILE: ./Frontend.Dockerfile
+  before_script:
+    - cd $WORKDIR
+  script:
+    - "docker login $DOCKER_REGISTRY -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_PASSWORD"
+    - "docker build --network host -t $DOCKER_REGISTRY/$IMAGE_NAME:latest . -f $DOCKERFILE"
+    - "docker push $DOCKER_REGISTRY/$IMAGE_NAME:latest"

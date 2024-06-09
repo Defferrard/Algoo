@@ -18,3 +18,6 @@ export type GlobalColor = SystemColor | GameColor;
 export function getCSS(color: SystemColor | GameColor): string {
     return `var(--color-${color})`
 }
+export function getCSSRGB(color: SystemColor | GameColor): string {
+    return `var(--color-${color}-rgb)`
+}

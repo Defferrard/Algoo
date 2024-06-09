@@ -1,39 +1,68 @@
 <script lang="ts">
-    import { page } from '$app/stores';
-    export let data;
+  import { StandardLayout } from '$lib/components/layout/index';
+  import { authStore } from '$lib/stores/auth';
+  import { localUser } from '$lib/stores/localUser';
+  import { Player } from '@defferrard/algoo-core/src/game';
+  import { GameRoomState } from '@defferrard/algoo-core/src/game/GameRoom.js';
+  import type { User } from '@defferrard/algoo-core/src/socket';
+  import { onDestroy, onMount } from 'svelte';
 
+  import { GameRoomView } from './GameRoomView';
 
+  import LobbyPage from './LobbyPage.svelte';
+  import type { Readable } from 'svelte/store';
+
+  export let data;
+
+  let roomUuid = data.uuid;
+  let gameRoomView = new GameRoomView() as unknown as GameRoomView & Readable<GameRoomView>;
+
+  const [jwt, loading, error, login] = authStore();
+
+  $: if ($jwt) {
+    gameRoomView.connect(roomUuid, $jwt);
+  }
+
+  onMount(async () => {
+    let player: Player = new Player($localUser as User);
+    await login(player.user.name);
+  });
+
+  onDestroy(() => {
+    gameRoomView.disconnect();
+  });
 </script>
-<section>
-    {data.uuid}
-    <qr-container>
-        <qr style:mask-image={`url(https://api.qrserver.com/v1/create-qr-code/?data=${$page.url}&format=svg)`}/>
-    </qr-container>
-</section>
+
+<StandardLayout>
+  {#if $gameRoomView.gameRoom.state === GameRoomState.LOBBY}
+    <LobbyPage
+      {roomUuid}
+      {...{
+        messages: $gameRoomView.messages,
+        players: $gameRoomView.gameRoom.players,
+      }}
+    />
+  {:else if $gameRoomView.gameRoom.state === GameRoomState.PLAYING}
+    <!--    <GameView {...{ gameManager }} />-->
+  {/if}
+</StandardLayout>
+<float>
+  <button
+    on:click={() => {
+      gameRoomView.gameRoom.state =
+        gameRoomView.gameRoom.state === GameRoomState.PLAYING ? GameRoomState.LOBBY : GameRoomState.PLAYING;
+    }}
+    >Swap
+  </button>
+</float>
 
 <style>
-    section {
-        padding: 5vw;
-        text-align: center;
-    }
-
-    qr {
-        mask-mode: luminance;
-        mask-size: contain;
-
-        --gradient: color-mix(in srgb, var(--color-main), var(--color-light) var(--color-gap));
-        background: linear-gradient(0deg, var(--color-main) 0%, var(--gradient) 100%);
-
-        --size: 15em;
-        height: var(--size);
-        width: var(--size);
-        display: block;
-    }
-
-    qr-container {
-        display: flex;
-        justify-content: center;
-        filter: drop-shadow(0 0 0.2em black);
-
-    }
+  float {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    padding: 10px;
+    cursor: pointer;
+    user-select: none;
+  }
 </style>

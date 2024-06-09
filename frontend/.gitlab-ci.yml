@@ -1,0 +1,12 @@
+frontend-test:
+  stage: test
+  variables:
+    WORKDIR: frontend
+  before_script:
+    - cd $WORKDIR
+    - npm install
+  script:
+    - npm run test
+  artifacts:
+    reports:
+        junit: $WORKDIR/dist/junit-report.xml

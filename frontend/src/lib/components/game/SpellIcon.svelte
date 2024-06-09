@@ -17,14 +17,12 @@
         --size: 5em;
         display: block;
         padding: 0;
-        border-radius: 10%;
         overflow: hidden;
 
         width: var(--size);
         height: var(--size);
-        --gradient: color-mix(in srgb, var(--color), var(--color-light) var(--color-gap));
+        --gradient: color-mix(in srgb, var(--color), var(--color-body-5) var(--color-gap));
         background: linear-gradient(135deg, var(--gradient) 0%, var(--color) 100%);
-
     }
 
     img {

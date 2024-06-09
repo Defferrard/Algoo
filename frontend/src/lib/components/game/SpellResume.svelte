@@ -40,7 +40,7 @@
     resume {
         --color: black;
         --color-indicator-shadow: color-mix(in srgb, var(--color), black 70%);
-        filter: drop-shadow(0 0 1em var(--color-indicator-shadow));
+        filter: drop-shadow(0 0 1px black);
 
         font-size: 2.5vh;
         color: white;
@@ -58,9 +58,9 @@
         justify-content: center;
         align-items: center;
         transform: rotate(15deg);
-        background-color: white;
-        padding: 0.5em;
-        border-radius: 1em;
+        border: outset 0.5em white;
+        border-radius: 2em;
+        overflow: hidden;
         z-index: 1;
     }
 
@@ -103,6 +103,5 @@
     value {
         white-space: nowrap;
         padding-left: 1em;
-        text-shadow: 0 0 0.5em black;
     }
 </style>

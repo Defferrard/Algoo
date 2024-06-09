@@ -2,11 +2,19 @@
   "extends": ["../tsconfig.json"],
   "compilerOptions": {
     "target": "ES2022",
+    "module": "commonjs",
     "declaration": true,
     "declarationMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "strict": true,
     "rootDir": ".",
     "composite": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "outDir": "./build/",
+    "strictPropertyInitialization": false
+  },
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
   }
 }

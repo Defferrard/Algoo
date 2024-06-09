@@ -29,15 +29,14 @@
             <SpellIcon {spell}/>
         </button>
     {/each}
-    <button class="end_turn"
+    <button class="end_turn material-symbols-rounded"
             on:click={()=> dispatch('endturn')}>
-        <div>▲</div>
+        play_arrow
     </button>
 </bar>
 
 <style>
     bar {
-        filter: drop-shadow(0 0 1em black);
         display: flex;
         justify-content: center;
         align-items: center;
@@ -53,58 +52,61 @@
     button.spell {
         --translate: 0.3em;
         background: none;
-        border: none;
+        outline: outset white .3em;
+        outline-offset: -.3em;
+
+        border-radius: 1em;
+        overflow: hidden;
         margin: 0.2em;
         padding: 0;
         font-size: 2vh;
         transform: rotate(15deg);
         z-index: 0;
+
+        min-height: 5em;
+        min-width: 5em;
+
+        box-shadow: 0 0 1px 1px black;
     }
 
     button.end_turn {
         --translate: 0.2em;
         color: var(--color);
         background-color: transparent;
-        border: solid 0.2em var(--color);
-        padding: 0.5em;
+        border: outset .4em var(--color);
+        padding: .5em;
         margin: 0 1em;
-        border-radius: 0.5em;
+        border-radius: 1em;
         font-size: 3vh;
         font-weight: bold;
 
-        height: 3em;
-        width: 3em;
+        min-height: 3em;
+        min-width: 3em;
 
-        transform: rotate(105deg);
+        transform: rotate(15deg);
+
+        box-shadow: 0 0 1px 1px black;
     }
 
     button.end_turn:hover:enabled {
-        color: var(--color-lighter);
+        color: white;
         background-color: var(--color);
         border: solid 0.2em var(--color);
     }
 
     button.end_turn:hover:enabled, button.spell:hover:enabled {
-        filter: drop-shadow(var(--translate) var(--translate) 1em black);
-        transform: translate(calc(0em - var(--translate)), calc(0em - var(--translate))) scale(1.4) rotate(15deg);
+        transform: translate(calc(0em - var(--translate)), calc(0em - var(--translate))) scale(1.4) rotate(0deg);
         z-index: 1;
         padding: 0;
-    }
-    button.end_turn > div {
-        transition: 10ms;
-    }
-    button.end_turn:hover:enabled > div {
-        font-size: 1.5em;
     }
 
     button.end_turn:active:enabled, button.spell:active:enabled {
         transform: scale(0.8) rotate(15deg);
-        box-shadow: unset;
         filter: brightness(75%);
     }
 
     button:disabled {
-        filter: brightness(25%);
+        filter: brightness(25%) drop-shadow(0 0 1px black);
     }
 
 </style>

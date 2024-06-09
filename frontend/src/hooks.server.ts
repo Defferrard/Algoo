@@ -1,8 +1,6 @@
 import type {RequestEvent} from "@sveltejs/kit";
 import {LOGGER} from "$lib/utils/Logger.server";
 
-const SOCKET_API = "http://localhost:8080/";
-
 export async function handle({event, resolve}: { event: RequestEvent; resolve: any }): Promise<Response> {
     LOGGER.info(`${event.request.method} ${event.url.pathname}`);
     return resolve(event);

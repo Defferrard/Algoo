@@ -1,6 +1,7 @@
 <script async lang="ts">
     import {onMount} from "svelte";
     import type {Readable} from "svelte/store";
+    import {fly} from "svelte/transition";
 
     import {Coordinate, TileType, Board, Entity} from "@defferrard/algoo-core/src/board/";
     import {getAccessibles, getVisibles, findPath} from "@defferrard/algoo-core/src/pathfinding";
@@ -175,23 +176,12 @@
         GAME_MANAGER.pushEntity(HERO_2, new Coordinate({x: 1, y: 0}));
         // GAME_MANAGER.pushEntity(HERO_3, new Coordinate({x: 13, y: 12}));
     });
-
-
-    const colors: Color[] = Object.values(Color) as any as Color[];
-    let colorIndex: number = Math.floor(Math.random() * colors.length);
-
-    // Funny code to change the color of the board every 100ms
-    //  setInterval(() => {
-    //      colorIndex = (colorIndex + 1) % colors.length;
-    //  }, 100);
-
 </script>
 
 <KeyBoardListener on:space={nextTurn}
                   on:digit={(event)=>previewSpell(GAME_MANAGER.currentHero.spells[event.detail.digit-1])}
 />
 
-<svelte:window on:click={()=>currentSpell = undefined}/>
 
 <!--TODO : Better title management-->
 <svelte:head>
@@ -200,7 +190,12 @@
     </title>
 </svelte:head>
 
-<section style:--color={getCSS(colors[colorIndex])}>
+<svelte:document
+        style:backdrop-filter="blur(10px)"
+/>
+
+
+<section in:fly={{delay: 200}} out:fly={{duration: 200}}>
     <board>
         <BoardComponent
                 {...{
@@ -249,6 +244,8 @@
     section {
         height: 100vh;
         display: block;
+        background: linear-gradient(180deg, transparent 0%, var(--color-theme) 100%);
+        backdrop-filter: blur(.5em);
     }
 
     board {
