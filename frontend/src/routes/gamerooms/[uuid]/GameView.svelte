@@ -1,46 +1,20 @@
-<script async lang='ts'>
-    import { getCompleteHero } from '$lib/beans/heroes';
+<script async lang="ts">
+  import { getCompleteHero } from '$lib/beans/heroes';
 
-    import {
-        ActionBar,
-        BoardComponent,
-        HeroResume,
-        SpellResume,
-        TimerProgressBar,
-    } from '$lib/components/';
-    import {
-        display,
-        movementCost,
-    } from '$lib/components/indicators/movement_cost_indicator';
-    import KeyBoardListener from '$lib/components/KeyBoardListener.svelte';
-    import { UIGameManager } from '$lib/game';
-    import { delay } from '$lib/utils/Functions';
+  import { ActionBar, BoardComponent, HeroResume, SpellResume, TimerProgressBar } from '$lib/components/';
+  import { display, movementCost } from '$lib/components/indicators/movement_cost_indicator';
+  import KeyBoardListener from '$lib/components/KeyBoardListener.svelte';
+  import type { UIGameManager } from '$lib/game';
+  import { delay } from '$lib/utils/Functions';
 
-    import {
-        Board,
-        Coordinate,
-        Entity,
-        TileType,
-    } from '@defferrard/algoo-core/src/board/';
-    import type { Resources } from '@defferrard/algoo-core/src/game/';
-    import {
-        Color,
-        HeroEntity,
-        ResourceType,
-        Spell,
-        Team,
-    } from '@defferrard/algoo-core/src/game/';
-    import {
-        findPath,
-        getAccessibles,
-        getVisibles,
-    } from '@defferrard/algoo-core/src/pathfinding';
-    import { onMount } from 'svelte';
-    import type { Readable } from 'svelte/store';
-    import { fly } from 'svelte/transition';
+  import { Board, Coordinate, Entity, TileType } from '@defferrard/algoo-core/src/board/';
+  import type { Resources } from '@defferrard/algoo-core/src/game/';
+  import { Color, HeroEntity, ResourceType, Spell, Team } from '@defferrard/algoo-core/src/game/';
+  import { findPath, getAccessibles, getVisibles } from '@defferrard/algoo-core/src/pathfinding';
+  import { onMount } from 'svelte';
+  import { fly } from 'svelte/transition';
 
-    export let gameManager: UIGameManager;
-  const GAME_MANAGER_STORE: Readable<UIGameManager> = gameManager.store;
+  export let gameManager: UIGameManager;
   const BOARD: Board = gameManager.board;
 
   let targetEntity: Entity<Resources> | undefined;
@@ -53,13 +27,12 @@
   let targetable: Coordinate[] = []; // Tiles where the current spell can be cast
   let attacked: Coordinate[] = [];
 
-
   let active: Coordinate | undefined; // The tile the mouse is hovering
   let lastHover: Coordinate | undefined; // The last tile the mouse was hovering
 
-  $: if ($GAME_MANAGER_STORE.currentHero) {
+  $: if (gameManager.currentHero) {
     visibles = getVisibles(
-      gameManager.currentHero!.team?.entities.map((hero: HeroEntity) => BOARD.getEntityCoordinate(hero)),
+      gameManager.currentHero.team!.entities.map((hero: HeroEntity) => BOARD.getEntityCoordinate(hero)),
       BOARD,
     );
 
@@ -69,11 +42,7 @@
       attacked = [];
     } else if (currentSpell) {
       accessible = [];
-      targetable = currentSpell.targetableTiles(
-        BOARD.getEntityCoordinate(gameManager.currentHero!),
-        BOARD,
-        visibles,
-      );
+      targetable = currentSpell.targetableTiles(BOARD.getEntityCoordinate(gameManager.currentHero!), BOARD, visibles);
     } else {
       targetable = [];
       attacked = [];
@@ -86,9 +55,9 @@
     }
 
     if (
-      active
-      && !active.equals(BOARD.getEntityCoordinate(gameManager.currentHero!))
-      && accessible.some((c: Coordinate) => c.equals(active as Coordinate))
+      active &&
+      !active.equals(BOARD.getEntityCoordinate(gameManager.currentHero!)) &&
+      accessible.some((c: Coordinate) => c.equals(active as Coordinate))
     ) {
       if (!path[path.length - 1]?.isNeighbor(BOARD.getEntityCoordinate(gameManager.currentHero!))) {
         path = findPath(BOARD.getEntityCoordinate(gameManager.currentHero!), active, BOARD, accessible);
@@ -97,9 +66,11 @@
         while (!path[0].equals(active)) {
           path.shift();
         }
-      } else if (path.length > 0
-        && active.neighbors.some((n => n.equals(path[0])))
-        && BOARD.getPathCost(path) + BOARD.getTile(active).movementCost! <= gameManager.currentHero!.resources[ResourceType.STAMINA]
+      } else if (
+        path.length > 0 &&
+        active.neighbors.some((n) => n.equals(path[0])) &&
+        BOARD.getPathCost(path) + BOARD.getTile(active).movementCost! <=
+          gameManager.currentHero.resources[ResourceType.STAMINA]
       ) {
         // If the active tile is simply a neighbor of the first tile of the path, add it to the path
         path = [active, ...path];
@@ -132,12 +103,18 @@
   function hover(x: number, y: number) {
     lastHover = new Coordinate({ x, y });
     clearHover();
-    if (BOARD.getTile({ x, y }).type !== TileType.Wall && (
-      accessible.some((c: Coordinate) => c.equals(new Coordinate({ x, y })))
-      || targetable.some((c: Coordinate) => c.equals(new Coordinate({
-        x,
-        y,
-      }))))) {
+    if (
+      BOARD.getTile({ x, y }).type !== TileType.Wall &&
+      (accessible.some((c: Coordinate) => c.equals(new Coordinate({ x, y }))) ||
+        targetable.some((c: Coordinate) =>
+          c.equals(
+            new Coordinate({
+              x,
+              y,
+            }),
+          ),
+        ))
+    ) {
       active = new Coordinate({ x, y });
     }
   }
@@ -165,9 +142,12 @@
   }
 
   function previewSpell(spell: Spell) {
-    if (currentSpell === spell // if already previewing the spell, cancel it
-      || !(gameManager.currentHero! as HeroEntity).spells!.includes(spell) // If the hero doesn't have the spell, cancel it
-      || !gameManager.currentHero!.has(spell.cost)) { // if the hero doesn't have enough resources, cancel it
+    if (
+      currentSpell === spell || // if already previewing the spell, cancel it
+      !(gameManager.currentHero! as HeroEntity).spells!.includes(spell) || // If the hero doesn't have the spell, cancel it
+      !gameManager.currentHero!.has(spell.cost)
+    ) {
+      // if the hero doesn't have enough resources, cancel it
       currentSpell = undefined;
     } else {
       active = lastHover;
@@ -196,45 +176,50 @@
   });
 </script>
 
-<KeyBoardListener on:space={nextTurn}
-                  on:digit={(event)=>previewSpell(gameManager.currentHero.spells[event.detail.digit-1])}
+<KeyBoardListener
+  on:space={nextTurn}
+  on:digit={(event) => previewSpell(gameManager.currentHero.spells[event.detail.digit - 1])}
 />
-
 
 <!--TODO : Better title management-->
 <svelte:head>
   <title>
-    {$GAME_MANAGER_STORE.currentHero?.name}'s turn !
+    {gameManager.currentHero?.name}'s turn !
   </title>
 </svelte:head>
 
-<svelte:document
-  style:backdrop-filter='blur(10px)'
-/>
+<svelte:document style:backdrop-filter="blur(10px)" />
 
-
-<section in:fly={{delay: 200}} out:fly={{duration: 200}}>
+<section in:fly={{ delay: 200 }} out:fly={{ duration: 200 }}>
   <board>
     <BoardComponent
       {...{
-        board: $GAME_MANAGER_STORE.board,
+        board: gameManager.board,
         path,
         active,
         accessible,
         visibles,
         markers,
         targetable,
-        attacked
+        attacked,
       }}
-      on:click={(event)=>onAction(event.detail.x,event.detail.y)}
-      on:rightclick={(event)=>{mark(event.detail.x,event.detail.y)}}
-      on:hovertile={(event)=>hover(event.detail.x,event.detail.y)}
-      on:exit={()=>{clearHover();lastHover = undefined;}}
-      on:mouseenterentity={(event)=>{targetEntity = event.detail;}}
-      on:mouseleaveentity={()=>{targetEntity = undefined;}}
+      on:click={(event) => onAction(event.detail.x, event.detail.y)}
+      on:rightclick={(event) => {
+        mark(event.detail.x, event.detail.y);
+      }}
+      on:hovertile={(event) => hover(event.detail.x, event.detail.y)}
+      on:exit={() => {
+        clearHover();
+        lastHover = undefined;
+      }}
+      on:mouseenterentity={(event) => {
+        targetEntity = event.detail;
+      }}
+      on:mouseleaveentity={() => {
+        targetEntity = undefined;
+      }}
     />
   </board>
-
 
   <heroResume>
     <HeroResume hero={targetEntity} stickRight />
@@ -244,14 +229,15 @@
   </spellResume>
 
   <bottom>
-    {#if $GAME_MANAGER_STORE.currentHero}
+    {#if gameManager.currentHero}
       <ActionBar
-        hero={$GAME_MANAGER_STORE.currentHero}
+        hero={gameManager.currentHero}
         spellPreview={currentSpell}
-        on:spellaction={(event)=>{
-                    previewSpell(event.detail.spell)
-                }}
-        on:endturn={()=>nextTurn()} />
+        on:spellaction={(event) => {
+          previewSpell(event.detail.spell);
+        }}
+        on:endturn={() => nextTurn()}
+      />
       <!--            <TimerProgressBar percentage={gameManager.gameTimer.percentage}/>-->
       <TimerProgressBar percentage={50} />
     {/if}
@@ -259,37 +245,38 @@
 </section>
 
 <style>
-    section {
-        height: 100vh;
-        display: block;
-        background: linear-gradient(180deg, transparent 0%, var(--color-theme) 100%);
-        backdrop-filter: blur(.5em);
-    }
+  section {
+    height: 100vh;
+    display: block;
+    background: linear-gradient(180deg, transparent 0%, var(--color-theme) 100%);
+    backdrop-filter: blur(0.5em);
+  }
 
-    board {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 80vh;
-        width: 100vw;
-    }
+  board {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    width: 100vw;
+  }
 
-    heroResume, spellResume {
-        position: absolute;
-        right: 2vw;
-    }
+  heroResume,
+  spellResume {
+    position: absolute;
+    right: 2vw;
+  }
 
-    heroResume {
-        top: 10vh;
-    }
+  heroResume {
+    top: 10vh;
+  }
 
-    spellResume {
-        top: 30vh;
-    }
+  spellResume {
+    top: 30vh;
+  }
 
-    bottom {
-        position: absolute;
-        bottom: 3vh;
-        width: 100vw;
-    }
+  bottom {
+    position: absolute;
+    bottom: 3vh;
+    width: 100vw;
+  }
 </style>

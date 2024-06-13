@@ -1,57 +1,22 @@
 import { UIGameManager } from '$lib/game';
 import { EventLifecycle, socket } from '$lib/stores/socket';
-import type { Board } from '@defferrard/algoo-core/src/board';
+import { ObservableSocketController } from '$lib/utils/socket/ObservableSocketController';
+import { On } from '$lib/utils/socket/decorators';
 import type { ChatMessageDTO, GameManagerDTO, IsReadyMessageDTO } from '@defferrard/algoo-core/src/dto';
 import { GameRoom, type Player } from '@defferrard/algoo-core/src/game';
 import { MessageType } from '@defferrard/algoo-core/src/socket';
-import type { Invalidator, Readable, Subscriber, Unsubscriber, Writable } from 'svelte/store';
-import { writable } from 'svelte/store';
 
 export type Message = string | ChatMessageDTO;
 
-type event = { message: MessageType; handler: Function };
-
-function On(eventName: MessageType) {
-  return function (target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
-    const event: event = {
-      message: eventName,
-      handler: descriptor.value,
-    };
-    if (!target.events) target.events = [];
-    target.events.push(event);
-    return descriptor;
-  };
-}
-
-function SocketController() {
-  return function <T extends { new (...args: any[]): {} }>(clazz: T) {
-    return class extends clazz {
-      constructor(...args: any[]) {
-        super(...args);
-        const events: event[] = (this as any).events || [];
-        for (const event of events) {
-          socket.on(event.message, event.handler.bind(this));
-        }
-      }
-    };
-  };
-}
-@SocketController()
-export class GameRoomView implements Readable<GameRoomView> {
+export class GameRoomView extends ObservableSocketController<GameRoomView> {
   private readonly _timeouts: { [key: string]: NodeJS.Timeout } = {}; // Key = Timeout Type
-  messages: Message[] = [];
-  readonly gameRoom: GameRoom = new GameRoom();
-  board?: Board;
-  private _store: Writable<GameRoomView>;
-  constructor() {
-    this._store = writable(this);
-  }
-  subscribe(run: Subscriber<GameRoomView>, invalidate?: Invalidator<GameRoomView> | undefined): Unsubscriber {
-    return this._store.subscribe(run, invalidate);
-  }
+  public messages: Message[] = [];
+  readonly gameRoom: GameRoom;
+  public gameManager?: UIGameManager;
 
-  private _notify() {
-    this._store.set(this);
+  constructor() {
+    super();
+    this.gameRoom = new GameRoom();
   }
 
   @On(MessageType.GAME_ROOM_MESSAGE)
@@ -95,6 +60,7 @@ export class GameRoomView implements Readable<GameRoomView> {
       } else {
         clearInterval(this._timeouts[MessageType.GAME_ROOM_STARTING]);
       }
+      super.notify();
     }, 1000);
   }
 
@@ -107,12 +73,16 @@ export class GameRoomView implements Readable<GameRoomView> {
 
   @On(MessageType.GAME_ROOM_START)
   startGame(dto: GameManagerDTO): void {
-    let gameManager = new UIGameManager(dto);
-    this.gameRoom.startGame(gameManager);
+    this.gameManager = new UIGameManager(dto);
+    this.gameRoom.startGame();
+  }
+
+  protected getObservable(): GameRoomView {
+    return this;
   }
 
   connect(room: string, jwt: string) {
-    socket.onLifeCycle(EventLifecycle.POST_HANDLER, this._notify.bind(this));
+    super.register();
     socket.connect(room, jwt);
   }
 
@@ -121,5 +91,5 @@ export class GameRoomView implements Readable<GameRoomView> {
   }
 }
 
-const gameRoomView = new GameRoomView() as unknown as Readable<GameRoomView>;
+const gameRoomView = new GameRoomView();
 gameRoomView.subscribe(() => {});

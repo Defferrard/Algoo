@@ -1,46 +1,30 @@
-import { v4 as uuidV4 } from 'uuid';
-import {
-  FullGameRoomException,
-  PlayerAlreadyInGameRoomException,
-} from '../exceptions/gameRoom';
+import { FullGameRoomException, PlayerAlreadyInGameRoomException } from '../exceptions/gameRoom';
 import { GameManager, Player } from './index';
+import { v4 as uuidV4 } from 'uuid';
 
 export enum GameRoomState {
   LOBBY,
   PLAYING,
-  DONE
+  DONE,
 }
 
 const DEFAULT_ROOM_SIZE = 2;
 export default class GameRoom {
   readonly uuid: string;
   maxPlayers: number;
-  #gameManager: GameManager;
-  #state: GameRoomState;
-  readonly players: { [key: string]: Player };  // Key = Player UUID = Team UUID
+  state: GameRoomState;
+  readonly players: { [key: string]: Player }; // Key = Player UUID = Team UUID
   owner?: Player;
 
   constructor(maxPlayers: number = DEFAULT_ROOM_SIZE, uuid: string = uuidV4()) {
     this.uuid = uuid;
-    this.#state = GameRoomState.LOBBY;
+    this.state = GameRoomState.LOBBY;
     this.players = {};
     this.maxPlayers = maxPlayers;
   }
 
   get playersCount(): number {
     return Object.keys(this.players).length;
-  }
-
-  set state(state: GameRoomState) {
-    this.#state = state;
-  }
-
-  get state(): GameRoomState {
-    return this.#state;
-  }
-
-  get gameManager(): GameManager {
-    return this.#gameManager;
   }
 
   addPlayer(player: Player): void {
@@ -74,11 +58,10 @@ export default class GameRoom {
    */
   setPlayerReady(uuid: string, isReady: boolean): boolean {
     this.players[uuid].isReady = isReady;
-    return Object.values(this.players).every(player => player.isReady);
+    return Object.values(this.players).every((player) => player.isReady);
   }
 
-  startGame(gameManager: GameManager): void {
-    this.#gameManager = gameManager;
+  startGame(): void {
     this.state = GameRoomState.PLAYING;
   }
 }

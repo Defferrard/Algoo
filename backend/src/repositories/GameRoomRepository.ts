@@ -83,8 +83,7 @@ export class GameRoomRepository {
       const dto: GameManagerDTO = {
         tiles: generateRandomBoard(10, 10, 0.3),
       };
-      const gameManager = new GameManager(dto);
-      gameRoom.startGame(gameManager);
+      gameRoom.startGame();
       next(dto);
     }, delay);
     return delay;

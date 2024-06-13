@@ -10,12 +10,13 @@
   import { GameRoomView } from './GameRoomView';
 
   import LobbyPage from './LobbyPage.svelte';
-  import type { Readable } from 'svelte/store';
+  import GameView from './GameView.svelte';
+  import type { UIGameManager } from '$lib/game';
 
   export let data;
 
   let roomUuid = data.uuid;
-  let gameRoomView = new GameRoomView() as unknown as GameRoomView & Readable<GameRoomView>;
+  let gameRoomView = new GameRoomView();
 
   const [jwt, loading, error, login] = authStore();
 
@@ -42,27 +43,7 @@
         players: $gameRoomView.gameRoom.players,
       }}
     />
-  {:else if $gameRoomView.gameRoom.state === GameRoomState.PLAYING}
-    <!--    <GameView {...{ gameManager }} />-->
+  {:else if $gameRoomView.gameRoom.state === GameRoomState.PLAYING && $gameRoomView.gameManager}
+    <GameView {...{ gameManager: $gameRoomView.gameManager }} />
   {/if}
 </StandardLayout>
-<float>
-  <button
-    on:click={() => {
-      gameRoomView.gameRoom.state =
-        gameRoomView.gameRoom.state === GameRoomState.PLAYING ? GameRoomState.LOBBY : GameRoomState.PLAYING;
-    }}
-    >Swap
-  </button>
-</float>
-
-<style>
-  float {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    padding: 10px;
-    cursor: pointer;
-    user-select: none;
-  }
-</style>
