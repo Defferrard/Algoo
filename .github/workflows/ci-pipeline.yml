@@ -3,6 +3,59 @@ name: CI Pipeline
 on: [push, pull_request]
 
 jobs:
+  backend-test:
+    runs-on: ubuntu-latest
+    env:
+      WORKDIR: backend
+      JWT_SECRET: ${{ github.sha }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+      - name: Install dependencies
+        run: |
+          cd $WORKDIR
+          npm install
+      - name: Run tests
+        run: |
+          cd $WORKDIR
+          npm run test:ci
+      - name: Archive test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: junit-report-backend
+          path: ${{ env.WORKDIR }}/junit.xml
+
+  frontend-test:
+    runs-on: ubuntu-latest
+    env:
+      WORKDIR: frontend
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+      - name: Install dependencies
+        run: |
+          cd $WORKDIR
+          npm install
+      - name: Run tests
+        run: |
+          cd $WORKDIR
+          npm run test
+      - name: Archive test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: junit-report-frontend
+          path: ${{ env.WORKDIR }}/dist/junit-report.xml
+
   backend-package:
     runs-on: ubuntu-latest
     services:
@@ -12,7 +65,7 @@ jobs:
     env:
       IMAGE_NAME: ${{ secrets.DOCKER_REGISTRY_USER }}/algoo-backend
       DOCKERFILE: ./Backend.Dockerfile
-      DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+      DOCKER_REGISTRY: docker.io
       DOCKER_REGISTRY_USER: ${{ secrets.DOCKER_REGISTRY_USER }}
       DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
     steps:
@@ -25,14 +78,17 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_REGISTRY_USER }}
           password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      - name: Debug Docker Login
+      - name: Build backend image
         run: |
-          echo $DOCKER_REGISTRY
-          echo $DOCKER_REGISTRY_USER
-      - name: Build and push backend image
+          docker build --network host -t $DOCKER_REGISTRY/$IMAGE_NAME:latest . -f $DOCKERFILE
+      - name: List Docker images
+        run: docker images
+      - name: Login to Docker Registry
         run: |
-          docker build --network host -t ${{ secrets.DOCKER_REGISTRY }}/$IMAGE_NAME:latest . -f $DOCKERFILE
-          docker push ${{ secrets.DOCKER_REGISTRY }}/$IMAGE_NAME:latest
+          echo $DOCKER_REGISTRY_PASSWORD | docker login $DOCKER_REGISTRY -u $DOCKER_REGISTRY_USER --password-stdin
+      - name: Push backend image
+        run: |
+          docker push $DOCKER_REGISTRY/$IMAGE_NAME:latest
 
   frontend-package:
     runs-on: ubuntu-latest
@@ -43,7 +99,7 @@ jobs:
     env:
       IMAGE_NAME: ${{ secrets.DOCKER_REGISTRY_USER }}/algoo-frontend
       DOCKERFILE: ./Frontend.Dockerfile
-      DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+      DOCKER_REGISTRY: docker.io
       DOCKER_REGISTRY_USER: ${{ secrets.DOCKER_REGISTRY_USER }}
       DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
     steps:
@@ -56,11 +112,14 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_REGISTRY_USER }}
           password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      - name: Debug Docker Login
+      - name: Build frontend image
         run: |
-          echo $DOCKER_REGISTRY
-          echo $DOCKER_REGISTRY_USER
-      - name: Build and push frontend image
+          docker build --network host -t $DOCKER_REGISTRY/$IMAGE_NAME:latest . -f $DOCKERFILE
+      - name: List Docker images
+        run: docker images
+      - name: Login to Docker Registry
         run: |
-          docker build --network host -t ${{ secrets.DOCKER_REGISTRY }}/$IMAGE_NAME:latest . -f $DOCKERFILE
-          docker push ${{ secrets.DOCKER_REGISTRY }}/$IMAGE_NAME:latest
+          echo $DOCKER_REGISTRY_PASSWORD | docker login $DOCKER_REGISTRY -u $DOCKER_REGISTRY_USER --password-stdin
+      - name: Push frontend image
+        run: |
+          docker push $DOCKER_REGISTRY/$IMAGE_NAME:latest
