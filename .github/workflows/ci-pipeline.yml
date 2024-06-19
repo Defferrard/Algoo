@@ -16,13 +16,9 @@ jobs:
         with:
           node-version: '20'
       - name: Install dependencies
-        run: |
-          cd $WORKDIR
-          npm install
+        run: cd $WORKDIR && npm install
       - name: Run tests
-        run: |
-          cd $WORKDIR
-          npm run test:ci
+        run: cd $WORKDIR && npm run test:ci
       - name: Archive test results
         if: always()
         uses: actions/upload-artifact@v3
@@ -42,13 +38,9 @@ jobs:
         with:
           node-version: '20'
       - name: Install dependencies
-        run: |
-          cd $WORKDIR
-          npm install
+        run: cd $WORKDIR && npm install
       - name: Run tests
-        run: |
-          cd $WORKDIR
-          npm run test
+        run: cd $WORKDIR && npm run test
       - name: Archive test results
         if: always()
         uses: actions/upload-artifact@v3
@@ -79,14 +71,11 @@ jobs:
           username: ${{ secrets.DOCKER_REGISTRY_USER }}
           password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
       - name: Build backend image
-        run: |
-          docker build --network host -t $DOCKER_REGISTRY/$IMAGE_NAME:latest . -f $DOCKERFILE
+        run: docker build --network host -t $DOCKER_REGISTRY/$IMAGE_NAME:latest . -f $DOCKERFILE
       - name: Login to Docker Registry
-        run: |
-          echo $DOCKER_REGISTRY_PASSWORD | docker login $DOCKER_REGISTRY -u $DOCKER_REGISTRY_USER --password-stdin
+        run: echo $DOCKER_REGISTRY_PASSWORD | docker login $DOCKER_REGISTRY -u $DOCKER_REGISTRY_USER --password-stdin
       - name: Push backend image
-        run: |
-          docker push $DOCKER_REGISTRY/$IMAGE_NAME:latest
+        run: docker push $DOCKER_REGISTRY/$IMAGE_NAME:latest
 
   frontend-package:
     runs-on: ubuntu-latest
@@ -111,11 +100,8 @@ jobs:
           username: ${{ secrets.DOCKER_REGISTRY_USER }}
           password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
       - name: Build frontend image
-        run: |
-          docker build --network host -t $DOCKER_REGISTRY/$IMAGE_NAME:latest . -f $DOCKERFILE
+        run: docker build --network host -t $DOCKER_REGISTRY/$IMAGE_NAME:latest . -f $DOCKERFILE
       - name: Login to Docker Registry
-        run: |
-          echo $DOCKER_REGISTRY_PASSWORD | docker login $DOCKER_REGISTRY -u $DOCKER_REGISTRY_USER --password-stdin
+        run: echo $DOCKER_REGISTRY_PASSWORD | docker login $DOCKER_REGISTRY -u $DOCKER_REGISTRY_USER --password-stdin
       - name: Push frontend image
-        run: |
-          docker push $DOCKER_REGISTRY/$IMAGE_NAME:latest
+        run: docker push $DOCKER_REGISTRY/$IMAGE_NAME:latest
