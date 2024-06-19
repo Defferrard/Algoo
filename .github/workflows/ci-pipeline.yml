@@ -10,7 +10,7 @@ jobs:
         image: docker:25.0.3-dind
         options: --privileged
     env:
-      IMAGE_NAME: algoo-backend
+      IMAGE_NAME: ${{ secrets.DOCKER_REGISTRY_USER }}/algoo-backend
       DOCKERFILE: ./Backend.Dockerfile
       DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
       DOCKER_REGISTRY_USER: ${{ secrets.DOCKER_REGISTRY_USER }}
@@ -41,7 +41,7 @@ jobs:
         image: docker:25.0.3-dind
         options: --privileged
     env:
-      IMAGE_NAME: algoo-frontend
+      IMAGE_NAME: ${{ secrets.DOCKER_REGISTRY_USER }}/algoo-frontend
       DOCKERFILE: ./Frontend.Dockerfile
       DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
       DOCKER_REGISTRY_USER: ${{ secrets.DOCKER_REGISTRY_USER }}
