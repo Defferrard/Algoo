@@ -32,7 +32,7 @@ jobs:
       - name: Build and push backend image
         run: |
           docker build --network host -t ${{ secrets.DOCKER_REGISTRY }}/$IMAGE_NAME:latest . -f $DOCKERFILE
-
+          docker push ${{ secrets.DOCKER_REGISTRY }}/$IMAGE_NAME:latest
 
   frontend-package:
     runs-on: ubuntu-latest
