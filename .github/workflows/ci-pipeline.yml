@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: CI Pipeline GitHub
 
 on: [push, pull_request]
 
