@@ -81,8 +81,6 @@ jobs:
       - name: Build backend image
         run: |
           docker build --network host -t $DOCKER_REGISTRY/$IMAGE_NAME:latest . -f $DOCKERFILE
-      - name: List Docker images
-        run: docker images
       - name: Login to Docker Registry
         run: |
           echo $DOCKER_REGISTRY_PASSWORD | docker login $DOCKER_REGISTRY -u $DOCKER_REGISTRY_USER --password-stdin
@@ -115,8 +113,6 @@ jobs:
       - name: Build frontend image
         run: |
           docker build --network host -t $DOCKER_REGISTRY/$IMAGE_NAME:latest . -f $DOCKERFILE
-      - name: List Docker images
-        run: docker images
       - name: Login to Docker Registry
         run: |
           echo $DOCKER_REGISTRY_PASSWORD | docker login $DOCKER_REGISTRY -u $DOCKER_REGISTRY_USER --password-stdin
