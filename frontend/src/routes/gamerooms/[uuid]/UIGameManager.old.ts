@@ -3,6 +3,7 @@ import { showSpell } from '$lib/components/indicators/temporary_spell_indicator'
 import { showValue } from '$lib/components/indicators/temporary_value_indicator';
 import { ActionBuffer } from '$lib/game/index';
 import { delay } from '$lib/utils/Functions';
+import { SocketController } from '$lib/utils/socket/decorators';
 import type { Coordinate, Entity } from '@defferrard/algoo-core/src/board';
 import type { Tile } from '@defferrard/algoo-core/src/board/';
 import type { GameManagerDTO } from '@defferrard/algoo-core/src/dto/GameManagerDTO';
@@ -12,6 +13,7 @@ import type { ActionResume } from '@defferrard/algoo-core/src/strategy';
 import type { Invalidator, Readable, Subscriber, Unsubscriber, Writable } from 'svelte/store';
 import { writable } from 'svelte/store';
 
+@SocketController()
 export default class GameManagerView extends GameManager implements Readable<GameManagerView> {
   private readonly _store: Writable<GameManagerView>;
   private readonly _buffer: ActionBuffer;

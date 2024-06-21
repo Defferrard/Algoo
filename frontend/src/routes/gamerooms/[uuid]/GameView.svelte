@@ -4,7 +4,6 @@
   import { ActionBar, BoardComponent, HeroResume, SpellResume, TimerProgressBar } from '$lib/components/';
   import { display, movementCost } from '$lib/components/indicators/movement_cost_indicator';
   import KeyBoardListener from '$lib/components/KeyBoardListener.svelte';
-  import type { UIGameManager } from '$lib/game';
   import { delay } from '$lib/utils/Functions';
 
   import { Board, Coordinate, Entity, TileType } from '@defferrard/algoo-core/src/board/';
@@ -13,9 +12,6 @@
   import { findPath, getAccessibles, getVisibles } from '@defferrard/algoo-core/src/pathfinding';
   import { onMount } from 'svelte';
   import { fly } from 'svelte/transition';
-
-  export let gameManager: UIGameManager;
-  const BOARD: Board = gameManager.board;
 
   let targetEntity: Entity<Resources> | undefined;
   let currentSpell: Spell | undefined;

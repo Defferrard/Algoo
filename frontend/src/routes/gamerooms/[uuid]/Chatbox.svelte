@@ -3,7 +3,7 @@
   import { afterUpdate, onMount } from 'svelte';
   import { fly } from 'svelte/transition';
   import { Window } from '$lib/components/layout/';
-  import type { Message } from './GameRoomView';
+  import type { Message } from './GameRoomModel';
 
   const dispatch = createEventDispatcher();
 
@@ -19,7 +19,6 @@
   }
 
   onMount(() => {
-    // messageInput.focus({preventScroll: true});
     messageInput.onfocus = (e) => {
       e.preventDefault();
       window.scrollTo(0, 0);

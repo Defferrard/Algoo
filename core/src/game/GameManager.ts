@@ -32,8 +32,12 @@ export default class GameManager {
   }
 
   pushTeam(team: Team): void {
-    if (this._teams.find((t) => t.uuid === team.uuid)) throw new TeamAlreadyExistsException(team);
-    if (team.entities.length > 0) throw new TeamNotEmptyException(team);
+    if (this._teams.find((t) => t.uuid === team.uuid)) {
+      throw new TeamAlreadyExistsException(team);
+    }
+    if (team.entities.length > 0) {
+      throw new TeamNotEmptyException(team);
+    }
     this._teams.push(team);
   }
 

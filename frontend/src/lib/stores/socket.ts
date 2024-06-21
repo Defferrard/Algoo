@@ -11,7 +11,7 @@ export enum EventLifecycle {
 export const socket = (() => {
   let socketIO: Socket | undefined;
   const { subscribe, set, update } = writable<Socket | undefined>(socketIO);
-  let pendingRoutes: { type: MessageType; listener: (...args: any[]) => void }[] = [];
+  let routes: { type: MessageType; listener: (...args: any[]) => void }[] = [];
   const lifeCycle: { [key in EventLifecycle]: LifecycleFunction[] } = {
     [EventLifecycle.PRE_HANDLER]: [],
     [EventLifecycle.POST_HANDLER]: [],
@@ -30,13 +30,11 @@ export const socket = (() => {
       set(socketIO);
     });
 
-    for (const route of pendingRoutes) {
+    for (const route of routes) {
       socketIO.on(route.type, route.listener);
     }
-    pendingRoutes = [];
 
     socketIO.connect();
-
     set(socketIO);
   }
 
@@ -51,11 +49,7 @@ export const socket = (() => {
       }
     };
 
-    if (socketIO) {
-      socketIO.on(type, encapsulatedListener);
-    } else {
-      pendingRoutes = [...pendingRoutes, { type, listener: encapsulatedListener }];
-    }
+    routes = [...routes, { type, listener: encapsulatedListener }];
   }
 
   function onLifeCycle(eventLifeCycle: EventLifecycle, handler: LifecycleFunction): () => void {
@@ -67,7 +61,11 @@ export const socket = (() => {
 
   return {
     connect,
-    disconnect: () => socketIO?.disconnect(),
+    disconnect: () => {
+      routes = [];
+      socketIO?.disconnect();
+      set(socketIO);
+    },
     subscribe,
     get: () => socketIO,
     emit: (type: MessageType, data?: any, ack?: (data: any) => void) => socketIO!.emit(type, data, ack),

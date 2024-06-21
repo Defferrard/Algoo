@@ -1,6 +1,5 @@
 import { EventLifecycle, socket } from '$lib/stores/socket';
-import type { MessageType } from '@defferrard/algoo-core/src/socket';
-import { th } from '@faker-js/faker';
+import { de } from '@faker-js/faker';
 import {
   type Invalidator,
   type Readable,
@@ -10,13 +9,11 @@ import {
   writable,
 } from 'svelte/store';
 
-export abstract class ObservableSocketController<T> implements Readable<T> {
+export abstract class Observable<T> implements Readable<T> {
   private store: Writable<T>;
-  private events: { message: MessageType; handler: Function }[];
 
   constructor() {
     this.store = writable(this.getObservable());
-    this.events = [];
   }
 
   subscribe(run: Subscriber<T>, invalidate?: Invalidator<T> | undefined): Unsubscriber {
@@ -24,10 +21,6 @@ export abstract class ObservableSocketController<T> implements Readable<T> {
   }
 
   register() {
-    for (const event of this.events) {
-      socket.on(event.message, event.handler.bind(this));
-    }
-
     socket.onLifeCycle(EventLifecycle.POST_HANDLER, this.notify.bind(this));
   }
 

@@ -7,21 +7,19 @@
   import type { User } from '@defferrard/algoo-core/src/socket';
   import { onDestroy, onMount } from 'svelte';
 
-  import { GameRoomView } from './GameRoomView';
-
-  import LobbyPage from './LobbyPage.svelte';
-  import GameView from './GameView.svelte';
-  import type { UIGameManager } from '$lib/game';
+  import LobbyPage from './LobbyView.svelte';
+  import { socket } from '$lib/stores/socket';
+  import { create as createGameRoomSet } from './GameRoomBuilder';
 
   export let data;
 
   let roomUuid = data.uuid;
-  let gameRoomView = new GameRoomView();
-
+  const { gameRoomModel, gameRoomViewController } = createGameRoomSet();
   const [jwt, loading, error, login] = authStore();
 
   $: if ($jwt) {
-    gameRoomView.connect(roomUuid, $jwt);
+    gameRoomModel.register();
+    socket.connect(roomUuid, $jwt);
   }
 
   onMount(async () => {
@@ -30,20 +28,14 @@
   });
 
   onDestroy(() => {
-    gameRoomView.disconnect();
+    socket.disconnect();
   });
 </script>
 
 <StandardLayout>
-  {#if $gameRoomView.gameRoom.state === GameRoomState.LOBBY}
-    <LobbyPage
-      {roomUuid}
-      {...{
-        messages: $gameRoomView.messages,
-        players: $gameRoomView.gameRoom.players,
-      }}
-    />
-  {:else if $gameRoomView.gameRoom.state === GameRoomState.PLAYING && $gameRoomView.gameManager}
-    <GameView {...{ gameManager: $gameRoomView.gameManager }} />
+  {#if $gameRoomModel.gameRoom.state === GameRoomState.LOBBY}
+    <LobbyPage model={gameRoomModel} controller={gameRoomViewController} />
+    <!-- {:else if $gameRoomModel.gameRoom.state === GameRoomState.PLAYING && $gameRoomModel.gameManager}
+    <GameView {...{ gameManager: $gameRoomModel.gameManager }} /> -->
   {/if}
 </StandardLayout>

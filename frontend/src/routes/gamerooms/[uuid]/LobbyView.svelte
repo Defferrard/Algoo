@@ -1,34 +1,22 @@
 <script lang="ts">
   import { page } from '$app/stores';
   import { Window } from '$lib/components/layout/';
-  import { socket } from '$lib/stores/socket';
-  import type { Player } from '@defferrard/algoo-core/src/game';
-  import { MessageType } from '@defferrard/algoo-core/src/socket';
   import { fly } from 'svelte/transition';
   import Chatbox from './Chatbox.svelte';
   import QRCode from './QRCode.svelte';
+  import type { GameRoomModel } from './GameRoomModel';
+  import type { GameRoomViewController } from './GameRoomViewController';
 
-  export let roomUuid: string;
-  export let messages: (string | { from: Player; message: string })[] = [];
-
-  export let players: { [key: string]: Player } = {};
-
-  let isReady: boolean = false;
-
-  function setReady() {
-    isReady = !isReady;
-    socket.emit(MessageType.GAME_ROOM_READY, isReady);
-  }
+  export let model: GameRoomModel;
+  export let controller: GameRoomViewController;
 </script>
 
 <section in:fly={{ delay: 200 }} out:fly={{ duration: 200 }}>
   <chatbox>
     <Chatbox
-      room={roomUuid}
-      {messages}
-      on:send={(e) => {
-        socket.emit(MessageType.GAME_ROOM_MESSAGE, e.detail.message);
-      }}
+      room={model.gameRoom.uuid}
+      messages={$model.messages}
+      on:send={(e) => controller.pushMessage(e.detail.message)}
     />
   </chatbox>
 
@@ -40,8 +28,8 @@
           <QRCode value={$page.url.toString()} />
         </qrcode>
         <players>
-          <b>Players ({Object.keys(players).length}/2) </b>
-          {#each Object.values(players) as player}
+          <b>Players ({Object.keys($model.gameRoom.players).length}/2) </b>
+          {#each Object.values($model.gameRoom.players) as player}
             <player>
               <icon class="material-symbols-rounded" class:ready={player.isReady}>
                 {#if player.isReady}
@@ -53,9 +41,9 @@
               <name>{player.user.name}</name>
             </player>
           {/each}
-          {#if Object.keys(players).length === 2}
+          {#if Object.keys($model.gameRoom.players).length === 2}
             <br />
-            <button on:click={setReady}>I'm ready !</button>
+            <button on:click={controller.flipReady}>I'm ready !</button>
           {/if}
         </players>
       </subsection>

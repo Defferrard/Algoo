@@ -10,6 +10,7 @@
     "sourceMap": true,
     "strict": true,
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "lib": ["WebWorker", "DOM", "DOM.Iterable", "ES2022"],
     "target": "ES2022",
     "paths": {
