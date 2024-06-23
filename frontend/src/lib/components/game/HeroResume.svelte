@@ -9,6 +9,7 @@
   import HeroComponent from './HeroComponent.svelte';
   import { getCSS, SystemColor } from '../Color';
   import mousePosition from '$lib/utils/store/mousePosition';
+  import { objectEntries } from '@defferrard/algoo-core/src/utils/typeCasting';
 
   export let hero: HeroEntity | undefined = undefined;
 
@@ -40,22 +41,20 @@
           {hero.title}
         </title>
 
-        {#each Object.keys(hero.characteristics.max) as resource}
+        {#each objectEntries(hero.characteristics.max) as [key, value]}
           <statsbar
-            style:--color={getCSS(RESSOURCES_COLOR[resource])}
-            style:--max-percent={hero.characteristics.max[resource] * 5 + '%'}
-            style:--percent={(hero.resources[resource] * 100) / hero.characteristics.max[resource] + '%'}
-            style:--preview-percent={((hero.resources[resource] - (spellPreview?.cost[resource] || 0)) * 100) /
-              hero.characteristics.max[resource] +
-              '%'}
+            style:--color={getCSS(RESSOURCES_COLOR[key] || SystemColor.BODY)}
+            style:--max-percent={value * 5 + '%'}
+            style:--percent={(hero.resources[key] * 100) / value + '%'}
+            style:--preview-percent={((hero.resources[key] - (spellPreview?.cost[key] || 0)) * 100) / value + '%'}
           >
             <value>
-              {hero.resources[resource]}
-              {#if spellPreview && spellPreview.cost[resource]}
-                - {spellPreview.cost[resource]}
+              {hero.resources[key]}
+              {#if spellPreview && spellPreview.cost[key]}
+                - {spellPreview.cost[key]}
               {/if}
-              / {hero.characteristics.max[resource]}
-              {resource}
+              / {value}
+              {key}
             </value>
 
             {#if spellPreview}
@@ -184,7 +183,6 @@
     white-space: nowrap;
     position: relative;
     margin-right: calc(100% + 1em);
-    float: right;
     display: inline-block;
     z-index: 1;
   }

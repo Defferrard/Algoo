@@ -3,8 +3,8 @@ import { GameRoomSocketController } from './GameRoomSocketController';
 import { GameRoomViewController } from './GameRoomViewController';
 
 export function create() {
-  const gameRoomModel = new GameRoomModel();
-  const gameRoomSocketController = new GameRoomSocketController(gameRoomModel);
-  const gameRoomViewController = new GameRoomViewController(gameRoomModel);
-  return { gameRoomModel, gameRoomSocketController, gameRoomViewController };
+  const model = new GameRoomModel();
+  const socketController = new GameRoomSocketController(model);
+  const viewController = new GameRoomViewController(model);
+  return { model, socketController, viewController };
 }

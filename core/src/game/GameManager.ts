@@ -4,8 +4,10 @@ import type { GameManagerDTO } from '../dto/GameManagerDTO';
 import { TeamAlreadyExistsException, TeamNotEmptyException, TeamNotExistsException } from '../exceptions';
 import { InvalidEntityException } from '../exceptions/gameManager';
 import { ActionResume } from '../strategy';
-import type { Resources, Spell } from './';
+import { notUndefined } from '../utils/assertions';
+import type { Resources, Spell, StandardResources } from './';
 import { HeroEntity, ResourceType, Team } from './';
+import { isHeroEntity } from './hero/HeroEntity';
 
 export function generateRandomBoard(width: number, height: number, wallProbability: number): TileType[][] {
   let map: TileType[][] = [];
@@ -77,16 +79,21 @@ export default class GameManager {
 
   nextTurn(): void {
     // TODO : Better Event Handler
-    (this.currentHero as HeroEntity).onEndTurn();
+    notUndefined(this.currentHero).onEndTurn();
     this._turnIndex++;
   }
 
-  get currentHero(): Entity<Resources> | undefined {
+  get currentEntity(): Entity<Resources> | undefined {
     if (this._teams.length <= 0) return undefined;
     const TEAM_INDEX = this._turnIndex % this._teams.length;
     if (this._teams[TEAM_INDEX].entities.length <= 0) return undefined;
     const HERO_INDEX = Math.floor((this._turnIndex / this._teams.length) % this._teams[TEAM_INDEX].entities.length);
     return this._teams[TEAM_INDEX].entities[HERO_INDEX];
+  }
+
+  get currentHero(): HeroEntity | undefined {
+    const currentEntity = this.currentEntity;
+    if (isHeroEntity(currentEntity)) return currentEntity;
   }
 
   get board(): Board {

@@ -1,5 +1,5 @@
 import { Observable } from '$lib/utils/socket/ObservableSocketController';
-import type { ChatMessageDTO } from '@defferrard/algoo-core/src/dto';
+import type { ChatMessageDTO, GameManagerDTO } from '@defferrard/algoo-core/src/dto';
 import { GameRoom, Player } from '@defferrard/algoo-core/src/game';
 
 export type Message = string | ChatMessageDTO;
@@ -13,6 +13,7 @@ export class GameRoomModel extends Observable<GameRoomModel> {
   private readonly _timeouts: { [key in TimeoutType]?: NodeJS.Timeout } = {};
   private _isReady: boolean = false;
   private _messages: Message[] = [];
+  private _gameManagerCurrentDTO?: GameManagerDTO;
   constructor() {
     super();
     this._gameRoom = new GameRoom();
@@ -67,8 +68,9 @@ export class GameRoomModel extends Observable<GameRoomModel> {
     this.notify();
   }
 
-  startGame(): void {
+  startGame(dto: GameManagerDTO): void {
     this._gameRoom.startGame();
+    this._gameManagerCurrentDTO = dto;
     this.notify();
   }
 
@@ -92,5 +94,9 @@ export class GameRoomModel extends Observable<GameRoomModel> {
 
   get messages(): Message[] {
     return this._messages;
+  }
+
+  get gameManagerCurrentDTO(): GameManagerDTO | undefined {
+    return this._gameManagerCurrentDTO;
   }
 }

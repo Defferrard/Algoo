@@ -48,7 +48,7 @@ export class GameRoomSocketController {
   }
 
   @On(MessageType.GAME_ROOM_START)
-  startGame(): void {
-    this._model.startGame();
+  startGame(dto: GameManagerDTO): void {
+    this._model.startGame(dto);
   }
 }

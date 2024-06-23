@@ -6,14 +6,22 @@
   import KeyBoardListener from '$lib/components/KeyBoardListener.svelte';
   import { delay } from '$lib/utils/Functions';
 
-  import { Board, Coordinate, Entity, TileType } from '@defferrard/algoo-core/src/board/';
+  import { Coordinate, Entity, TileType } from '@defferrard/algoo-core/src/board/';
   import type { Resources } from '@defferrard/algoo-core/src/game/';
   import { Color, HeroEntity, ResourceType, Spell, Team } from '@defferrard/algoo-core/src/game/';
+  import { notUndefined } from '@defferrard/algoo-core/src/utils/assertions';
   import { findPath, getAccessibles, getVisibles } from '@defferrard/algoo-core/src/pathfinding';
   import { onMount } from 'svelte';
   import { fly } from 'svelte/transition';
+  import type { GameManagerDTO } from '@defferrard/algoo-core/src/dto';
+  import { create } from './GameManagerBuilder';
+  import { isHeroEntity } from '@defferrard/algoo-core/src/game/hero/HeroEntity';
+
+  export let gameManagerDTO: GameManagerDTO;
+  const { model, viewController: controller } = create(gameManagerDTO);
 
   let targetEntity: Entity<Resources> | undefined;
+  let targetHero: HeroEntity | undefined;
   let currentSpell: Spell | undefined;
 
   let path: Coordinate[] = []; // The path the current hero will take
@@ -26,37 +34,43 @@
   let active: Coordinate | undefined; // The tile the mouse is hovering
   let lastHover: Coordinate | undefined; // The last tile the mouse was hovering
 
-  $: if (gameManager.currentHero) {
+  $: if (model.gameManager && model.gameManager.currentHero) {
+    const gameManager = model.gameManager;
+    const currentHero = notUndefined(gameManager.currentHero);
     visibles = getVisibles(
-      gameManager.currentHero.team!.entities.map((hero: HeroEntity) => BOARD.getEntityCoordinate(hero)),
-      BOARD,
+      currentHero.team!.entities.map((entity: Entity<Resources>) => gameManager.board.getEntityCoordinate(entity)),
+      model.gameManager.board,
     );
 
-    if (gameManager.busy) {
+    if (controller.isBusy) {
       accessible = [];
       targetable = [];
       attacked = [];
     } else if (currentSpell) {
       accessible = [];
-      targetable = currentSpell.targetableTiles(BOARD.getEntityCoordinate(gameManager.currentHero!), BOARD, visibles);
+      targetable = currentSpell.targetableTiles(
+        gameManager.board.getEntityCoordinate(gameManager.currentHero!),
+        gameManager.board,
+        visibles,
+      );
     } else {
       targetable = [];
       attacked = [];
       accessible = getAccessibles(
-        BOARD.getEntityCoordinate(gameManager.currentHero!),
+        gameManager.board.getEntityCoordinate(gameManager.currentHero!),
         gameManager.currentHero!.resources[ResourceType.STAMINA]!,
-        BOARD,
+        gameManager.board,
         visibles,
       );
     }
 
     if (
       active &&
-      !active.equals(BOARD.getEntityCoordinate(gameManager.currentHero!)) &&
+      !active.equals(gameManager.board.getEntityCoordinate(currentHero)) &&
       accessible.some((c: Coordinate) => c.equals(active as Coordinate))
     ) {
-      if (!path[path.length - 1]?.isNeighbor(BOARD.getEntityCoordinate(gameManager.currentHero!))) {
-        path = findPath(BOARD.getEntityCoordinate(gameManager.currentHero!), active, BOARD, accessible);
+      if (!path[path.length - 1]?.isNeighbor(gameManager.board.getEntityCoordinate(currentHero))) {
+        path = findPath(gameManager.board.getEntityCoordinate(currentHero), active, gameManager.board, accessible);
       } else if (path.some((c: Coordinate) => c.equals(active as Coordinate))) {
         // If the path makes a loop, cut it to the active tile
         while (!path[0].equals(active)) {
@@ -65,21 +79,31 @@
       } else if (
         path.length > 0 &&
         active.neighbors.some((n) => n.equals(path[0])) &&
-        BOARD.getPathCost(path) + BOARD.getTile(active).movementCost! <=
-          gameManager.currentHero.resources[ResourceType.STAMINA]
+        gameManager.board.getPathCost(path) + gameManager.board.getTile(active).movementCost! <=
+          currentHero.resources[ResourceType.STAMINA]
       ) {
         // If the active tile is simply a neighbor of the first tile of the path, add it to the path
         path = [active, ...path];
       } else {
         // Otherwise, find the new shortest path
-        path = findPath(BOARD.getEntityCoordinate(gameManager.currentHero!), active, BOARD, accessible);
+        path = findPath(
+          model.gameManager.board.getEntityCoordinate(gameManager.currentHero!),
+          active,
+          model.gameManager.board,
+          accessible,
+        );
       }
-      movementCost.set(BOARD.getPathCost(path));
+      movementCost.set(model.gameManager.board.getPathCost(path));
 
       display.set(path.length > 0);
     } else if (active && targetable.some((c: Coordinate) => c.equals(active as Coordinate))) {
       path = [];
-      attacked = currentSpell?.attackedTiles(BOARD.getEntityCoordinate(gameManager.currentHero!), active, BOARD) || [];
+      attacked =
+        currentSpell?.attackedTiles(
+          model.gameManager.board.getEntityCoordinate(gameManager.currentHero!),
+          active,
+          model.gameManager.board,
+        ) || [];
       movementCost.set(0);
       display.set(false);
     } else {
@@ -93,14 +117,14 @@
 
   function nextTurn() {
     currentSpell = undefined;
-    gameManager.nextTurn();
+    model.nextTurn();
   }
 
   function hover(x: number, y: number) {
     lastHover = new Coordinate({ x, y });
     clearHover();
     if (
-      BOARD.getTile({ x, y }).type !== TileType.Wall &&
+      model.gameManager.board.getTile({ x, y }).type !== TileType.Wall &&
       (accessible.some((c: Coordinate) => c.equals(new Coordinate({ x, y }))) ||
         targetable.some((c: Coordinate) =>
           c.equals(
@@ -123,10 +147,10 @@
     if (!active) {
       return;
     } else if (currentSpell) {
-      gameManager.castSpell(currentSpell, new Coordinate({ x, y }));
+      model.gameManager.castSpell(currentSpell, new Coordinate({ x, y }));
       currentSpell = undefined;
-    } else {
-      gameManager.moveEntity(gameManager.currentHero!, path);
+    } else if (model.gameManager.currentHero) {
+      model.gameManager.moveEntity(model.gameManager.currentHero, path);
     }
   }
 
@@ -137,11 +161,18 @@
     markers = markers.filter((c: Coordinate) => !c.equals(coordinate));
   }
 
-  function previewSpell(spell: Spell) {
+  function previewSpell(index: number) {
+    const currentHero = notUndefined(model.gameManager.currentHero);
+    if (!isHeroEntity(currentHero)) {
+      return;
+    }
+
+    const spell = currentHero.spells[index];
     if (
+      !spell || // if no spell is provided, cancel it
       currentSpell === spell || // if already previewing the spell, cancel it
-      !(gameManager.currentHero! as HeroEntity).spells!.includes(spell) || // If the hero doesn't have the spell, cancel it
-      !gameManager.currentHero!.has(spell.cost)
+      !currentHero.spells.includes(spell) || // If the hero doesn't have the spell, cancel it
+      !currentHero.has(spell.cost)
     ) {
       // if the hero doesn't have enough resources, cancel it
       currentSpell = undefined;
@@ -155,8 +186,8 @@
     const TEAM_1 = new Team(Color.RED, 'Team 1');
     const TEAM_2 = new Team(Color.BLUE, 'Team 2');
 
-    gameManager.pushTeam(TEAM_1);
-    gameManager.pushTeam(TEAM_2);
+    model.pushTeam(TEAM_1);
+    model.pushTeam(TEAM_2);
 
     const HERO_1 = new HeroEntity(await getCompleteHero('armony'));
     const HERO_2 = new HeroEntity(await getCompleteHero('outrage'));
@@ -166,21 +197,18 @@
     HERO_2.team = TEAM_2;
     HERO_3.team = TEAM_2;
 
-    gameManager.pushEntity(HERO_1, new Coordinate({ x: 0, y: 0 }));
-    gameManager.pushEntity(HERO_2, new Coordinate({ x: 1, y: 0 }));
+    model.pushEntity(HERO_1, new Coordinate({ x: 0, y: 0 }));
+    model.pushEntity(HERO_2, new Coordinate({ x: 1, y: 0 }));
     // GAME_MANAGER.pushEntity(HERO_3, new Coordinate({x: 13, y: 12}));
   });
 </script>
 
-<KeyBoardListener
-  on:space={nextTurn}
-  on:digit={(event) => previewSpell(gameManager.currentHero.spells[event.detail.digit - 1])}
-/>
+<KeyBoardListener on:space={nextTurn} on:digit={(event) => previewSpell(event.detail.digit - 1)} />
 
 <!--TODO : Better title management-->
 <svelte:head>
   <title>
-    {gameManager.currentHero?.name}'s turn !
+    {model.gameManager.currentHero?.name}'s turn !
   </title>
 </svelte:head>
 
@@ -190,7 +218,7 @@
   <board>
     <BoardComponent
       {...{
-        board: gameManager.board,
+        board: $model.gameManager.board,
         path,
         active,
         accessible,
@@ -210,24 +238,28 @@
       }}
       on:mouseenterentity={(event) => {
         targetEntity = event.detail;
+        if (isHeroEntity(targetEntity)) {
+          targetHero = targetEntity;
+        }
       }}
       on:mouseleaveentity={() => {
         targetEntity = undefined;
+        targetHero = undefined;
       }}
     />
   </board>
 
   <heroResume>
-    <HeroResume hero={targetEntity} stickRight />
+    <HeroResume hero={targetHero} stickRight />
   </heroResume>
   <spellResume>
     <SpellResume spell={currentSpell} />
   </spellResume>
 
   <bottom>
-    {#if gameManager.currentHero}
+    {#if $model.gameManager.currentHero}
       <ActionBar
-        hero={gameManager.currentHero}
+        hero={$model.gameManager.currentHero}
         spellPreview={currentSpell}
         on:spellaction={(event) => {
           previewSpell(event.detail.spell);
