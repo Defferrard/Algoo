@@ -11,7 +11,7 @@ export enum EventLifecycle {
 export const socket = (() => {
   let socketIO: Socket | undefined;
   const { subscribe, set, update } = writable<Socket | undefined>(socketIO);
-  let routes: { type: MessageType; listener: (...args: any[]) => void }[] = [];
+  let routes: { [key in MessageType]?: ((...args: any[]) => void)[] } = {};
   const lifeCycle: { [key in EventLifecycle]: LifecycleFunction[] } = {
     [EventLifecycle.PRE_HANDLER]: [],
     [EventLifecycle.POST_HANDLER]: [],
@@ -25,31 +25,27 @@ export const socket = (() => {
       },
     });
 
-    socketIO.onAny((event, ...args) => {
+    socketIO.onAny((event: MessageType, ...args) => {
       console.log(event, args);
+      for (const preHandler of lifeCycle[EventLifecycle.PRE_HANDLER]) {
+        preHandler(event, ...args);
+      }
+      routes[event]?.forEach((listener) => listener(...args));
+      for (const postHandler of lifeCycle[EventLifecycle.POST_HANDLER]) {
+        postHandler(event, ...args);
+      }
       set(socketIO);
     });
-
-    for (const route of routes) {
-      socketIO.on(route.type, route.listener);
-    }
 
     socketIO.connect();
     set(socketIO);
   }
 
   function on(type: MessageType, listener: (...args: any[]) => void) {
-    const encapsulatedListener = (...args: any[]) => {
-      for (const preHandler of lifeCycle[EventLifecycle.PRE_HANDLER]) {
-        preHandler(type, ...args);
-      }
-      listener(...args);
-      for (const postHandler of lifeCycle[EventLifecycle.POST_HANDLER]) {
-        postHandler(type, ...args);
-      }
-    };
-
-    routes = [...routes, { type, listener: encapsulatedListener }];
+    if (!routes[type]) {
+      routes[type] = [];
+    }
+    routes[type]?.push(listener);
   }
 
   function onLifeCycle(eventLifeCycle: EventLifecycle, handler: LifecycleFunction): () => void {
@@ -62,7 +58,7 @@ export const socket = (() => {
   return {
     connect,
     disconnect: () => {
-      routes = [];
+      routes = {};
       socketIO?.disconnect();
       set(socketIO);
     },

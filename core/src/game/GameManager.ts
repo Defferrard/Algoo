@@ -1,4 +1,4 @@
-import type { Coordinate } from '../board/';
+import type { Coordinate, SimpleCoordinate } from '../board/';
 import { Board, Entity, TileType } from '../board/';
 import type { GameManagerDTO } from '../dto/GameManagerDTO';
 import { TeamAlreadyExistsException, TeamNotEmptyException, TeamNotExistsException } from '../exceptions';
@@ -53,16 +53,16 @@ export default class GameManager {
     TEAM.pushEntity(entity);
   }
 
-  moveEntity(entity: Entity<Resources>, path: Coordinate[]): void {
+  moveEntity(entity: Entity<Resources>, path: SimpleCoordinate[]): void {
     if (!Object.hasOwn(entity.resources, ResourceType.STAMINA)) throw new InvalidEntityException(entity);
 
     while (path.length > 0) {
-      let coordinate: Coordinate = path.pop()!;
+      let coordinate = path.pop()!;
       this.moveEntityTo(entity, coordinate);
     }
   }
 
-  protected moveEntityTo(entity: Entity<Resources>, coordinate: Coordinate): void {
+  protected moveEntityTo(entity: Entity<Resources>, coordinate: SimpleCoordinate): void {
     this._board.moveEntity(entity, coordinate);
     entity.resources[ResourceType.STAMINA]! += this._board.getTile(coordinate).movementCost;
   }
@@ -72,7 +72,7 @@ export default class GameManager {
     this._board.deleteEntity(entity);
   }
 
-  castSpell(spell: Spell, coordinate: Coordinate): ActionResume[] {
+  castSpell(spell: Spell, coordinate: SimpleCoordinate): ActionResume[] {
     const CASTER: Entity<Resources> = this.currentHero!;
     return spell.cast(CASTER, this.board.getEntityCoordinate(CASTER), coordinate, this.board);
   }

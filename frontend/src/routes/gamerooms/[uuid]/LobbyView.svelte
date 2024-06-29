@@ -5,10 +5,10 @@
   import Chatbox from './Chatbox.svelte';
   import QRCode from './QRCode.svelte';
   import type { GameRoomModel } from './GameRoomModel';
-  import type { GameRoomViewController } from './GameRoomViewController';
+  import type { GameRoomViewModel } from './GameRoomViewModel';
 
   export let model: GameRoomModel;
-  export let controller: GameRoomViewController;
+  export let viewModel: GameRoomViewModel;
 </script>
 
 <section in:fly={{ delay: 200 }} out:fly={{ duration: 200 }}>
@@ -16,7 +16,7 @@
     <Chatbox
       room={model.gameRoom.uuid}
       messages={$model.messages}
-      on:send={(e) => controller.pushMessage(e.detail.message)}
+      on:send={(e) => viewModel.pushMessage(e.detail.message)}
     />
   </chatbox>
 
@@ -43,7 +43,7 @@
           {/each}
           {#if Object.keys($model.gameRoom.players).length === 2}
             <br />
-            <button on:click={controller.flipReady}>I'm ready !</button>
+            <button on:click={() => viewModel.flipReady()}>I'm ready !</button>
           {/if}
         </players>
       </subsection>

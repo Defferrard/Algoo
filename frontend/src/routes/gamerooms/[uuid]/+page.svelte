@@ -15,7 +15,7 @@
   export let data;
 
   let roomUuid = data.uuid;
-  const { model: gameRoomModel, viewController: gameRoomViewController } = createGameRoomSet();
+  const { model: gameRoomModel, viewModel: gameRoomViewModel } = createGameRoomSet();
   const [jwt, loading, error, login] = authStore();
 
   $: if ($jwt) {
@@ -35,7 +35,7 @@
 
 <StandardLayout>
   {#if $gameRoomModel.gameRoom.state === GameRoomState.LOBBY}
-    <LobbyPage model={gameRoomModel} controller={gameRoomViewController} />
+    <LobbyPage model={gameRoomModel} viewModel={gameRoomViewModel} />
   {:else if $gameRoomModel.gameRoom.state === GameRoomState.PLAYING && $gameRoomModel.gameManagerCurrentDTO}
     <GameView gameManagerDTO={$gameRoomModel.gameManagerCurrentDTO} />
   {/if}

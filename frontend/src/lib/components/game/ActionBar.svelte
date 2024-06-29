@@ -13,7 +13,7 @@
 
 <bar>
   <resume>
-    <HeroResume {...{ hero, spellPreview }} />
+    <HeroResume {hero} {spellPreview} />
   </resume>
   {#each hero.spells as spell}
     <button

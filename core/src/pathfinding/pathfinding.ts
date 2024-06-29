@@ -1,4 +1,4 @@
-import type { Board, Coordinate } from '../board/';
+import { Board, Coordinate, SimpleCoordinate } from '../board/';
 import type { Node } from './';
 import { orderBy } from 'lodash';
 
@@ -9,8 +9,13 @@ import { orderBy } from 'lodash';
  * @param board
  * @param filter The list of tiles that can be used to find the path
  */
-export function findPath(from: Coordinate, to: Coordinate, board: Board, filter: Coordinate[]): Coordinate[] {
-  if (!filter.some((n) => n.equals(from)) && !filter.some((n) => n.equals(to))) return [];
+export function findPath(
+  from: SimpleCoordinate,
+  to: SimpleCoordinate,
+  board: Board,
+  filter: SimpleCoordinate[],
+): SimpleCoordinate[] {
+  if (!filter.some((n) => Coordinate.equals(n, from)) && !filter.some((n) => Coordinate.equals(n, to))) return [];
 
   let openList: Node[] = []; // Open list is the next set of tiles to evaluate
   const closedList: Node[] = []; // Closed list is the set of tiles already evaluated
@@ -25,7 +30,7 @@ export function findPath(from: Coordinate, to: Coordinate, board: Board, filter:
   while (!current.equals(to)) {
     // Move the current tile from the open list to the closed list
     closedList.push(current);
-    if (filter?.some((c) => c.equals(current))) {
+    if (filter?.some((c) => Coordinate.equals(c, current))) {
       checkNeighbors(current, getNeighbors(current, map), openList, closedList);
       if (openList.length === 0) {
         return [];
@@ -43,7 +48,7 @@ export function findPath(from: Coordinate, to: Coordinate, board: Board, filter:
  * @param to
  * @param minimalMovementCost
  */
-function orderedOpenList(openList: Node[], to: Coordinate, minimalMovementCost: number): Node[] {
+function orderedOpenList(openList: Node[], to: SimpleCoordinate, minimalMovementCost: number): Node[] {
   return orderBy(openList, [(n: Node) => n.g + heuristic(n, to, minimalMovementCost)]);
 }
 
@@ -113,6 +118,6 @@ export function getNeighbors(node: Node, nodes: Node[][]): Node[] {
  * @param to
  * @param minimalMovementCost
  */
-function heuristic(from: Coordinate, to: Coordinate, minimalMovementCost: number = 0): number {
+function heuristic(from: SimpleCoordinate, to: SimpleCoordinate, minimalMovementCost: number = 0): number {
   return (Math.abs(from.x - to.x) + Math.abs(from.y - to.y)) * minimalMovementCost;
 }
