@@ -183,7 +183,6 @@
     white-space: nowrap;
     position: relative;
     margin-right: calc(100% + 1em);
-    display: inline-block;
     z-index: 1;
     float: right;
   }

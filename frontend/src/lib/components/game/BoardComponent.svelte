@@ -105,7 +105,7 @@
             on:contextmenu|preventDefault={() => dispatch('rightclick', { x, y })}
             use:movementCostIndicator
           >
-            {#if visibles.some((c) => c.is({ x, y })) && board.getTile({ x, y }).entity}
+            {#if visibles.some( (otherCoordinate) => Coordinate.equals( otherCoordinate, { x, y }, ), ) && board.getTile( { x, y }, ).entity}
               <HeroComponent
                 lookAt={$mousePosition}
                 on:mouseenter={() => {

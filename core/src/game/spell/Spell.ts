@@ -74,7 +74,7 @@ export default class Spell {
     return RESUME;
   }
 
-  targetableTiles(from: Coordinate, board: Board, filter: Coordinate[]): Coordinate[] {
+  targetableTiles(from: SimpleCoordinate, board: Board, _filter: SimpleCoordinate[]): SimpleCoordinate[] {
     const map: Node[][] = board.mapNodes;
     let targetable: Coordinate[] = [...map.flat()].filter((n: Node) =>
       inRange(this.targetDistanceStrategy(from, n), this.minimalRangeTarget, this.maximalRangeTarget + 1),

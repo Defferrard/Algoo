@@ -24,7 +24,6 @@ export class GameManagerModel extends Observable<GameManagerModel> {
 
   public path: SimpleCoordinate[] = []; // The path the current hero will take
   public visibles: SimpleCoordinate[] = []; // Tiles visible by the current hero
-  public markers: SimpleCoordinate[] = []; // Tiles marked by the user
   public accessible: SimpleCoordinate[] = []; // Tiles where the current hero can move
   public targetable: SimpleCoordinate[] = []; // Tiles where the current spell can be cast
   public attacked: SimpleCoordinate[] = [];
@@ -77,22 +76,13 @@ export class GameManagerModel extends Observable<GameManagerModel> {
     this.notify();
   }
 
-  onAction(coordinate: SimpleCoordinate, spell?: Spell) {
-    if (spell) {
-      this.gameManager.castSpell(spell, new Coordinate(coordinate));
-    } else if (this.gameManager.currentHero) {
-      this.gameManager.moveEntity(this.gameManager.currentHero, this.path);
-    }
+  castSpell(spell: Spell, coordinate: SimpleCoordinate) {
+    this.gameManager.castSpell(spell, coordinate);
     this.notify();
   }
 
-  async mark(coordinate: SimpleCoordinate) {
-    this.markers = [...this.markers, coordinate];
-    this.notify();
-    await delay(5000);
-    this.markers = this.markers.filter(
-      (otherCoordinate: SimpleCoordinate) => !Coordinate.equals(otherCoordinate, coordinate),
-    );
+  moveEntity(entity: Entity<Resources>, path: SimpleCoordinate[]) {
+    this.gameManager.moveEntity(entity, path);
     this.notify();
   }
 

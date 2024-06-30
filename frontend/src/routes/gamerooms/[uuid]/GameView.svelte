@@ -13,7 +13,7 @@
 
   export let gameManagerDTO: GameManagerDTO;
   const { model, viewModel } = create(gameManagerDTO);
-  const { currentSpell, targetHero, currentHero } = viewModel.stores;
+  const { currentSpell, targetHero, currentHero, markers } = viewModel.stores;
 
   onMount(async () => {
     const TEAM_1 = new Team(Color.RED, 'Team 1');
@@ -58,8 +58,8 @@
         path: $model.path,
         active: $model.active,
         accessible: $model.accessible,
-        visibles: $model.accessible,
-        markers: $model.markers,
+        visibles: $model.visibles,
+        markers: $markers,
         targetable: $model.targetable,
         attacked: $model.attacked,
       }}

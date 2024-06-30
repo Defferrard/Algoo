@@ -18,9 +18,15 @@ export class GameManagerCtrl {
     this.service.nextTurn(socket);
   }
 
-  @OnMessage(MessageType.ACTION)
-  action(@ConnectedSocket() socket: Socket, @MessageBody() payload: { x: number; y: number; spellIndex?: number }) {
-    LOGGER.info(`Socket ${socket.id} action`, payload);
-    this.service.action(socket, payload);
+  @OnMessage(MessageType.CAST_SPELL)
+  castSpell(@ConnectedSocket() socket: Socket, @MessageBody() payload: { x: number; y: number; spellIndex: number }) {
+    LOGGER.info(`Socket ${socket.id} cast spell`, payload);
+    this.service.castSpell(socket, payload);
+  }
+
+  @OnMessage(MessageType.MOVE_ENTITY)
+  moveEntity(@ConnectedSocket() socket: Socket, @MessageBody() payload: { path: { x: number; y: number }[] }) {
+    LOGGER.info(`Socket ${socket.id} move entity`, payload);
+    this.service.moveEntity(socket, payload);
   }
 }

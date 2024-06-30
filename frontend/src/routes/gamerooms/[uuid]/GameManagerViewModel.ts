@@ -1,6 +1,7 @@
 import { socket } from '$lib/stores/socket';
+import { delay } from '$lib/utils/Functions';
 import type { GameManagerModel } from './GameManagerModel';
-import type { Entity } from '@defferrard/algoo-core/src/board';
+import { Coordinate, type Entity, type SimpleCoordinate } from '@defferrard/algoo-core/src/board';
 import type { HeroEntity, Resources, Spell } from '@defferrard/algoo-core/src/game';
 import { isHeroEntity } from '@defferrard/algoo-core/src/game/hero/HeroEntity';
 import { MessageType } from '@defferrard/algoo-core/src/socket';
@@ -13,6 +14,7 @@ export class GameManagerViewModel {
   private readonly _targetEntity: Writable<Entity<Resources> | undefined>;
   private readonly _targetHero: Writable<HeroEntity | undefined>;
   private readonly _currentHero: Writable<HeroEntity | undefined>;
+  private readonly _markers: Writable<SimpleCoordinate[]>; // Tiles marked by the user
 
   constructor(model: GameManagerModel) {
     this._model = model;
@@ -20,6 +22,7 @@ export class GameManagerViewModel {
     this._targetEntity = writable();
     this._targetHero = writable();
     this._currentHero = writable(model.gameManager.currentHero);
+    this._markers = writable([]);
 
     model.subscribe((newModel) => this.onModelUpdate(newModel));
   }
@@ -30,14 +33,15 @@ export class GameManagerViewModel {
   }
 
   onAction(x: number, y: number) {
-    let spellIndex: number | undefined;
     const currentSpell = get(this._currentSpell);
-    const currentHero = this._model.gameManager.currentHero;
-    if (currentSpell && currentHero) {
-      spellIndex = currentHero.spells.indexOf(currentSpell);
+    const currentHero = notUndefined(this._model.gameManager.currentHero);
+    if (currentSpell) {
+      let spellIndex = currentHero.spells.indexOf(currentSpell);
+      socket.emit(MessageType.CAST_SPELL, { x, y, spellIndex });
+    } else {
+      socket.emit(MessageType.MOVE_ENTITY, { path: this._model.path });
     }
     this._currentSpell.set(undefined);
-    socket.emit(MessageType.ACTION, { x, y, spellIndex });
   }
 
   hover(x: number, y: number) {
@@ -52,9 +56,15 @@ export class GameManagerViewModel {
     }
   }
 
-  mark(x: number, y: number) {
-    this._model.mark({ x, y });
+  async mark(x: number, y: number) {
+    const coordinate = { x, y };
+    this._markers.update((markers) => [...markers, coordinate]);
+    await delay(5000);
+    this._markers.update((markers) =>
+      markers.filter((otherCoordinate) => !Coordinate.equals(otherCoordinate, coordinate)),
+    );
   }
+
   previewSpell(spellOrIndex: number | Spell) {
     const currentHero = notUndefined(this._model.gameManager.currentHero);
     if (!isHeroEntity(currentHero)) {
@@ -85,6 +95,7 @@ export class GameManagerViewModel {
       targetEntity: this._targetEntity,
       targetHero: this._targetHero,
       currentHero: this._currentHero,
+      markers: this._markers,
     };
   }
 

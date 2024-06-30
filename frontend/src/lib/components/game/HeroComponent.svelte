@@ -5,6 +5,7 @@
   import { receive, send } from '$lib/animations/translate';
   import getHeroes from '$lib/assets/heroes';
   import { getCSS } from '../Color';
+  import { notUndefined } from '@defferrard/algoo-core/src/utils/assertions';
 
   export let hero: HeroEntity;
   export let lookAt: Coordinate = new Coordinate({ x: 0, y: 0 });
@@ -39,16 +40,12 @@
     if (simplifiedLookAt.getLength() > 1) simplifiedLookAt = simplifiedLookAt.normalized();
   }
 
-  function _receive(node, args) {
-    if (key) {
-      return receive(node, { key: key, ...args });
-    }
+  function _receive(node: HTMLElement, ...args: unknown[]) {
+    return receive(node, { key, ...args });
   }
 
-  function _send(node, args) {
-    if (key) {
-      return send(node, { key: key, ...args });
-    }
+  function _send(node: HTMLElement, ...args: unknown[]) {
+    return send(node, { key, ...args });
   }
 </script>
 
@@ -59,7 +56,7 @@
   role="img"
   on:mouseenter
   on:mouseleave
-  style:--team-color={getCSS(hero.team.color)}
+  style:--team-color={getCSS(notUndefined(hero.team).color)}
 >
   <div in:_receive out:_send>
     {#if base}
@@ -88,6 +85,7 @@
     position: absolute;
     --sprite-size: calc(var(--size) * 3);
     -webkit-mask-size: var(--sprite-size);
+    mask-size: var(--sprite-size);
     width: var(--sprite-size);
     height: var(--sprite-size);
     top: calc(50% - 0.5 * var(--sprite-size));

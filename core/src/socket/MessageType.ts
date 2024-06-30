@@ -19,5 +19,8 @@ export enum MessageType {
   GAME_ROOM_START = 'game_room_start', // Start the game
 
   NEXT_TURN = 'next_turn', // Next turn
+  /** @deprecated : use cast_spell or move_entity instead */
   ACTION = 'action', // Action
+  CAST_SPELL = 'cast_spell',
+  MOVE_ENTITY = 'move_entity',
 }
