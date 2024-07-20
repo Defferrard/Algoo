@@ -1,8 +1,10 @@
-import { Player } from '../game';
-import { IsDate } from 'class-validator';
+import { DTO } from './DTO';
+import { IsDateString, IsUUID } from 'class-validator';
 
-export class MessageDTO {
-  @IsDate()
-  datetime: Date;
-  from: Player;
+export class MessageDTO extends DTO {
+  @IsDateString()
+  datetime: string;
+
+  @IsUUID()
+  playerId: string;
 }

@@ -95,7 +95,6 @@ export class GameManagerModel extends Observable<GameManagerModel> {
         ),
         this.gameManager.board,
       );
-
       if (this.isBusy) {
         this.accessible = [];
         this.targetable = [];

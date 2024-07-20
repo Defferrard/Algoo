@@ -1,14 +1,23 @@
-import {Color, Team} from "./index";
-import {User} from "../socket";
+import { DTO, DTOFriendly, PlayerDTO } from '../dto';
+import { User } from '../socket';
+import { Type } from '../utils/Type';
+import { Color, Team } from './index';
 
-export default class Player{
-    readonly team: Team;
-    readonly user: User;
+export default class Player implements DTOFriendly {
+  readonly team: Team;
+  readonly user: User;
 
-    isReady: boolean = false;
+  isReady: boolean = false;
 
-    constructor(user: User, team: Team = new Team(Color.GREEN, user.uuid)) {
-        this.user = user;
-        this.team = team;
-    }
+  constructor({ user, team, isReady }: Type<PlayerDTO>) {
+    this.user = new User(user);
+    this.team = new Team(team);
+    this.isReady = isReady;
+  }
+  toDTO(): PlayerDTO {
+    const dto = new PlayerDTO();
+    dto.user = this.user.toDTO();
+    dto.team = this.team.toDTO();
+    return dto;
+  }
 }

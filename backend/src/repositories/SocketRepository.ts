@@ -1,6 +1,8 @@
+import { DTO } from '@defferrard/algoo-core/src/dto';
 import { MessageType, User } from '@defferrard/algoo-core/src/socket';
 import { Server, Socket } from 'socket.io';
 import { Service } from 'typedi';
+import { LOGGER } from '~/utils/logger';
 
 export const SOCKET_ROOM_PREFIX = 'user:';
 
@@ -13,7 +15,14 @@ export class SocketRepository {
     socket.join(SOCKET_ROOM_PREFIX + user.uuid);
   }
 
-  broadcast(room: string, event: MessageType, message: any = '') {
-    this.io.of(`/rooms/${room}`).emit(event, message);
+  async broadcast(room: string, event: MessageType, dto?: DTO | string | number) {
+    try {
+      if (dto && dto instanceof DTO) {
+        await dto.validateOrReject();
+      }
+      this.io.of(`/rooms/${room}`).emit(event, dto);
+    } catch (e) {
+      LOGGER.error(e);
+    }
   }
 }

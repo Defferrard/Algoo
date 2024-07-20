@@ -1,5 +1,8 @@
-export type SimpleCoordinate = Coordinate | { x: number; y: number };
-export default class Coordinate {
+import { CoordinateDTO, DTOFriendly } from '../dto';
+
+export type BaseCoordinate = { x: number; y: number };
+export type SimpleCoordinate = BaseCoordinate;
+export default class Coordinate implements BaseCoordinate, DTOFriendly {
   readonly x: number;
   readonly y: number;
 
@@ -95,5 +98,15 @@ export default class Coordinate {
 
   static isNeighbor(a: SimpleCoordinate, b: SimpleCoordinate): boolean {
     return Math.abs(a.x - b.x) + Math.abs(a.y - b.y) === 1;
+  }
+
+  toDTO(): CoordinateDTO {
+    return Coordinate.toDTO(this);
+  }
+  static toDTO(coordinate: SimpleCoordinate): CoordinateDTO {
+    const dto = new CoordinateDTO();
+    dto.x = coordinate.x;
+    dto.y = coordinate.y;
+    return dto;
   }
 }

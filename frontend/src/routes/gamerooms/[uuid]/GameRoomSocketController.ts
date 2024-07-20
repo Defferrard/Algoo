@@ -1,6 +1,6 @@
 import { On, SocketController } from '$lib/utils/socket/decorators';
 import type { GameRoomModel, Message } from './GameRoomModel';
-import type { GameManagerDTO, IsReadyMessageDTO } from '@defferrard/algoo-core/src/dto';
+import type { ChatMessageDTO, GameManagerDTO, IsReadyMessageDTO } from '@defferrard/algoo-core/src/dto';
 import type { Player } from '@defferrard/algoo-core/src/game';
 import { MessageType } from '@defferrard/algoo-core/src/socket';
 
@@ -13,7 +13,7 @@ export class GameRoomSocketController {
   }
 
   @On(MessageType.GAME_ROOM_MESSAGE)
-  pushMessage(message: Message): void {
+  pushMessage(message: ChatMessageDTO): void {
     this._model.pushMessage(message);
   }
 
@@ -28,8 +28,8 @@ export class GameRoomSocketController {
   }
 
   @On(MessageType.GAME_ROOM_READY)
-  setPlayerReady({ from, isReady }: IsReadyMessageDTO): void {
-    this._model.setPlayerReady(from, isReady);
+  setPlayerReady({ playerId, isReady }: IsReadyMessageDTO): void {
+    this._model.setPlayerReady(playerId, isReady);
   }
 
   @On(MessageType.CANCEL_GAME_ROOM_STARTING)

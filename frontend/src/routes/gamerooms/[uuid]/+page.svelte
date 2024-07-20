@@ -2,7 +2,7 @@
   import { StandardLayout } from '$lib/components/layout/index';
   import { authStore } from '$lib/stores/auth';
   import { localUser } from '$lib/stores/localUser';
-  import { Player } from '@defferrard/algoo-core/src/game';
+  import { Color, Player } from '@defferrard/algoo-core/src/game';
   import { GameRoomState } from '@defferrard/algoo-core/src/game/GameRoom';
   import type { User } from '@defferrard/algoo-core/src/socket';
   import { onDestroy, onMount } from 'svelte';
@@ -11,6 +11,7 @@
   import { socket } from '$lib/stores/socket';
   import { create as createGameRoomSet } from './GameRoomBuilder';
   import GameView from './GameView.svelte';
+  import { v4 as uuid } from 'uuid';
 
   export let data;
 
@@ -24,7 +25,11 @@
   }
 
   onMount(async () => {
-    let player: Player = new Player($localUser as User);
+    let player: Player = new Player({
+      user: $localUser,
+      team: { color: Color.BLUE, uuid: uuid(), heroes: [] },
+      isReady: false,
+    });
     await login(player.user.name);
   });
 

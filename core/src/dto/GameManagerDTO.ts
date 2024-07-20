@@ -1,7 +1,12 @@
 import { TileType } from '../board';
-import { IsArray, IsEnum } from 'class-validator';
+import { DTO } from './DTO';
+import { TeamDTO } from './TeamDTO';
+import { IsEnum, ValidateNested } from 'class-validator';
 
-export class GameManagerDTO {
-  @IsArray()
+export class GameManagerDTO extends DTO {
+  // @IsEnum(TileType, { each: true })
   tiles: TileType[][];
+
+  @ValidateNested({ each: true })
+  teams: TeamDTO[];
 }

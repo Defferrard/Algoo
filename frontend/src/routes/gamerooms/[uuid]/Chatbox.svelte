@@ -40,7 +40,7 @@
         {#if typeof message === 'string'}
           {message}
         {:else}
-          <b>{message.from.user.name}</b> : {message.message}
+          <b>{message.playerId}</b> : {message.message}
         {/if}
       </div>
     {/each}

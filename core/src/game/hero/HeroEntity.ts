@@ -1,7 +1,11 @@
-import type { CompleteHeroDTO, Effect, Resources } from '../';
-import { ResourceType, Spell, Stance, StandardCharacteristics } from '../';
-import type { StandardResources } from '../';
-import { Entity } from '../../board';
+import Entity from '../../board/Entity';
+import { CompleteHeroDTO } from '../../dto/CompleteHeroDTO';
+import Effect from '../Effect';
+import { Resources } from '../characteristics/Characteristics';
+import { ResourceType } from '../characteristics/ResourceType';
+import { StandardCharacteristics, StandardResources } from '../characteristics/StandardCharacteristics';
+import Spell from '../spell/Spell';
+import { Stance } from './Stance';
 
 export function isHeroEntity(entity?: Entity<Resources>): entity is HeroEntity {
   return (
@@ -24,6 +28,8 @@ export default class HeroEntity extends Entity<StandardResources> {
   stance: Stance;
 
   constructor(dto: CompleteHeroDTO) {
+    super(dto.characteristics);
+
     // TODO : Can we simplify ? (Can we generate maxResources dynamically from dto.characteristics ?)
     const CHARACTERISTICS: StandardCharacteristics = new StandardCharacteristics(
       {
@@ -34,8 +40,6 @@ export default class HeroEntity extends Entity<StandardResources> {
       dto.characteristics.resistance,
       dto.characteristics.durability,
     );
-
-    super(dto.characteristics);
 
     this.name = dto.name;
     this.title = dto.title;

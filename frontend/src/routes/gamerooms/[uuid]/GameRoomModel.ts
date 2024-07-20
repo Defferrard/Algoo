@@ -36,8 +36,7 @@ export class GameRoomModel extends Observable<GameRoomModel> {
     this.notify();
   }
 
-  setPlayerReady(from: Player, isReady: boolean): void {
-    const uuid: string = from.user.uuid;
+  setPlayerReady(uuid: string, isReady: boolean): void {
     const player: Player = this._gameRoom.getPlayer(uuid)!;
     this._gameRoom.setPlayerReady(uuid, isReady);
     this.pushMessage(player.user.name + ' is ' + (isReady ? 'ready' : 'not ready'));

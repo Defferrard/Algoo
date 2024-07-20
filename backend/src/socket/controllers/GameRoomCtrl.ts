@@ -1,4 +1,6 @@
+import { ChatMessageDTO, IsReadyMessageDTO } from '@defferrard/algoo-core/src/dto';
 import { MessageType, User } from '@defferrard/algoo-core/src/socket';
+import { assertNonNull } from '@defferrard/algoo-core/src/utils/assertions';
 import { isUUID } from 'class-validator';
 import { Request } from 'express';
 import {
@@ -32,7 +34,8 @@ export class GameRoomCtrl {
       return socket.disconnect();
     }
     LOGGER.info(`Socket ${socket.id} connected`);
-    const user: User = req.user! as User;
+    assertNonNull(req.user);
+    const user: User = req.user as User;
     return this.service.joinRoom(socket, user, room);
   }
 
@@ -43,14 +46,14 @@ export class GameRoomCtrl {
   }
 
   @OnMessage(MessageType.GAME_ROOM_MESSAGE)
-  onMessage(@ConnectedSocket() socket: Socket, @MessageBody() message: string) {
-    LOGGER.info(`Socket ${socket.id} sent message ${message}`);
-    this.service.sendMessage(socket, message);
+  async onMessage(@ConnectedSocket() socket: Socket, @MessageBody() dto: ChatMessageDTO) {
+    LOGGER.info(`Socket ${socket.id} sent message ${dto.message}`);
+    await this.service.sendMessage(socket, dto);
   }
 
   @OnMessage(MessageType.GAME_ROOM_READY)
-  onReady(@ConnectedSocket() socket: Socket, @MessageBody() isReady: boolean) {
-    LOGGER.info(`Socket ${socket.id} is ready: ${isReady}`);
-    this.service.isReady(socket, isReady);
+  onReady(@ConnectedSocket() socket: Socket, @MessageBody() dto: IsReadyMessageDTO) {
+    LOGGER.info(`Socket ${socket.id} is ready: ${dto.isReady}`);
+    this.service.isReady(socket, dto.isReady);
   }
 }

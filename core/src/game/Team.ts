@@ -1,31 +1,40 @@
-import {v4 as uuidV4} from "uuid";
-import type {Color, Resources} from "./";
-import type {Entity} from "../board";
+import type { Entity } from '../board';
+import { DTOFriendly } from '../dto';
+import { TeamDTO } from '../dto/TeamDTO';
+import { Type } from '../utils/Type';
+import { Color } from './Color';
+import { Resources } from './characteristics/Characteristics';
 
-export default class Team {
-    readonly color: Color;
-    readonly name: string;
-    readonly uuid: string = uuidV4();
-    private readonly _entities: Entity<Resources>[] = [];
+export default class Team implements DTOFriendly {
+  readonly color: Color;
+  readonly uuid: string;
+  private readonly _entities: Entity<Resources>[] = [];
 
-    constructor(color: Color, name: string) {
-        this.color = color;
-        this.name = name;
-    }
+  constructor(dto: Type<TeamDTO>) {
+    this.color = dto.color;
+    this.uuid = dto.uuid;
+  }
 
-    pushEntity(entity: Entity<Resources>): void {
-        this._entities.push(entity);
-    }
+  pushEntity(entity: Entity<Resources>): void {
+    this._entities.push(entity);
+  }
 
-    deleteEntity(entity: Entity<Resources>): void {
-        this._entities.splice(this._entities.indexOf(entity), 1);
-    }
+  deleteEntity(entity: Entity<Resources>): void {
+    this._entities.splice(this._entities.indexOf(entity), 1);
+  }
 
-    equals(team: Team): boolean {
-        return this.uuid === team.uuid;
-    }
+  equals(team: Team): boolean {
+    return this.uuid === team.uuid;
+  }
 
-    get entities(): Entity<Resources>[] {
-        return this._entities;
-    }
+  get entities(): Entity<Resources>[] {
+    return this._entities;
+  }
+
+  toDTO(): TeamDTO {
+    const dto = new TeamDTO();
+    dto.color = this.color;
+    dto.uuid = this.uuid;
+    return dto;
+  }
 }

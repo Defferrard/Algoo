@@ -46,10 +46,8 @@ export class GameRoomRepository {
     delete this._timeouts[uuid];
   }
 
-  get(roomUuid: string): GameRoom {
-    let gameRoom: GameRoom | undefined = this._rooms[roomUuid];
-    if (!gameRoom) throw new GameRoomNotFoundException(roomUuid);
-    return gameRoom;
+  get(roomUuid: string): GameRoom | undefined {
+    return this._rooms[roomUuid];
   }
 
   addPlayer(roomUuid: string, player: Player): void {
@@ -58,7 +56,10 @@ export class GameRoomRepository {
   }
 
   removePlayer(roomUuid: string, uuid: string): void {
-    let gameRoom: GameRoom = this.get(roomUuid);
+    let gameRoom = this.get(roomUuid);
+    if (!gameRoom) {
+      return;
+    }
     gameRoom.removePlayer(uuid);
 
     if (gameRoom.playersCount === 0) {
@@ -72,17 +73,21 @@ export class GameRoomRepository {
   }
 
   setPlayerReady(roomUuid: string, playerUuid: string, isReady: boolean): boolean {
-    let gameRoom: GameRoom = this.get(roomUuid);
+    let gameRoom = this.get(roomUuid);
+    if (!gameRoom) {
+      return false;
+    }
     return gameRoom.setPlayerReady(playerUuid, isReady);
   }
 
   startGame(roomUuid: string, next: (data: any) => void, delay: number = START_GAME_TIMEOUT.value): number {
-    let gameRoom: GameRoom = this.get(roomUuid);
-
+    let gameRoom = this.get(roomUuid);
+    if (!gameRoom) {
+      return -1;
+    }
     this._timeouts[roomUuid][START_GAME_TIMEOUT.key] = setTimeout(() => {
-      const dto: GameManagerDTO = {
-        tiles: generateRandomBoard(10, 10, 0.3),
-      };
+      const dto = new GameManagerDTO();
+      dto.tiles = generateRandomBoard(10, 10, 0.1);
       gameRoom.startGame();
       next(dto);
     }, delay);

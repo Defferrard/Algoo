@@ -1,4 +1,6 @@
+import type { DTO } from '@defferrard/algoo-core/src/dto';
 import type { MessageType } from '@defferrard/algoo-core/src/socket';
+import { assertNonNull, notUndefined } from '@defferrard/algoo-core/src/utils/assertions';
 import { Socket, io } from 'socket.io-client';
 import { writable } from 'svelte/store';
 
@@ -64,7 +66,15 @@ export const socket = (() => {
     },
     subscribe,
     get: () => socketIO,
-    emit: (type: MessageType, data?: any, ack?: (data: any) => void) => socketIO!.emit(type, data, ack),
+    emit: async (type: MessageType, data: DTO, ack?: (data: DTO) => void) => {
+      assertNonNull(socketIO);
+      try {
+        await data.validateOrReject();
+        socketIO.emit(type, data, ack);
+      } catch (e) {
+        console.error(e);
+      }
+    },
     on,
     onLifeCycle,
   };

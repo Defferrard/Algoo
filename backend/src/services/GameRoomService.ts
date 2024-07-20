@@ -1,10 +1,14 @@
-import { IsReadyMessageDTO, MessageDTO } from '@defferrard/algoo-core/src/dto';
-import { GameRoom, Player } from '@defferrard/algoo-core/src/game';
+import { ChatMessageDTO, IsReadyMessageDTO, MessageDTO, PlayerDTO } from '@defferrard/algoo-core/src/dto';
+import { GameRoomNotFoundException } from '@defferrard/algoo-core/src/exceptions/gameRoom';
+import { Color, GameRoom, Player } from '@defferrard/algoo-core/src/game';
 import { MessageType, User } from '@defferrard/algoo-core/src/socket';
+import { assertNonNull } from '@defferrard/algoo-core/src/utils/assertions';
 import { Socket } from 'socket.io';
 import { Service } from 'typedi';
+import { v4 as uuid } from 'uuid';
 import { GameRoomRepository, SocketRepository } from '~/repositories';
 import PlayerSocket from '~/socket/sockets/PlayerSocket';
+import { LOGGER } from '~/utils/logger';
 
 @Service()
 export default class GameRoomService {
@@ -16,10 +20,15 @@ export default class GameRoomService {
   joinRoom(socket: Socket, user: User, room: string) {
     try {
       // Fetch the game room. If it doesn't exist, an error will be thrown
-      const gameRoom: GameRoom = this.gameRoomRepository.get(room);
+      const gameRoom = this.gameRoomRepository.get(room);
+      assertNonNull(gameRoom, GameRoomNotFoundException, room);
       this.socketRepository.save(socket, user);
       // Create a player and add it to the game room
-      const player: Player = new Player(socket.data.user);
+      const player: Player = new Player({
+        user,
+        team: { color: Color.BLUE, uuid: uuid(), heroes: [] },
+        isReady: false,
+      });
       socket.data.player = player;
       socket.data.room = room;
       this.gameRoomRepository.addPlayer(room, player);
@@ -27,6 +36,7 @@ export default class GameRoomService {
       socket.broadcast.emit(MessageType.GAME_ROOM_JOIN, player);
       return gameRoom.players;
     } catch (e) {
+      LOGGER.error(e);
       // This async function is needed to avoid an exception due to disconnect a socket during it connection thread on a namespace.
       const callLater = async () => {
         socket.disconnect();
@@ -43,12 +53,8 @@ export default class GameRoomService {
     socket.broadcast.emit(MessageType.GAME_ROOM_LEAVE, player);
   }
 
-  sendMessage({ data: { room, player } }: PlayerSocket, message: string) {
-    this.socketRepository.broadcast(room, MessageType.GAME_ROOM_MESSAGE, {
-      datetime: new Date(),
-      from: player,
-      message,
-    });
+  async sendMessage({ data: { room, player } }: PlayerSocket, message: ChatMessageDTO) {
+    await this.socketRepository.broadcast(room, MessageType.GAME_ROOM_MESSAGE, message);
   }
 
   isReady(socket: PlayerSocket, isReady: boolean) {
@@ -56,17 +62,11 @@ export default class GameRoomService {
     // Set the player's ready status
     let gameRoomReady: boolean = this.gameRoomRepository.setPlayerReady(room, player.user.uuid, isReady);
     // Broadcast that the player is ready to all players in the room
-    const message: IsReadyMessageDTO = {
-      datetime: new Date(),
-      from: socket.data.player,
-      isReady,
-    };
-
-    this.socketRepository.broadcast(room, MessageType.GAME_ROOM_READY, {
-      datetime: new Date(),
-      from: socket.data.player,
-      isReady,
-    });
+    const readyMessageDTO = new IsReadyMessageDTO();
+    readyMessageDTO.datetime = new Date().toISOString();
+    readyMessageDTO.playerId = player.user.uuid;
+    readyMessageDTO.isReady = isReady;
+    this.socketRepository.broadcast(room, MessageType.GAME_ROOM_READY, readyMessageDTO);
 
     // If all players are ready
     if (gameRoomReady) {

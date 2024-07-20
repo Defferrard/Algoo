@@ -7,7 +7,7 @@ import { JWT_SECRET } from '~/const';
 @Service()
 export class AuthService {
   signIn(username: string) {
-    const user = new User(uuid(), username);
+    const user = new User({ uuid: uuid(), name: username });
     return jwt.sign({ ...user }, JWT_SECRET, { expiresIn: '1h' });
   }
 }

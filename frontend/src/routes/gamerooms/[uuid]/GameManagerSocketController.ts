@@ -1,6 +1,7 @@
 import { On, SocketController } from '$lib/utils/socket/decorators';
 import type { GameManagerModel } from './GameManagerModel';
 import type { SimpleCoordinate } from '@defferrard/algoo-core/src/board';
+import type { CastSpellDTO, MoveEntityDTO } from '@defferrard/algoo-core/src/dto';
 import type { Spell } from '@defferrard/algoo-core/src/game';
 import { MessageType } from '@defferrard/algoo-core/src/socket';
 import { notUndefined } from '@defferrard/algoo-core/src/utils/assertions';
@@ -19,13 +20,13 @@ export default class GameManagerSocketController {
   }
 
   @On(MessageType.CAST_SPELL)
-  castSpell({ x, y, spellIndex }: { x: number; y: number; spellIndex: number }) {
+  castSpell({ target, spellId }: CastSpellDTO) {
     const currentHero = notUndefined(this._model.gameManager.currentHero);
-    this._model.castSpell(currentHero.spells[spellIndex], { x, y });
+    this._model.castSpell(currentHero.spells[spellId], target);
   }
 
   @On(MessageType.MOVE_ENTITY)
-  moveEntity({ path }: { path: SimpleCoordinate[] }) {
+  moveEntity({ path }: MoveEntityDTO) {
     const currentHero = notUndefined(this._model.gameManager.currentHero);
     this._model.moveEntity(currentHero, path);
   }
