@@ -40,11 +40,13 @@ export default class GameRoom {
     }
   }
 
-  removePlayer(uuid: string): void {
+  removePlayer(uuid: string) {
+    const player = this.players[uuid];
     delete this.players[uuid];
     if (this.owner?.user.uuid === uuid) {
       this.owner = Object.values(this.players)[0];
     }
+    return player;
   }
 
   getPlayer(uuid: string): Player | undefined {

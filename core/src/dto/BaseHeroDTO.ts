@@ -1,8 +1,8 @@
 import { Stance, StandardResources } from '../game';
-import { UuidDTO } from './UuidDTO';
+import { DTO } from './DTO';
 import { IsEnum, Length } from 'class-validator';
 
-export class BaseHeroDTO extends UuidDTO {
+export class BaseHeroDTO extends DTO {
   @Length(3, 20)
   name: string;
   @Length(3, 20)

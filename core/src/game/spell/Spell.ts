@@ -1,6 +1,7 @@
-import type { Color, Resources, SpellDTO } from '../';
+import type { Color, Resources } from '../';
 import type { Board, Coordinate, SimpleCoordinate } from '../../board';
 import { Entity } from '../../board';
+import { SpellDTO } from '../../dto';
 import type { Node } from '../../pathfinding';
 import type { DistanceStrategyCallable } from '../../strategy';
 import { ACTION_STRATEGIES, ActionStrategy, DISTANCE_STRATEGIES } from '../../strategy';

@@ -14,7 +14,6 @@ export type { StandardResources } from './characteristics/StandardCharacteristic
 export { Stance } from './hero/Stance';
 export { default as HeroEntity } from './hero/HeroEntity';
 
-export type { SpellDTO } from '../dto/SpellDTO';
 export { default as Spell } from './spell/Spell';
 
 export { default as Player } from './Player';

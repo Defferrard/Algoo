@@ -1,5 +1,5 @@
 import { Observable } from '$lib/utils/socket/ObservableSocketController';
-import type { ChatMessageDTO, GameManagerDTO } from '@defferrard/algoo-core/src/dto';
+import type { ChatMessageDTO, GameManagerDTO, PlayerDTO, UserDTO } from '@defferrard/algoo-core/src/dto';
 import { GameRoom, Player } from '@defferrard/algoo-core/src/game';
 
 export type Message = string | ChatMessageDTO;
@@ -30,8 +30,8 @@ export class GameRoomModel extends Observable<GameRoomModel> {
     this.notify();
   }
 
-  leave(player: Player): void {
-    this._gameRoom.removePlayer(player.user.uuid);
+  leave(playerId: typeof UserDTO.prototype.uuid): void {
+    const player = this._gameRoom.removePlayer(playerId);
     this.pushMessage(player.user.name + ' left the room');
     this.notify();
   }

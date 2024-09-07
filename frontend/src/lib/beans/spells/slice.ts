@@ -1,30 +1,30 @@
-import icon from "$lib/assets/spells/slice.svg";
-import {DistanceStrategy, ActionStrategy} from "@defferrard/algoo-core/src/strategy/";
-import {ResourceType, Color} from "@defferrard/algoo-core/src/game/";
-import type {SpellDTO} from "@defferrard/algoo-core/src/game/";
+import icon from '$lib/assets/spells/slice.svg';
+import { Color, ResourceType, SpellDTO } from '@defferrard/algoo-core/src/game/';
+import { ActionStrategy, DistanceStrategy } from '@defferrard/algoo-core/src/strategy/';
+import { Type } from '@defferrard/algoo-core/src/utils/Type';
 
-const SPELL: SpellDTO = {
-        name: "Slice",
-        color: Color.GRAY,
-        iconPath: icon,
+const SPELL: Type<SpellDTO> = {
+  name: 'Slice',
+  color: Color.GRAY,
+  iconPath: icon,
 
-        minimalRangeTarget: 1,
-        maximalRangeTarget: 1,
-        targetDistanceStrategy: DistanceStrategy.MOVEMENT,
+  minimalRangeTarget: 1,
+  maximalRangeTarget: 1,
+  targetDistanceStrategy: DistanceStrategy.MOVEMENT,
 
-        minimalRangeAttacked: 0,
-        maximalRangeAttacked: 0,
-        attackedDistanceStrategy: DistanceStrategy.MONO,
-        cost: {
-            [ResourceType.STAMINA]: 5
-        },
+  minimalRangeAttacked: 0,
+  maximalRangeAttacked: 0,
+  attackedDistanceStrategy: DistanceStrategy.MONO,
+  cost: {
+    [ResourceType.STAMINA]: 5,
+  },
 
-        actions: [
-            {
-                type: ActionStrategy.UPDATE_RESSOURCE,
-                args: {value: -2, type: ResourceType.HEALTH}
-            }
-        ]
-    }
+  actions: [
+    {
+      type: ActionStrategy.UPDATE_RESSOURCE,
+      args: { value: -2, type: ResourceType.HEALTH },
+    },
+  ],
+};
 
 export default SPELL;

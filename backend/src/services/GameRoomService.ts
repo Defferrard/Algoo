@@ -3,6 +3,7 @@ import { GameRoomNotFoundException } from '@defferrard/algoo-core/src/exceptions
 import { Color, GameRoom, Player } from '@defferrard/algoo-core/src/game';
 import { MessageType, User } from '@defferrard/algoo-core/src/socket';
 import { assertNonNull } from '@defferrard/algoo-core/src/utils/assertions';
+import { plainToInstance } from 'class-transformer';
 import { Socket } from 'socket.io';
 import { Service } from 'typedi';
 import { v4 as uuid } from 'uuid';
@@ -46,11 +47,19 @@ export default class GameRoomService {
   }
 
   leaveRoom(socket: PlayerSocket) {
-    const { room, player } = socket.data;
+    const {
+      data: {
+        room,
+        player: {
+          user: { uuid: playerId },
+        },
+      },
+    } = socket;
     // Remove the player from the game room
-    this.gameRoomRepository.removePlayer(room, player.user.uuid);
+    this.gameRoomRepository.removePlayer(room, playerId);
     // Broadcast the leave event to all players in the room
-    socket.broadcast.emit(MessageType.GAME_ROOM_LEAVE, player);
+    const dto = plainToInstance(MessageDTO, { playerId, datetime: new Date().toISOString() });
+    socket.broadcast.emit(MessageType.GAME_ROOM_LEAVE, dto);
   }
 
   async sendMessage({ data: { room, player } }: PlayerSocket, message: ChatMessageDTO) {

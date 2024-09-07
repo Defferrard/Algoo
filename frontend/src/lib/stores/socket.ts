@@ -66,10 +66,12 @@ export const socket = (() => {
     },
     subscribe,
     get: () => socketIO,
-    emit: async (type: MessageType, data: DTO, ack?: (data: DTO) => void) => {
+    emit: async (type: MessageType, data?: DTO, ack?: (data: DTO) => void) => {
       assertNonNull(socketIO);
       try {
-        await data.validateOrReject();
+        if (data !== undefined) {
+          await data.validateOrReject();
+        }
         socketIO.emit(type, data, ack);
       } catch (e) {
         console.error(e);
