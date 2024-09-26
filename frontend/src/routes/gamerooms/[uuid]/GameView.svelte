@@ -10,14 +10,15 @@
   import { fly } from 'svelte/transition';
   import type { GameManagerDTO } from '@defferrard/algoo-core/src/dto';
   import { create } from './GameManagerBuilder';
+  import {v4 as uuid} from 'uuid';
 
   export let gameManagerDTO: GameManagerDTO;
   const { model, viewModel } = create(gameManagerDTO);
   const { currentSpell, targetHero, currentHero, markers } = viewModel.stores;
 
   onMount(async () => {
-    const TEAM_1 = new Team(Color.RED, 'Team 1');
-    const TEAM_2 = new Team(Color.BLUE, 'Team 2');
+    const TEAM_1 = new Team({color:Color.RED, uuid: uuid(), heroes: []});
+    const TEAM_2 = new Team({color:Color.BLUE, uuid: uuid(), heroes: []});
 
     model.pushTeam(TEAM_1);
     model.pushTeam(TEAM_2);

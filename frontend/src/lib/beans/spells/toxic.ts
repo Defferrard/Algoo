@@ -1,7 +1,8 @@
 import icon from '$lib/assets/spells/toxic.svg';
-import { Color, ResourceType, SpellDTO } from '@defferrard/algoo-core/src/game/';
+import { SpellDTO } from '@defferrard/algoo-core/src/dto';
+import { Color, ResourceType } from '@defferrard/algoo-core/src/game/';
 import { ActionStrategy, DistanceStrategy } from '@defferrard/algoo-core/src/strategy/';
-import { Type } from '@defferrard/algoo-core/src/utils/Type';
+import type { Type } from '@defferrard/algoo-core/src/utils/Type';
 
 const SPELL: Type<SpellDTO> = {
   name: 'Toxic',

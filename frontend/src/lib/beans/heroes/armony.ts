@@ -1,6 +1,6 @@
 import { HeroDTO } from '@defferrard/algoo-core/src/dto';
 import { ResourceType, Stance } from '@defferrard/algoo-core/src/game/';
-import { Type } from '@defferrard/algoo-core/src/utils/Type';
+import type { Type } from '@defferrard/algoo-core/src/utils/Type';
 
 const HERO: Type<HeroDTO> = {
   name: 'Armony',
