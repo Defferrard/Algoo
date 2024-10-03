@@ -1,5 +1,5 @@
 import { DTO } from './DTO';
 
-export interface DTOFriendly {
-  toDTO(): DTO;
+export interface DTOFriendly<D extends DTO = DTO> {
+  toDTO(): D;
 }

@@ -2,7 +2,7 @@ import { CoordinateDTO, DTOFriendly } from '../dto';
 
 export type BaseCoordinate = { x: number; y: number };
 export type SimpleCoordinate = BaseCoordinate;
-export default class Coordinate implements BaseCoordinate, DTOFriendly {
+export default class Coordinate implements BaseCoordinate, DTOFriendly<CoordinateDTO> {
   readonly x: number;
   readonly y: number;
 
@@ -56,7 +56,7 @@ export default class Coordinate implements BaseCoordinate, DTOFriendly {
     };
   }
 
-  normalized(): Coordinate {
+  normalized() {
     if (this.getLength() === 0) {
       return new Coordinate({ x: 0, y: 0 });
     }
@@ -65,7 +65,7 @@ export default class Coordinate implements BaseCoordinate, DTOFriendly {
     return new Coordinate({ x, y });
   }
 
-  floored(): Coordinate {
+  floored() {
     return new Coordinate(Coordinate.floored(this));
   }
   static floored(coordinate: SimpleCoordinate): SimpleCoordinate {
@@ -100,10 +100,10 @@ export default class Coordinate implements BaseCoordinate, DTOFriendly {
     return Math.abs(a.x - b.x) + Math.abs(a.y - b.y) === 1;
   }
 
-  toDTO(): CoordinateDTO {
+  toDTO() {
     return Coordinate.toDTO(this);
   }
-  static toDTO(coordinate: SimpleCoordinate): CoordinateDTO {
+  static toDTO(coordinate: SimpleCoordinate) {
     const dto = new CoordinateDTO();
     dto.x = coordinate.x;
     dto.y = coordinate.y;

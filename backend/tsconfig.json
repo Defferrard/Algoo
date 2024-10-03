@@ -1,6 +1,7 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
+    "composite": true,
     /* Visit https://aka.ms/tsconfig to read more about this file */
 
     /* Projects */
@@ -37,9 +38,7 @@
     "baseUrl": "./src",
     /* Specify the base directory to resolve non-relative module names. */
     "paths": {
-      "~/*": [
-        "./*"
-      ]
+      "~/*": ["./*"]
     },
     /* Specify a set of entries that re-map imports to additional lookup locations. */
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
@@ -118,15 +117,9 @@
     "skipLibCheck": true
     /* Skip type checking all .d.ts files. */
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "**/*.test.*.ts"
-  ],
+  "include": ["src"],
+  "exclude": ["**/*.test.*.ts"],
   "ts-node": {
-    "require": [
-      "tsconfig-paths/register"
-    ]
+    "require": ["tsconfig-paths/register"]
   }
 }

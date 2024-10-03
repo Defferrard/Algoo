@@ -5,7 +5,7 @@ import { Type } from '../utils/Type';
 import { Color } from './Color';
 import { Resources } from './characteristics/Characteristics';
 
-export default class Team implements DTOFriendly {
+export default class Team implements DTOFriendly<TeamDTO> {
   readonly color: Color;
   readonly uuid: string;
   private readonly _entities: Entity<Resources>[] = [];
@@ -31,7 +31,7 @@ export default class Team implements DTOFriendly {
     return this._entities;
   }
 
-  toDTO(): TeamDTO {
+  toDTO() {
     const dto = new TeamDTO();
     dto.color = this.color;
     dto.uuid = this.uuid;

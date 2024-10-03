@@ -6,7 +6,7 @@ import { ActionBuffer } from '$lib/game';
 import { delay } from '$lib/utils/Functions';
 import { Observable } from '$lib/utils/socket/ObservableSocketController';
 import { Coordinate, type Entity, type SimpleCoordinate, Tile, TileType } from '@defferrard/algoo-core/src/board';
-import type { GameManagerDTO } from '@defferrard/algoo-core/src/dto';
+import type { GameManagerDTO, SpellDTO } from '@defferrard/algoo-core/src/dto';
 import {
   GameManager,
   RESSOURCES_COLOR,
@@ -32,6 +32,8 @@ export class GameManagerModel extends Observable<GameManagerModel> {
   public lastHover: SimpleCoordinate | undefined; // The last tile the mouse was hovering
 
   public isBusy: boolean = false; // If the game is currently processing an action
+
+  private _castingSpell: Spell | undefined; // The spell currently being cast
 
   protected getObservable(): GameManagerModel {
     return this;
@@ -81,6 +83,15 @@ export class GameManagerModel extends Observable<GameManagerModel> {
     this.notify();
   }
 
+  get castingSpell(): Spell | undefined {
+    return this._castingSpell;
+  }
+
+  set castingSpell(spell: Spell | undefined) {
+    this._castingSpell = spell;
+    this.notify();
+  }
+
   moveEntity(entity: Entity<Resources>, path: SimpleCoordinate[]) {
     this.gameManager.moveEntity(entity, path);
     this.notify();
@@ -99,13 +110,13 @@ export class GameManagerModel extends Observable<GameManagerModel> {
         this.accessible = [];
         this.targetable = [];
         this.attacked = [];
-        // } else if (this.currentSpell) {
-        //   this.accessible = [];
-        //   this.targetable = this.currentSpell.targetableTiles(
-        //     this.gameManager.board.getEntityCoordinate(currentHero),
-        //     this.gameManager.board,
-        //     this.visibles,
-        //   );
+      } else if (this._castingSpell) {
+        this.accessible = [];
+        this.targetable = this._castingSpell.targetableTiles(
+          this.gameManager.board.getEntityCoordinate(currentHero),
+          this.gameManager.board,
+          this.visibles,
+        );
       } else {
         this.targetable = [];
         this.attacked = [];

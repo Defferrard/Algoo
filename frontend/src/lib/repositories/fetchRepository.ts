@@ -1,9 +1,10 @@
-import type {fetchStoreResult} from "$lib/stores";
+import type { fetchStoreResult } from '$lib/stores';
+import { DTO } from '@defferrard/algoo-core/src/dto';
 
-export type fetchRepository = {
-    getAll: () => fetchStoreResult;
-    get: (id: any) => fetchStoreResult;
-    create: (body: any) => fetchStoreResult;
-    update: (id: any, body: any) => fetchStoreResult;
-    delete: (id: any) => fetchStoreResult;
-}
+export type fetchRepository<D extends DTO, ID = unknown> = {
+  getAll: () => fetchStoreResult<D[], unknown>;
+  get: (ID: any) => fetchStoreResult<D, unknown>;
+  create: (body: D) => fetchStoreResult<D, unknown>;
+  update: (ID: any, body: Partial<D>) => fetchStoreResult<D, unknown>;
+  delete: (ID: any) => fetchStoreResult<D, unknown>;
+};

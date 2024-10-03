@@ -1,7 +1,19 @@
 import { MessageDTO } from './MessageDTO';
-import { IsBoolean } from 'class-validator';
+import { TeamDTO } from './TeamDTO';
+import { IsBoolean, IsNotEmptyObject, ValidateNested } from 'class-validator';
 
-export class IsReadyMessageDTO extends MessageDTO {
+export class ReadyMessageDTO extends MessageDTO {
   @IsBoolean()
-  isReady: boolean;
+  isReady: true;
+
+  @ValidateNested()
+  @IsNotEmptyObject()
+  ownTeam: TeamDTO;
 }
+
+export class NotReadyMessageDTO extends MessageDTO {
+  @IsBoolean()
+  isReady: false;
+}
+
+export type IsReadyMessageDTO = ReadyMessageDTO | NotReadyMessageDTO;

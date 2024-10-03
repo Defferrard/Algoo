@@ -42,20 +42,19 @@
             {#each $GAMES_DATA || [] as gameRoom}
               <button on:click={() => goto(`/gamerooms/${gameRoom.uuid}`)}>
                 <div>
-                  {#if Object.keys(gameRoom.players).length > 0}
-                    {Object.values(gameRoom.players)[0].user.name}'s Game Room
+                  {#if gameRoom.currentPlayers > 0}
+                    {gameRoom.owner?.name}'s Game Room
                   {:else}
                     Empty Game Room
                   {/if}
                 </div>
                 <div>
-                  ({Object.keys(gameRoom.players).length}/{gameRoom.maxPlayers})
+                  ({gameRoom.currentPlayers}/{gameRoom.maxPlayers})
                 </div>
               </button>
             {/each}
           </gamerooms>
         </div>
-        <a href="/game">Test Game here...</a>
       </Window>
     </container>
   </center-flex>

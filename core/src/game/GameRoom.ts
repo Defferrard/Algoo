@@ -1,3 +1,5 @@
+import { DTOFriendly } from '../dto';
+import { SimpleGameRoomDTO } from '../dto/';
 import { FullGameRoomException, PlayerAlreadyInGameRoomException } from '../exceptions/gameRoom';
 import { GameManager, Player } from './index';
 import { v4 as uuidV4 } from 'uuid';
@@ -9,7 +11,7 @@ export enum GameRoomState {
 }
 
 const DEFAULT_ROOM_SIZE = 2;
-export default class GameRoom {
+export default class GameRoom implements DTOFriendly<SimpleGameRoomDTO> {
   readonly uuid: string;
   maxPlayers: number;
   state: GameRoomState;
@@ -21,6 +23,16 @@ export default class GameRoom {
     this.state = GameRoomState.LOBBY;
     this.players = {};
     this.maxPlayers = maxPlayers;
+  }
+
+  toDTO() {
+    const dto = new SimpleGameRoomDTO();
+    dto.uuid = this.uuid;
+    dto.maxPlayers = this.maxPlayers;
+    dto.currentPlayers = this.playersCount;
+    dto.state = this.state;
+    dto.owner = this.owner?.user.toDTO();
+    return dto;
   }
 
   get playersCount(): number {

@@ -4,7 +4,6 @@
   import { localUser } from '$lib/stores/localUser';
   import { Color, Player } from '@defferrard/algoo-core/src/game';
   import { GameRoomState } from '@defferrard/algoo-core/src/game/GameRoom';
-  import type { User } from '@defferrard/algoo-core/src/socket';
   import { onDestroy, onMount } from 'svelte';
 
   import LobbyPage from './LobbyView.svelte';

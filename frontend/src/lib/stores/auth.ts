@@ -1,18 +1,12 @@
 import { API_BASE_PATH } from '$lib/utils/Const';
-import { writable, type Writable } from 'svelte/store';
+import { type Writable, writable } from 'svelte/store';
 
 const BASE_URL = API_BASE_PATH + '/auth';
 
-function login(username: string) {
-
-}
-
-export type authStoreResult = [Writable<any>, Writable<boolean>, Writable<any>, (name: string) => Promise<void>];
-
-export function authStore(): authStoreResult {
+export function authStore() {
   const loading: Writable<boolean> = writable(false);
-  const error: Writable<any> = writable(undefined);
-  const data: Writable<any> = writable(undefined);
+  const error: Writable<unknown> = writable(undefined);
+  const data: Writable<string | undefined> = writable(undefined);
 
   async function login(name: string) {
     loading.set(true);
@@ -33,5 +27,5 @@ export function authStore(): authStoreResult {
     loading.set(false);
   }
 
-  return [data, loading, error, login];
+  return [data, loading, error, login] as const;
 }

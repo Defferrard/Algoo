@@ -3,7 +3,7 @@ import { User } from '../socket';
 import { Type } from '../utils/Type';
 import { Color, Team } from './index';
 
-export default class Player implements DTOFriendly {
+export default class Player implements DTOFriendly<PlayerDTO> {
   readonly team: Team;
   readonly user: User;
 
@@ -14,7 +14,7 @@ export default class Player implements DTOFriendly {
     this.team = new Team(team);
     this.isReady = isReady;
   }
-  toDTO(): PlayerDTO {
+  toDTO() {
     const dto = new PlayerDTO();
     dto.user = this.user.toDTO();
     dto.team = this.team.toDTO();

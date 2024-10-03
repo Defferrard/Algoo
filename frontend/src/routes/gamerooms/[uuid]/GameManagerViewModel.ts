@@ -26,6 +26,9 @@ export class GameManagerViewModel {
     this._markers = writable([]);
 
     model.subscribe((newModel) => this.onModelUpdate(newModel));
+    this._currentSpell.subscribe((spell) => {
+      this._model.castingSpell = spell;
+    });
   }
 
   nextTurn() {

@@ -8,5 +8,4 @@ export class Authenticated implements InterceptorInterface {
       return next();
     }
   }
-
 }

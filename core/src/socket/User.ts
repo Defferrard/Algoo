@@ -1,7 +1,7 @@
 import { DTOFriendly, UserDTO } from '../dto';
 import { Type } from '../utils/Type';
 
-export default class User implements DTOFriendly {
+export default class User implements DTOFriendly<UserDTO> {
   uuid: string;
   name: string;
 
@@ -10,7 +10,7 @@ export default class User implements DTOFriendly {
     this.name = dto.name;
   }
 
-  toDTO(): UserDTO {
+  toDTO() {
     const dto = new UserDTO();
     dto.uuid = this.uuid;
     dto.name = this.name;

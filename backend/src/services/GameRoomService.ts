@@ -1,6 +1,12 @@
-import { ChatMessageDTO, IsReadyMessageDTO, MessageDTO, PlayerDTO } from '@defferrard/algoo-core/src/dto';
+import {
+  ChatMessageDTO,
+  IsReadyMessageDTO,
+  MessageDTO,
+  NotReadyMessageDTO,
+  ReadyMessageDTO,
+} from '@defferrard/algoo-core/src/dto';
 import { GameRoomNotFoundException } from '@defferrard/algoo-core/src/exceptions/gameRoom';
-import { Color, GameRoom, Player } from '@defferrard/algoo-core/src/game';
+import { Color, Player } from '@defferrard/algoo-core/src/game';
 import { MessageType, User } from '@defferrard/algoo-core/src/socket';
 import { assertNonNull } from '@defferrard/algoo-core/src/utils/assertions';
 import { plainToInstance } from 'class-transformer';
@@ -71,11 +77,17 @@ export default class GameRoomService {
     // Set the player's ready status
     let gameRoomReady: boolean = this.gameRoomRepository.setPlayerReady(room, player.user.uuid, isReady);
     // Broadcast that the player is ready to all players in the room
-    const readyMessageDTO = new IsReadyMessageDTO();
-    readyMessageDTO.datetime = new Date().toISOString();
-    readyMessageDTO.playerId = player.user.uuid;
-    readyMessageDTO.isReady = isReady;
-    this.socketRepository.broadcast(room, MessageType.GAME_ROOM_READY, readyMessageDTO);
+    let isReadyMessageDTO: IsReadyMessageDTO;
+    if (isReady) {
+      isReadyMessageDTO = new ReadyMessageDTO();
+      isReadyMessageDTO.ownTeam = {} as any;
+    } else {
+      isReadyMessageDTO = new NotReadyMessageDTO();
+    }
+    isReadyMessageDTO.datetime = new Date().toISOString();
+    isReadyMessageDTO.playerId = player.user.uuid;
+    isReadyMessageDTO.isReady = isReady;
+    this.socketRepository.broadcast(room, MessageType.GAME_ROOM_READY, isReadyMessageDTO);
 
     // If all players are ready
     if (gameRoomReady) {

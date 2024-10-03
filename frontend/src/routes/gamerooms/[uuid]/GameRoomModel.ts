@@ -1,5 +1,5 @@
 import { Observable } from '$lib/utils/socket/ObservableSocketController';
-import type { ChatMessageDTO, GameManagerDTO, PlayerDTO, UserDTO } from '@defferrard/algoo-core/src/dto';
+import type { ChatMessageDTO, GameManagerDTO, UserDTO } from '@defferrard/algoo-core/src/dto';
 import { GameRoom, Player } from '@defferrard/algoo-core/src/game';
 
 export type Message = string | ChatMessageDTO;
@@ -14,6 +14,7 @@ export class GameRoomModel extends Observable<GameRoomModel> {
   private _isReady: boolean = false;
   private _messages: Message[] = [];
   private _gameManagerCurrentDTO?: GameManagerDTO;
+  private _you?: Player;
   constructor() {
     super();
     this._gameRoom = new GameRoom();
