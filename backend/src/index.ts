@@ -8,7 +8,6 @@ import { PORT } from '~/const';
 import init from '~/socketio';
 import { LOGGER } from '~/utils/logger';
 
-
 useContainer(Container);
 
 export const HTTP_SERVER: HTTPSServer = createServer(app);

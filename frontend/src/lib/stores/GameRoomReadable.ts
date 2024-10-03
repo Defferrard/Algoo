@@ -1,16 +1,5 @@
-import {
-  GameManager,
-  GameRoom,
-  GameRoomState,
-  Player,
-} from '@defferrard/algoo-core/src/game';
-import type {
-  Invalidator,
-  Readable,
-  Subscriber,
-  Unsubscriber,
-  Updater,
-} from 'svelte/store';
+import { GameManager, GameRoom, GameRoomState, Player } from '@defferrard/algoo-core/src/game';
+import type { Invalidator, Readable, Subscriber, Unsubscriber, Updater } from 'svelte/store';
 import { writable } from 'svelte/store';
 import { v4 as uuidV4 } from 'uuid';
 
@@ -35,7 +24,6 @@ export default class GameRoomReadable extends GameRoom implements Readable<GameR
     this.set = set;
     this.subscribe = subscribe;
   }
-
 
   set state(state: GameRoomState) {
     super.state = state;

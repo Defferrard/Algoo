@@ -8,7 +8,6 @@ import { app } from '~/app';
 import init from '~/socketio';
 import { socketOnce } from '~/test/utils';
 
-
 const BASE_URL: string = '/rooms';
 const AUTH_BASE_URL: string = '/api/v1/auth';
 describe(`Socket Base Test ${BASE_URL}`, () => {

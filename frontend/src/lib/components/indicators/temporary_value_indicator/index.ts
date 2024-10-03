@@ -1,1 +1,1 @@
-export {showValue} from "./temporaryValueIndicator";
+export { showValue } from './temporaryValueIndicator';

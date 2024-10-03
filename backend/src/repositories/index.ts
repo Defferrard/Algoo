@@ -1,2 +1,2 @@
-export * from './GameRoomRepository'
-export * from './SocketRepository'
+export * from './GameRoomRepository';
+export * from './SocketRepository';

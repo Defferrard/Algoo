@@ -1,1 +1,1 @@
-export {showSpell} from "./temporarySpellIndicator";
+export { showSpell } from './temporarySpellIndicator';

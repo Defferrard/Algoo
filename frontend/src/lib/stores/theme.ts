@@ -2,7 +2,6 @@ import { get as getValue, store as storeValue } from '$lib/stores/localStorage';
 import { Theme } from '$lib/utils/Theme';
 import { get, writable } from 'svelte/store';
 
-
 const LOCALSTORAGE_KEY: string = 'theme';
 
 export const theme = (() => {
@@ -23,9 +22,7 @@ export const theme = (() => {
         document.documentElement.classList.remove(theme);
         const nbThemes: number = Object.values(Theme).length;
         const index: number = Object.values(Theme).indexOf(theme);
-        const newTheme: Theme = Object.values(Theme)[
-          (index + 1) % nbThemes
-        ] as Theme;
+        const newTheme: Theme = Object.values(Theme)[(index + 1) % nbThemes] as Theme;
         document.documentElement.classList.add(newTheme);
         return newTheme;
       });

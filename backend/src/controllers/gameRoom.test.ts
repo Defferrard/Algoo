@@ -4,7 +4,6 @@ import request from 'supertest';
 import { Container } from 'typedi';
 import { app } from '~/app';
 
-
 const BASE_URL: string = '/api/v1/rooms';
 describe(`Base Test ${BASE_URL}`, () => {
   beforeAll(() => {

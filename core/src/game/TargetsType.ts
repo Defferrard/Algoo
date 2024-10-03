@@ -1,3 +1,1 @@
-export enum TargetsType {
-
-}
+export enum TargetsType {}

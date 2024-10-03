@@ -1,1 +1,1 @@
-export {movementCostIndicator, movementCost, display} from "./movementCostIndicator";
+export { movementCostIndicator, movementCost, display } from './movementCostIndicator';

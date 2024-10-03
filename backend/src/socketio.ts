@@ -5,7 +5,6 @@ import { Server } from 'socket.io';
 import { Container } from 'typedi';
 import { authenticate } from '~/auth';
 
-
 export default function init(httpServer: HTTPSServer): Server {
   const io: Server = new Server(httpServer, {
     path: '/socket.io',

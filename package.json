@@ -12,7 +12,8 @@
     "dev": "concurrently --names BACKEND,FRONTEND -c blue,green npm:backend:dev npm:frontend:dev",
     "backend:test": "npm run test -w backend",
     "frontend:test": "npm run test -w frontend",
-    "test": "concurrently  'npm:backend:test' 'npm:frontend:test'"
+    "test": "concurrently  'npm:backend:test' 'npm:frontend:test'",
+    "prettier:write": "prettier --write \"**/*.{ts,tsx,json,md}\""
   },
   "engines": {
     "node": "^18.15.0",
