@@ -1,0 +1,27 @@
+4d8a3f3dd3d087dc5328a0a27b75b1f0
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.MoveEntityDTO = void 0;
+const CoordinateDTO_1 = require("./CoordinateDTO");
+const UuidDTO_1 = require("./UuidDTO");
+const class_transformer_1 = require("class-transformer");
+const class_validator_1 = require("class-validator");
+class MoveEntityDTO extends UuidDTO_1.UuidDTO {
+    path;
+}
+exports.MoveEntityDTO = MoveEntityDTO;
+__decorate([
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => CoordinateDTO_1.CoordinateDTO),
+    __metadata("design:type", Array)
+], MoveEntityDTO.prototype, "path", void 0);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXEdpdGh1YlxcQWxnb29cXGNvcmVcXHNyY1xcZHRvXFxNb3ZlRW50aXR5RFRPLnRzIiwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7OztBQUFBLG1EQUFnRDtBQUNoRCx1Q0FBb0M7QUFDcEMseURBQXlDO0FBQ3pDLHFEQUFpRDtBQUVqRCxNQUFhLGFBQWMsU0FBUSxpQkFBTztJQUd4QyxJQUFJLENBQWtCO0NBQ3ZCO0FBSkQsc0NBSUM7QUFEQztJQUZDLElBQUEsZ0NBQWMsRUFBQyxFQUFFLElBQUksRUFBRSxJQUFJLEVBQUUsQ0FBQztJQUM5QixJQUFBLHdCQUFJLEVBQUMsR0FBRyxFQUFFLENBQUMsNkJBQWEsQ0FBQzs7MkNBQ0oiLCJuYW1lcyI6W10sInNvdXJjZXMiOlsiQzpcXEdpdGh1YlxcQWxnb29cXGNvcmVcXHNyY1xcZHRvXFxNb3ZlRW50aXR5RFRPLnRzIl0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IENvb3JkaW5hdGVEVE8gfSBmcm9tICcuL0Nvb3JkaW5hdGVEVE8nO1xuaW1wb3J0IHsgVXVpZERUTyB9IGZyb20gJy4vVXVpZERUTyc7XG5pbXBvcnQgeyBUeXBlIH0gZnJvbSAnY2xhc3MtdHJhbnNmb3JtZXInO1xuaW1wb3J0IHsgVmFsaWRhdGVOZXN0ZWQgfSBmcm9tICdjbGFzcy12YWxpZGF0b3InO1xuXG5leHBvcnQgY2xhc3MgTW92ZUVudGl0eURUTyBleHRlbmRzIFV1aWREVE8ge1xuICBAVmFsaWRhdGVOZXN0ZWQoeyBlYWNoOiB0cnVlIH0pXG4gIEBUeXBlKCgpID0+IENvb3JkaW5hdGVEVE8pXG4gIHBhdGg6IENvb3JkaW5hdGVEVE9bXTtcbn1cbiJdLCJ2ZXJzaW9uIjozfQ==

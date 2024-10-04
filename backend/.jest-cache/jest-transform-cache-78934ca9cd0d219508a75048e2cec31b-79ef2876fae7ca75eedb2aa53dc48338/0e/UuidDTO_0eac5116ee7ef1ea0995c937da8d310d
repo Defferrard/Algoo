@@ -1,0 +1,24 @@
+38cea5ab1de2e1e5937db19d9c202498
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.UuidDTO = void 0;
+const DTO_1 = require("./DTO");
+const class_validator_1 = require("class-validator");
+class UuidDTO extends DTO_1.DTO {
+    uuid;
+}
+exports.UuidDTO = UuidDTO;
+__decorate([
+    (0, class_validator_1.IsUUID)(),
+    __metadata("design:type", String)
+], UuidDTO.prototype, "uuid", void 0);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXEdpdGh1YlxcQWxnb29cXGNvcmVcXHNyY1xcZHRvXFxVdWlkRFRPLnRzIiwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7OztBQUFBLCtCQUE0QjtBQUM1QixxREFBeUM7QUFFekMsTUFBYSxPQUFRLFNBQVEsU0FBRztJQUU5QixJQUFJLENBQVM7Q0FDZDtBQUhELDBCQUdDO0FBREM7SUFEQyxJQUFBLHdCQUFNLEdBQUU7O3FDQUNJIiwibmFtZXMiOltdLCJzb3VyY2VzIjpbIkM6XFxHaXRodWJcXEFsZ29vXFxjb3JlXFxzcmNcXGR0b1xcVXVpZERUTy50cyJdLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBEVE8gfSBmcm9tICcuL0RUTyc7XG5pbXBvcnQgeyBJc1VVSUQgfSBmcm9tICdjbGFzcy12YWxpZGF0b3InO1xuXG5leHBvcnQgY2xhc3MgVXVpZERUTyBleHRlbmRzIERUTyB7XG4gIEBJc1VVSUQoKVxuICB1dWlkOiBzdHJpbmc7XG59XG4iXSwidmVyc2lvbiI6M30=

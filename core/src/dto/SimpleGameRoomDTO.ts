@@ -1,7 +1,7 @@
 import { GameRoomState } from '../game';
 import { DTO } from './DTO';
 import { UserDTO } from './UserDTO';
-import { IsEnum, IsNumber, IsOptional, IsPositive, IsUUID, ValidateNested } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsPositive, IsUUID, Min, ValidateNested } from 'class-validator';
 
 export class SimpleGameRoomDTO extends DTO {
   @IsUUID()
@@ -12,7 +12,7 @@ export class SimpleGameRoomDTO extends DTO {
   maxPlayers: number;
 
   @IsNumber()
-  @IsPositive()
+  @Min(0)
   currentPlayers: number;
 
   @IsEnum(GameRoomState)

@@ -1,0 +1,24 @@
+18b3332c75937909c8c4454578c0028f
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.HeroDTO = void 0;
+const BaseHeroDTO_1 = require("./BaseHeroDTO");
+const class_validator_1 = require("class-validator");
+class HeroDTO extends BaseHeroDTO_1.BaseHeroDTO {
+    spells;
+}
+exports.HeroDTO = HeroDTO;
+__decorate([
+    (0, class_validator_1.Length)(3, 20, { each: true }),
+    __metadata("design:type", Array)
+], HeroDTO.prototype, "spells", void 0);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXEdpdGh1YlxcQWxnb29cXGNvcmVcXHNyY1xcZHRvXFxIZXJvRFRPLnRzIiwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7OztBQUFBLCtDQUE0QztBQUM1QyxxREFBeUM7QUFFekMsTUFBYSxPQUFRLFNBQVEseUJBQVc7SUFFdEMsTUFBTSxDQUFXO0NBQ2xCO0FBSEQsMEJBR0M7QUFEQztJQURDLElBQUEsd0JBQU0sRUFBQyxDQUFDLEVBQUUsRUFBRSxFQUFFLEVBQUUsSUFBSSxFQUFFLElBQUksRUFBRSxDQUFDOzt1Q0FDYiIsIm5hbWVzIjpbXSwic291cmNlcyI6WyJDOlxcR2l0aHViXFxBbGdvb1xcY29yZVxcc3JjXFxkdG9cXEhlcm9EVE8udHMiXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgQmFzZUhlcm9EVE8gfSBmcm9tICcuL0Jhc2VIZXJvRFRPJztcbmltcG9ydCB7IExlbmd0aCB9IGZyb20gJ2NsYXNzLXZhbGlkYXRvcic7XG5cbmV4cG9ydCBjbGFzcyBIZXJvRFRPIGV4dGVuZHMgQmFzZUhlcm9EVE8ge1xuICBATGVuZ3RoKDMsIDIwLCB7IGVhY2g6IHRydWUgfSlcbiAgc3BlbGxzOiBzdHJpbmdbXTtcbn1cbiJdLCJ2ZXJzaW9uIjozfQ==

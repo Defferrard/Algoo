@@ -1,0 +1,39 @@
+da895ebef838c8f5c31d3657f287c176
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TeamDTO = void 0;
+const game_1 = require("../game");
+const DTO_1 = require("./DTO");
+const HeroDTO_1 = require("./HeroDTO");
+const class_transformer_1 = require("class-transformer");
+const class_validator_1 = require("class-validator");
+const uuid_1 = require("uuid");
+class TeamDTO extends DTO_1.DTO {
+    color;
+    uuid = (0, uuid_1.v4)();
+    heroes;
+}
+exports.TeamDTO = TeamDTO;
+__decorate([
+    (0, class_validator_1.IsEnum)(game_1.Color),
+    __metadata("design:type", String)
+], TeamDTO.prototype, "color", void 0);
+__decorate([
+    (0, class_validator_1.IsUUID)(),
+    __metadata("design:type", String)
+], TeamDTO.prototype, "uuid", void 0);
+__decorate([
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => HeroDTO_1.HeroDTO),
+    __metadata("design:type", Array)
+], TeamDTO.prototype, "heroes", void 0);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXEdpdGh1YlxcQWxnb29cXGNvcmVcXHNyY1xcZHRvXFxUZWFtRFRPLnRzIiwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7OztBQUFBLGtDQUFnQztBQUNoQywrQkFBNEI7QUFDNUIsdUNBQW9DO0FBQ3BDLHlEQUF5QztBQUN6QyxxREFBaUU7QUFDakUsK0JBQW9DO0FBRXBDLE1BQWEsT0FBUSxTQUFRLFNBQUc7SUFFOUIsS0FBSyxDQUFRO0lBR2IsSUFBSSxHQUFXLElBQUEsU0FBTSxHQUFFLENBQUM7SUFJeEIsTUFBTSxDQUFZO0NBQ25CO0FBVkQsMEJBVUM7QUFSQztJQURDLElBQUEsd0JBQU0sRUFBQyxZQUFLLENBQUM7O3NDQUNEO0FBR2I7SUFEQyxJQUFBLHdCQUFNLEdBQUU7O3FDQUNlO0FBSXhCO0lBRkMsSUFBQSxnQ0FBYyxFQUFDLEVBQUUsSUFBSSxFQUFFLElBQUksRUFBRSxDQUFDO0lBQzlCLElBQUEsd0JBQUksRUFBQyxHQUFHLEVBQUUsQ0FBQyxpQkFBTyxDQUFDOzt1Q0FDRiIsIm5hbWVzIjpbXSwic291cmNlcyI6WyJDOlxcR2l0aHViXFxBbGdvb1xcY29yZVxcc3JjXFxkdG9cXFRlYW1EVE8udHMiXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgQ29sb3IgfSBmcm9tICcuLi9nYW1lJztcbmltcG9ydCB7IERUTyB9IGZyb20gJy4vRFRPJztcbmltcG9ydCB7IEhlcm9EVE8gfSBmcm9tICcuL0hlcm9EVE8nO1xuaW1wb3J0IHsgVHlwZSB9IGZyb20gJ2NsYXNzLXRyYW5zZm9ybWVyJztcbmltcG9ydCB7IElzRW51bSwgSXNVVUlELCBWYWxpZGF0ZU5lc3RlZCB9IGZyb20gJ2NsYXNzLXZhbGlkYXRvcic7XG5pbXBvcnQgeyB2NCBhcyB1dWlkVjQgfSBmcm9tICd1dWlkJztcblxuZXhwb3J0IGNsYXNzIFRlYW1EVE8gZXh0ZW5kcyBEVE8ge1xuICBASXNFbnVtKENvbG9yKVxuICBjb2xvcjogQ29sb3I7XG5cbiAgQElzVVVJRCgpXG4gIHV1aWQ6IHN0cmluZyA9IHV1aWRWNCgpO1xuXG4gIEBWYWxpZGF0ZU5lc3RlZCh7IGVhY2g6IHRydWUgfSlcbiAgQFR5cGUoKCkgPT4gSGVyb0RUTylcbiAgaGVyb2VzOiBIZXJvRFRPW107XG59XG4iXSwidmVyc2lvbiI6M30=

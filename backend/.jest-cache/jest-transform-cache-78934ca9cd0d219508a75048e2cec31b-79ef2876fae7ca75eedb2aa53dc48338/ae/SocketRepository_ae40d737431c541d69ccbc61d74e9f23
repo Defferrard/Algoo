@@ -1,0 +1,45 @@
+1e2c2e7c0c2b0e47dc45f8d98e74e8a6
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SocketRepository = exports.SOCKET_ROOM_PREFIX = void 0;
+const dto_1 = require("@defferrard/algoo-core/src/dto");
+const socket_io_1 = require("socket.io");
+const typedi_1 = require("typedi");
+const logger_1 = require("~/utils/logger");
+exports.SOCKET_ROOM_PREFIX = 'user:';
+let SocketRepository = class SocketRepository {
+    io;
+    constructor(io) {
+        this.io = io;
+    }
+    save(socket, user) {
+        socket.data.user = user;
+        socket.join(exports.SOCKET_ROOM_PREFIX + user.uuid);
+    }
+    async broadcast(room, event, dto) {
+        try {
+            if (dto && dto instanceof dto_1.DTO) {
+                await dto.validateOrReject();
+            }
+            this.io.of(`/rooms/${room}`).emit(event, dto);
+        }
+        catch (e) {
+            logger_1.LOGGER.error(e);
+        }
+    }
+};
+exports.SocketRepository = SocketRepository;
+exports.SocketRepository = SocketRepository = __decorate([
+    (0, typedi_1.Service)(),
+    __metadata("design:paramtypes", [socket_io_1.Server])
+], SocketRepository);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXEdpdGh1YlxcQWxnb29cXGJhY2tlbmRcXHNyY1xccmVwb3NpdG9yaWVzXFxTb2NrZXRSZXBvc2l0b3J5LnRzIiwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7OztBQUFBLHdEQUFxRDtBQUVyRCx5Q0FBMkM7QUFDM0MsbUNBQWlDO0FBQ2pDLDJDQUF3QztBQUUzQixRQUFBLGtCQUFrQixHQUFHLE9BQU8sQ0FBQztBQUduQyxJQUFNLGdCQUFnQixHQUF0QixNQUFNLGdCQUFnQjtJQUNSO0lBQW5CLFlBQW1CLEVBQVU7UUFBVixPQUFFLEdBQUYsRUFBRSxDQUFRO0lBQUcsQ0FBQztJQUVqQyxJQUFJLENBQUMsTUFBYyxFQUFFLElBQVU7UUFDN0IsTUFBTSxDQUFDLElBQUksQ0FBQyxJQUFJLEdBQUcsSUFBSSxDQUFDO1FBQ3hCLE1BQU0sQ0FBQyxJQUFJLENBQUMsMEJBQWtCLEdBQUcsSUFBSSxDQUFDLElBQUksQ0FBQyxDQUFDO0lBQzlDLENBQUM7SUFFRCxLQUFLLENBQUMsU0FBUyxDQUFDLElBQVksRUFBRSxLQUFrQixFQUFFLEdBQTJCO1FBQzNFLElBQUksQ0FBQztZQUNILElBQUksR0FBRyxJQUFJLEdBQUcsWUFBWSxTQUFHLEVBQUUsQ0FBQztnQkFDOUIsTUFBTSxHQUFHLENBQUMsZ0JBQWdCLEVBQUUsQ0FBQztZQUMvQixDQUFDO1lBQ0QsSUFBSSxDQUFDLEVBQUUsQ0FBQyxFQUFFLENBQUMsVUFBVSxJQUFJLEVBQUUsQ0FBQyxDQUFDLElBQUksQ0FBQyxLQUFLLEVBQUUsR0FBRyxDQUFDLENBQUM7UUFDaEQsQ0FBQztRQUFDLE9BQU8sQ0FBQyxFQUFFLENBQUM7WUFDWCxlQUFNLENBQUMsS0FBSyxDQUFDLENBQUMsQ0FBQyxDQUFDO1FBQ2xCLENBQUM7SUFDSCxDQUFDO0NBQ0YsQ0FBQTtBQWxCWSw0Q0FBZ0I7MkJBQWhCLGdCQUFnQjtJQUQ1QixJQUFBLGdCQUFPLEdBQUU7cUNBRWUsa0JBQU07R0FEbEIsZ0JBQWdCLENBa0I1QiIsIm5hbWVzIjpbXSwic291cmNlcyI6WyJDOlxcR2l0aHViXFxBbGdvb1xcYmFja2VuZFxcc3JjXFxyZXBvc2l0b3JpZXNcXFNvY2tldFJlcG9zaXRvcnkudHMiXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgRFRPIH0gZnJvbSAnQGRlZmZlcnJhcmQvYWxnb28tY29yZS9zcmMvZHRvJztcbmltcG9ydCB7IE1lc3NhZ2VUeXBlLCBVc2VyIH0gZnJvbSAnQGRlZmZlcnJhcmQvYWxnb28tY29yZS9zcmMvc29ja2V0JztcbmltcG9ydCB7IFNlcnZlciwgU29ja2V0IH0gZnJvbSAnc29ja2V0LmlvJztcbmltcG9ydCB7IFNlcnZpY2UgfSBmcm9tICd0eXBlZGknO1xuaW1wb3J0IHsgTE9HR0VSIH0gZnJvbSAnfi91dGlscy9sb2dnZXInO1xuXG5leHBvcnQgY29uc3QgU09DS0VUX1JPT01fUFJFRklYID0gJ3VzZXI6JztcblxuQFNlcnZpY2UoKVxuZXhwb3J0IGNsYXNzIFNvY2tldFJlcG9zaXRvcnkge1xuICBjb25zdHJ1Y3RvcihwdWJsaWMgaW86IFNlcnZlcikge31cblxuICBzYXZlKHNvY2tldDogU29ja2V0LCB1c2VyOiBVc2VyKSB7XG4gICAgc29ja2V0LmRhdGEudXNlciA9IHVzZXI7XG4gICAgc29ja2V0LmpvaW4oU09DS0VUX1JPT01fUFJFRklYICsgdXNlci51dWlkKTtcbiAgfVxuXG4gIGFzeW5jIGJyb2FkY2FzdChyb29tOiBzdHJpbmcsIGV2ZW50OiBNZXNzYWdlVHlwZSwgZHRvPzogRFRPIHwgc3RyaW5nIHwgbnVtYmVyKSB7XG4gICAgdHJ5IHtcbiAgICAgIGlmIChkdG8gJiYgZHRvIGluc3RhbmNlb2YgRFRPKSB7XG4gICAgICAgIGF3YWl0IGR0by52YWxpZGF0ZU9yUmVqZWN0KCk7XG4gICAgICB9XG4gICAgICB0aGlzLmlvLm9mKGAvcm9vbXMvJHtyb29tfWApLmVtaXQoZXZlbnQsIGR0byk7XG4gICAgfSBjYXRjaCAoZSkge1xuICAgICAgTE9HR0VSLmVycm9yKGUpO1xuICAgIH1cbiAgfVxufVxuIl0sInZlcnNpb24iOjN9

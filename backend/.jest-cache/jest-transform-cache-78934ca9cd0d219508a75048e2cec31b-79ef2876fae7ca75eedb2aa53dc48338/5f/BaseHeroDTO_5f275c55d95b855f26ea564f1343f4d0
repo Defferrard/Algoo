@@ -1,0 +1,36 @@
+5256272cdc78b6e95750e0842f3276b8
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.BaseHeroDTO = void 0;
+const game_1 = require("../game");
+const DTO_1 = require("./DTO");
+const class_validator_1 = require("class-validator");
+class BaseHeroDTO extends DTO_1.DTO {
+    name;
+    title;
+    characteristics;
+    stance;
+}
+exports.BaseHeroDTO = BaseHeroDTO;
+__decorate([
+    (0, class_validator_1.Length)(3, 20),
+    __metadata("design:type", String)
+], BaseHeroDTO.prototype, "name", void 0);
+__decorate([
+    (0, class_validator_1.Length)(3, 20),
+    __metadata("design:type", String)
+], BaseHeroDTO.prototype, "title", void 0);
+__decorate([
+    (0, class_validator_1.IsEnum)(game_1.Stance, { each: true }),
+    __metadata("design:type", String)
+], BaseHeroDTO.prototype, "stance", void 0);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXEdpdGh1YlxcQWxnb29cXGNvcmVcXHNyY1xcZHRvXFxCYXNlSGVyb0RUTy50cyIsIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7QUFBQSxrQ0FBb0Q7QUFDcEQsK0JBQTRCO0FBQzVCLHFEQUFpRDtBQUVqRCxNQUFhLFdBQVksU0FBUSxTQUFHO0lBRWxDLElBQUksQ0FBUztJQUViLEtBQUssQ0FBUztJQUVkLGVBQWUsQ0FJYjtJQUdGLE1BQU0sQ0FBUztDQUNoQjtBQWRELGtDQWNDO0FBWkM7SUFEQyxJQUFBLHdCQUFNLEVBQUMsQ0FBQyxFQUFFLEVBQUUsQ0FBQzs7eUNBQ0Q7QUFFYjtJQURDLElBQUEsd0JBQU0sRUFBQyxDQUFDLEVBQUUsRUFBRSxDQUFDOzswQ0FDQTtBQVNkO0lBREMsSUFBQSx3QkFBTSxFQUFDLGFBQU0sRUFBRSxFQUFFLElBQUksRUFBRSxJQUFJLEVBQUUsQ0FBQzs7MkNBQ2hCIiwibmFtZXMiOltdLCJzb3VyY2VzIjpbIkM6XFxHaXRodWJcXEFsZ29vXFxjb3JlXFxzcmNcXGR0b1xcQmFzZUhlcm9EVE8udHMiXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgU3RhbmNlLCBTdGFuZGFyZFJlc291cmNlcyB9IGZyb20gJy4uL2dhbWUnO1xuaW1wb3J0IHsgRFRPIH0gZnJvbSAnLi9EVE8nO1xuaW1wb3J0IHsgSXNFbnVtLCBMZW5ndGggfSBmcm9tICdjbGFzcy12YWxpZGF0b3InO1xuXG5leHBvcnQgY2xhc3MgQmFzZUhlcm9EVE8gZXh0ZW5kcyBEVE8ge1xuICBATGVuZ3RoKDMsIDIwKVxuICBuYW1lOiBzdHJpbmc7XG4gIEBMZW5ndGgoMywgMjApXG4gIHRpdGxlOiBzdHJpbmc7XG5cbiAgY2hhcmFjdGVyaXN0aWNzOiBTdGFuZGFyZFJlc291cmNlcyAmIHtcbiAgICBzdHJlbmd0aDogbnVtYmVyO1xuICAgIHJlc2lzdGFuY2U6IG51bWJlcjtcbiAgICBkdXJhYmlsaXR5OiBudW1iZXI7XG4gIH07XG5cbiAgQElzRW51bShTdGFuY2UsIHsgZWFjaDogdHJ1ZSB9KVxuICBzdGFuY2U6IFN0YW5jZTtcbn1cbiJdLCJ2ZXJzaW9uIjozfQ==

@@ -1,0 +1,11 @@
+9170a346758f11a7a6c39e975e9e2479
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SocketStatus = void 0;
+var SocketStatus;
+(function (SocketStatus) {
+    SocketStatus[SocketStatus["OK"] = 0] = "OK";
+    SocketStatus[SocketStatus["RESSOURCE_NOT_FOUND"] = 1] = "RESSOURCE_NOT_FOUND";
+    SocketStatus[SocketStatus["FAILED"] = 2] = "FAILED";
+})(SocketStatus || (exports.SocketStatus = SocketStatus = {}));
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXEdpdGh1YlxcQWxnb29cXGNvcmVcXHNyY1xcc29ja2V0XFxTb2NrZXRTdGF0dXMudHMiLCJtYXBwaW5ncyI6Ijs7O0FBQUEsSUFBWSxZQUtYO0FBTEQsV0FBWSxZQUFZO0lBQ3RCLDJDQUFFLENBQUE7SUFDRiw2RUFBbUIsQ0FBQTtJQUVuQixtREFBTSxDQUFBO0FBQ1IsQ0FBQyxFQUxXLFlBQVksNEJBQVosWUFBWSxRQUt2QiIsIm5hbWVzIjpbXSwic291cmNlcyI6WyJDOlxcR2l0aHViXFxBbGdvb1xcY29yZVxcc3JjXFxzb2NrZXRcXFNvY2tldFN0YXR1cy50cyJdLCJzb3VyY2VzQ29udGVudCI6WyJleHBvcnQgZW51bSBTb2NrZXRTdGF0dXMge1xuICBPSyxcbiAgUkVTU09VUkNFX05PVF9GT1VORCxcblxuICBGQUlMRUQsXG59XG4iXSwidmVyc2lvbiI6M30=

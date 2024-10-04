@@ -1,0 +1,75 @@
+d159ee26d2406395a920bd9800cc0caa
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.GameManagerCtrl = void 0;
+const dto_1 = require("@defferrard/algoo-core/src/dto");
+const socket_1 = require("@defferrard/algoo-core/src/socket");
+const socket_controllers_1 = require("socket-controllers");
+const socket_io_1 = require("socket.io");
+const typedi_1 = require("typedi");
+const GameManagerService_1 = __importDefault(require("~/services/GameManagerService"));
+const logger_1 = require("~/utils/logger");
+const GAME_ROOM_UUID = 'gameRoomUUID';
+let GameManagerCtrl = class GameManagerCtrl {
+    service;
+    constructor(service) {
+        this.service = service;
+    }
+    nextTurn(socket) {
+        logger_1.LOGGER.info(`Socket ${socket.id} passed turn`);
+        this.service.nextTurn(socket);
+    }
+    castSpell(socket, payload) {
+        logger_1.LOGGER.info(`Socket ${socket.id} cast spell`, payload);
+        this.service.castSpell(socket, payload);
+    }
+    moveEntity(socket, payload) {
+        logger_1.LOGGER.info(`Socket ${socket.id} move entity`, payload);
+        this.service.moveEntity(socket, payload);
+    }
+};
+exports.GameManagerCtrl = GameManagerCtrl;
+__decorate([
+    (0, socket_controllers_1.OnMessage)(socket_1.MessageType.NEXT_TURN),
+    __param(0, (0, socket_controllers_1.ConnectedSocket)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket]),
+    __metadata("design:returntype", void 0)
+], GameManagerCtrl.prototype, "nextTurn", null);
+__decorate([
+    (0, socket_controllers_1.OnMessage)(socket_1.MessageType.CAST_SPELL),
+    __param(0, (0, socket_controllers_1.ConnectedSocket)()),
+    __param(1, (0, socket_controllers_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, dto_1.CastSpellDTO]),
+    __metadata("design:returntype", void 0)
+], GameManagerCtrl.prototype, "castSpell", null);
+__decorate([
+    (0, socket_controllers_1.OnMessage)(socket_1.MessageType.MOVE_ENTITY),
+    __param(0, (0, socket_controllers_1.ConnectedSocket)()),
+    __param(1, (0, socket_controllers_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, dto_1.MoveEntityDTO]),
+    __metadata("design:returntype", void 0)
+], GameManagerCtrl.prototype, "moveEntity", null);
+exports.GameManagerCtrl = GameManagerCtrl = __decorate([
+    (0, typedi_1.Service)(),
+    (0, socket_controllers_1.SocketController)(`/rooms/:${GAME_ROOM_UUID}`),
+    __metadata("design:paramtypes", [GameManagerService_1.default])
+], GameManagerCtrl);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXEdpdGh1YlxcQWxnb29cXGJhY2tlbmRcXHNyY1xcc29ja2V0XFxjb250cm9sbGVyc1xcR2FtZU1hbmFnZXJDdHJsLnRzIiwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7OztBQUFBLHdEQUE2RTtBQUM3RSw4REFBZ0U7QUFDaEUsMkRBQStGO0FBQy9GLHlDQUFtQztBQUNuQyxtQ0FBaUM7QUFDakMsdUZBQStEO0FBQy9ELDJDQUF3QztBQUV4QyxNQUFNLGNBQWMsR0FBRyxjQUFjLENBQUM7QUFJL0IsSUFBTSxlQUFlLEdBQXJCLE1BQU0sZUFBZTtJQUNQO0lBQW5CLFlBQW1CLE9BQTJCO1FBQTNCLFlBQU8sR0FBUCxPQUFPLENBQW9CO0lBQUcsQ0FBQztJQUdsRCxRQUFRLENBQW9CLE1BQWM7UUFDeEMsZUFBTSxDQUFDLElBQUksQ0FBQyxVQUFVLE1BQU0sQ0FBQyxFQUFFLGNBQWMsQ0FBQyxDQUFDO1FBQy9DLElBQUksQ0FBQyxPQUFPLENBQUMsUUFBUSxDQUFDLE1BQU0sQ0FBQyxDQUFDO0lBQ2hDLENBQUM7SUFHRCxTQUFTLENBQW9CLE1BQWMsRUFBaUIsT0FBcUI7UUFDL0UsZUFBTSxDQUFDLElBQUksQ0FBQyxVQUFVLE1BQU0sQ0FBQyxFQUFFLGFBQWEsRUFBRSxPQUFPLENBQUMsQ0FBQztRQUN2RCxJQUFJLENBQUMsT0FBTyxDQUFDLFNBQVMsQ0FBQyxNQUFNLEVBQUUsT0FBTyxDQUFDLENBQUM7SUFDMUMsQ0FBQztJQUdELFVBQVUsQ0FBb0IsTUFBYyxFQUFpQixPQUFzQjtRQUNqRixlQUFNLENBQUMsSUFBSSxDQUFDLFVBQVUsTUFBTSxDQUFDLEVBQUUsY0FBYyxFQUFFLE9BQU8sQ0FBQyxDQUFDO1FBQ3hELElBQUksQ0FBQyxPQUFPLENBQUMsVUFBVSxDQUFDLE1BQU0sRUFBRSxPQUFPLENBQUMsQ0FBQztJQUMzQyxDQUFDO0NBQ0YsQ0FBQTtBQXBCWSwwQ0FBZTtBQUkxQjtJQURDLElBQUEsOEJBQVMsRUFBQyxvQkFBVyxDQUFDLFNBQVMsQ0FBQztJQUN2QixXQUFBLElBQUEsb0NBQWUsR0FBRSxDQUFBOztxQ0FBUyxrQkFBTTs7K0NBR3pDO0FBR0Q7SUFEQyxJQUFBLDhCQUFTLEVBQUMsb0JBQVcsQ0FBQyxVQUFVLENBQUM7SUFDdkIsV0FBQSxJQUFBLG9DQUFlLEdBQUUsQ0FBQTtJQUFrQixXQUFBLElBQUEsZ0NBQVcsR0FBRSxDQUFBOztxQ0FBdEIsa0JBQU0sRUFBMEIsa0JBQVk7O2dEQUdoRjtBQUdEO0lBREMsSUFBQSw4QkFBUyxFQUFDLG9CQUFXLENBQUMsV0FBVyxDQUFDO0lBQ3ZCLFdBQUEsSUFBQSxvQ0FBZSxHQUFFLENBQUE7SUFBa0IsV0FBQSxJQUFBLGdDQUFXLEdBQUUsQ0FBQTs7cUNBQXRCLGtCQUFNLEVBQTBCLG1CQUFhOztpREFHbEY7MEJBbkJVLGVBQWU7SUFGM0IsSUFBQSxnQkFBTyxHQUFFO0lBQ1QsSUFBQSxxQ0FBZ0IsRUFBQyxXQUFXLGNBQWMsRUFBRSxDQUFDO3FDQUVoQiw0QkFBa0I7R0FEbkMsZUFBZSxDQW9CM0IiLCJuYW1lcyI6W10sInNvdXJjZXMiOlsiQzpcXEdpdGh1YlxcQWxnb29cXGJhY2tlbmRcXHNyY1xcc29ja2V0XFxjb250cm9sbGVyc1xcR2FtZU1hbmFnZXJDdHJsLnRzIl0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IENhc3RTcGVsbERUTywgTW92ZUVudGl0eURUTyB9IGZyb20gJ0BkZWZmZXJyYXJkL2FsZ29vLWNvcmUvc3JjL2R0byc7XG5pbXBvcnQgeyBNZXNzYWdlVHlwZSB9IGZyb20gJ0BkZWZmZXJyYXJkL2FsZ29vLWNvcmUvc3JjL3NvY2tldCc7XG5pbXBvcnQgeyBDb25uZWN0ZWRTb2NrZXQsIE1lc3NhZ2VCb2R5LCBPbk1lc3NhZ2UsIFNvY2tldENvbnRyb2xsZXIgfSBmcm9tICdzb2NrZXQtY29udHJvbGxlcnMnO1xuaW1wb3J0IHsgU29ja2V0IH0gZnJvbSAnc29ja2V0LmlvJztcbmltcG9ydCB7IFNlcnZpY2UgfSBmcm9tICd0eXBlZGknO1xuaW1wb3J0IEdhbWVNYW5hZ2VyU2VydmljZSBmcm9tICd+L3NlcnZpY2VzL0dhbWVNYW5hZ2VyU2VydmljZSc7XG5pbXBvcnQgeyBMT0dHRVIgfSBmcm9tICd+L3V0aWxzL2xvZ2dlcic7XG5cbmNvbnN0IEdBTUVfUk9PTV9VVUlEID0gJ2dhbWVSb29tVVVJRCc7XG5cbkBTZXJ2aWNlKClcbkBTb2NrZXRDb250cm9sbGVyKGAvcm9vbXMvOiR7R0FNRV9ST09NX1VVSUR9YClcbmV4cG9ydCBjbGFzcyBHYW1lTWFuYWdlckN0cmwge1xuICBjb25zdHJ1Y3RvcihwdWJsaWMgc2VydmljZTogR2FtZU1hbmFnZXJTZXJ2aWNlKSB7fVxuXG4gIEBPbk1lc3NhZ2UoTWVzc2FnZVR5cGUuTkVYVF9UVVJOKVxuICBuZXh0VHVybihAQ29ubmVjdGVkU29ja2V0KCkgc29ja2V0OiBTb2NrZXQpIHtcbiAgICBMT0dHRVIuaW5mbyhgU29ja2V0ICR7c29ja2V0LmlkfSBwYXNzZWQgdHVybmApO1xuICAgIHRoaXMuc2VydmljZS5uZXh0VHVybihzb2NrZXQpO1xuICB9XG5cbiAgQE9uTWVzc2FnZShNZXNzYWdlVHlwZS5DQVNUX1NQRUxMKVxuICBjYXN0U3BlbGwoQENvbm5lY3RlZFNvY2tldCgpIHNvY2tldDogU29ja2V0LCBATWVzc2FnZUJvZHkoKSBwYXlsb2FkOiBDYXN0U3BlbGxEVE8pIHtcbiAgICBMT0dHRVIuaW5mbyhgU29ja2V0ICR7c29ja2V0LmlkfSBjYXN0IHNwZWxsYCwgcGF5bG9hZCk7XG4gICAgdGhpcy5zZXJ2aWNlLmNhc3RTcGVsbChzb2NrZXQsIHBheWxvYWQpO1xuICB9XG5cbiAgQE9uTWVzc2FnZShNZXNzYWdlVHlwZS5NT1ZFX0VOVElUWSlcbiAgbW92ZUVudGl0eShAQ29ubmVjdGVkU29ja2V0KCkgc29ja2V0OiBTb2NrZXQsIEBNZXNzYWdlQm9keSgpIHBheWxvYWQ6IE1vdmVFbnRpdHlEVE8pIHtcbiAgICBMT0dHRVIuaW5mbyhgU29ja2V0ICR7c29ja2V0LmlkfSBtb3ZlIGVudGl0eWAsIHBheWxvYWQpO1xuICAgIHRoaXMuc2VydmljZS5tb3ZlRW50aXR5KHNvY2tldCwgcGF5bG9hZCk7XG4gIH1cbn1cbiJdLCJ2ZXJzaW9uIjozfQ==

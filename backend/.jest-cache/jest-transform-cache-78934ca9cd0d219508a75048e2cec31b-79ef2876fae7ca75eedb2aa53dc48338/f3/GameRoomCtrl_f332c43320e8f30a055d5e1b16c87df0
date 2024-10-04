@@ -1,0 +1,54 @@
+e2cbbdddd9e08b3259e162183a6384c6
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.GameRoomCtrl = void 0;
+const SimpleGameRoomDTO_1 = require("@defferrard/algoo-core/src/dto/SimpleGameRoomDTO");
+const game_1 = require("@defferrard/algoo-core/src/game");
+const routing_controllers_1 = require("routing-controllers");
+const typedi_1 = require("typedi");
+const repositories_1 = require("~/repositories");
+const SerializeResponse_1 = require("~/utils/SerializeResponse");
+let GameRoomCtrl = class GameRoomCtrl {
+    gameRoomRepository;
+    constructor(gameRoomRepository) {
+        this.gameRoomRepository = gameRoomRepository;
+    }
+    async getRooms() {
+        return this.gameRoomRepository.rooms.map((room) => room.toDTO());
+    }
+    async createRoom() {
+        const room = new game_1.GameRoom();
+        this.gameRoomRepository.push(room);
+        return room.toDTO();
+    }
+};
+exports.GameRoomCtrl = GameRoomCtrl;
+__decorate([
+    (0, routing_controllers_1.Get)(),
+    (0, SerializeResponse_1.SerializeResponse)(SimpleGameRoomDTO_1.SimpleGameRoomDTO),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], GameRoomCtrl.prototype, "getRooms", null);
+__decorate([
+    (0, routing_controllers_1.Post)(),
+    (0, SerializeResponse_1.SerializeResponse)(SimpleGameRoomDTO_1.SimpleGameRoomDTO),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], GameRoomCtrl.prototype, "createRoom", null);
+exports.GameRoomCtrl = GameRoomCtrl = __decorate([
+    (0, typedi_1.Service)(),
+    (0, routing_controllers_1.JsonController)('/rooms'),
+    __metadata("design:paramtypes", [repositories_1.GameRoomRepository])
+], GameRoomCtrl);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXEdpdGh1YlxcQWxnb29cXGJhY2tlbmRcXHNyY1xcY29udHJvbGxlcnNcXEdhbWVSb29tQ3RybC50cyIsIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7QUFBQSx3RkFBcUY7QUFDckYsMERBQTJEO0FBQzNELDZEQUFnRTtBQUNoRSxtQ0FBaUM7QUFDakMsaURBQW9EO0FBQ3BELGlFQUE4RDtBQUl2RCxJQUFNLFlBQVksR0FBbEIsTUFBTSxZQUFZO0lBQ0o7SUFBbkIsWUFBbUIsa0JBQXNDO1FBQXRDLHVCQUFrQixHQUFsQixrQkFBa0IsQ0FBb0I7SUFBRyxDQUFDO0lBSXZELEFBQU4sS0FBSyxDQUFDLFFBQVE7UUFDWixPQUFPLElBQUksQ0FBQyxrQkFBa0IsQ0FBQyxLQUFLLENBQUMsR0FBRyxDQUFDLENBQUMsSUFBYyxFQUFFLEVBQUUsQ0FBQyxJQUFJLENBQUMsS0FBSyxFQUFFLENBQUMsQ0FBQztJQUM3RSxDQUFDO0lBSUssQUFBTixLQUFLLENBQUMsVUFBVTtRQUNkLE1BQU0sSUFBSSxHQUFhLElBQUksZUFBUSxFQUFFLENBQUM7UUFDdEMsSUFBSSxDQUFDLGtCQUFrQixDQUFDLElBQUksQ0FBQyxJQUFJLENBQUMsQ0FBQztRQUNuQyxPQUFPLElBQUksQ0FBQyxLQUFLLEVBQUUsQ0FBQztJQUN0QixDQUFDO0NBQ0YsQ0FBQTtBQWhCWSxvQ0FBWTtBQUtqQjtJQUZMLElBQUEseUJBQUcsR0FBRTtJQUNMLElBQUEscUNBQWlCLEVBQUMscUNBQWlCLENBQUM7Ozs7NENBR3BDO0FBSUs7SUFGTCxJQUFBLDBCQUFJLEdBQUU7SUFDTixJQUFBLHFDQUFpQixFQUFDLHFDQUFpQixDQUFDOzs7OzhDQUtwQzt1QkFmVSxZQUFZO0lBRnhCLElBQUEsZ0JBQU8sR0FBRTtJQUNULElBQUEsb0NBQWMsRUFBQyxRQUFRLENBQUM7cUNBRWdCLGlDQUFrQjtHQUQ5QyxZQUFZLENBZ0J4QiIsIm5hbWVzIjpbXSwic291cmNlcyI6WyJDOlxcR2l0aHViXFxBbGdvb1xcYmFja2VuZFxcc3JjXFxjb250cm9sbGVyc1xcR2FtZVJvb21DdHJsLnRzIl0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IFNpbXBsZUdhbWVSb29tRFRPIH0gZnJvbSAnQGRlZmZlcnJhcmQvYWxnb28tY29yZS9zcmMvZHRvL1NpbXBsZUdhbWVSb29tRFRPJztcbmltcG9ydCB7IEdhbWVSb29tIH0gZnJvbSAnQGRlZmZlcnJhcmQvYWxnb28tY29yZS9zcmMvZ2FtZSc7XG5pbXBvcnQgeyBHZXQsIEpzb25Db250cm9sbGVyLCBQb3N0IH0gZnJvbSAncm91dGluZy1jb250cm9sbGVycyc7XG5pbXBvcnQgeyBTZXJ2aWNlIH0gZnJvbSAndHlwZWRpJztcbmltcG9ydCB7IEdhbWVSb29tUmVwb3NpdG9yeSB9IGZyb20gJ34vcmVwb3NpdG9yaWVzJztcbmltcG9ydCB7IFNlcmlhbGl6ZVJlc3BvbnNlIH0gZnJvbSAnfi91dGlscy9TZXJpYWxpemVSZXNwb25zZSc7XG5cbkBTZXJ2aWNlKClcbkBKc29uQ29udHJvbGxlcignL3Jvb21zJylcbmV4cG9ydCBjbGFzcyBHYW1lUm9vbUN0cmwge1xuICBjb25zdHJ1Y3RvcihwdWJsaWMgZ2FtZVJvb21SZXBvc2l0b3J5OiBHYW1lUm9vbVJlcG9zaXRvcnkpIHt9XG5cbiAgQEdldCgpXG4gIEBTZXJpYWxpemVSZXNwb25zZShTaW1wbGVHYW1lUm9vbURUTylcbiAgYXN5bmMgZ2V0Um9vbXMoKSB7XG4gICAgcmV0dXJuIHRoaXMuZ2FtZVJvb21SZXBvc2l0b3J5LnJvb21zLm1hcCgocm9vbTogR2FtZVJvb20pID0+IHJvb20udG9EVE8oKSk7XG4gIH1cblxuICBAUG9zdCgpXG4gIEBTZXJpYWxpemVSZXNwb25zZShTaW1wbGVHYW1lUm9vbURUTylcbiAgYXN5bmMgY3JlYXRlUm9vbSgpIHtcbiAgICBjb25zdCByb29tOiBHYW1lUm9vbSA9IG5ldyBHYW1lUm9vbSgpO1xuICAgIHRoaXMuZ2FtZVJvb21SZXBvc2l0b3J5LnB1c2gocm9vbSk7XG4gICAgcmV0dXJuIHJvb20udG9EVE8oKTtcbiAgfVxufVxuIl0sInZlcnNpb24iOjN9

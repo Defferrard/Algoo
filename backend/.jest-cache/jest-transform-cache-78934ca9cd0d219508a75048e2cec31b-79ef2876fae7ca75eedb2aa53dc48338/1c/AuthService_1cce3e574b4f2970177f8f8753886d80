@@ -1,0 +1,29 @@
+b6edbe26b4cee451e32fa066cffa72bf
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AuthService = void 0;
+const socket_1 = require("@defferrard/algoo-core/src/socket");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const typedi_1 = require("typedi");
+const uuid_1 = require("uuid");
+const const_1 = require("~/const");
+let AuthService = class AuthService {
+    signIn(username) {
+        const user = new socket_1.User({ uuid: (0, uuid_1.v4)(), name: username });
+        return jsonwebtoken_1.default.sign({ ...user }, const_1.JWT_SECRET, { expiresIn: '1h' });
+    }
+};
+exports.AuthService = AuthService;
+exports.AuthService = AuthService = __decorate([
+    (0, typedi_1.Service)()
+], AuthService);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXEdpdGh1YlxcQWxnb29cXGJhY2tlbmRcXHNyY1xcc2VydmljZXNcXEF1dGhTZXJ2aWNlLnRzIiwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7OztBQUFBLDhEQUF5RDtBQUN6RCxnRUFBK0I7QUFDL0IsbUNBQWlDO0FBQ2pDLCtCQUFrQztBQUNsQyxtQ0FBcUM7QUFHOUIsSUFBTSxXQUFXLEdBQWpCLE1BQU0sV0FBVztJQUN0QixNQUFNLENBQUMsUUFBZ0I7UUFDckIsTUFBTSxJQUFJLEdBQUcsSUFBSSxhQUFJLENBQUMsRUFBRSxJQUFJLEVBQUUsSUFBQSxTQUFJLEdBQUUsRUFBRSxJQUFJLEVBQUUsUUFBUSxFQUFFLENBQUMsQ0FBQztRQUN4RCxPQUFPLHNCQUFHLENBQUMsSUFBSSxDQUFDLEVBQUUsR0FBRyxJQUFJLEVBQUUsRUFBRSxrQkFBVSxFQUFFLEVBQUUsU0FBUyxFQUFFLElBQUksRUFBRSxDQUFDLENBQUM7SUFDaEUsQ0FBQztDQUNGLENBQUE7QUFMWSxrQ0FBVztzQkFBWCxXQUFXO0lBRHZCLElBQUEsZ0JBQU8sR0FBRTtHQUNHLFdBQVcsQ0FLdkIiLCJuYW1lcyI6W10sInNvdXJjZXMiOlsiQzpcXEdpdGh1YlxcQWxnb29cXGJhY2tlbmRcXHNyY1xcc2VydmljZXNcXEF1dGhTZXJ2aWNlLnRzIl0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IFVzZXIgfSBmcm9tICdAZGVmZmVycmFyZC9hbGdvby1jb3JlL3NyYy9zb2NrZXQnO1xuaW1wb3J0IGp3dCBmcm9tICdqc29ud2VidG9rZW4nO1xuaW1wb3J0IHsgU2VydmljZSB9IGZyb20gJ3R5cGVkaSc7XG5pbXBvcnQgeyB2NCBhcyB1dWlkIH0gZnJvbSAndXVpZCc7XG5pbXBvcnQgeyBKV1RfU0VDUkVUIH0gZnJvbSAnfi9jb25zdCc7XG5cbkBTZXJ2aWNlKClcbmV4cG9ydCBjbGFzcyBBdXRoU2VydmljZSB7XG4gIHNpZ25Jbih1c2VybmFtZTogc3RyaW5nKSB7XG4gICAgY29uc3QgdXNlciA9IG5ldyBVc2VyKHsgdXVpZDogdXVpZCgpLCBuYW1lOiB1c2VybmFtZSB9KTtcbiAgICByZXR1cm4gand0LnNpZ24oeyAuLi51c2VyIH0sIEpXVF9TRUNSRVQsIHsgZXhwaXJlc0luOiAnMWgnIH0pO1xuICB9XG59XG4iXSwidmVyc2lvbiI6M30=

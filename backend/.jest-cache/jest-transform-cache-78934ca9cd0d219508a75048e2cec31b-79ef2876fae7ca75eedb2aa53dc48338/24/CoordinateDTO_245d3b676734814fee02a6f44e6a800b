@@ -1,0 +1,29 @@
+747b871534fc5ce5ea72adcc87adf81a
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CoordinateDTO = void 0;
+const DTO_1 = require("./DTO");
+const class_validator_1 = require("class-validator");
+class CoordinateDTO extends DTO_1.DTO {
+    x;
+    y;
+}
+exports.CoordinateDTO = CoordinateDTO;
+__decorate([
+    (0, class_validator_1.IsInt)(),
+    __metadata("design:type", Number)
+], CoordinateDTO.prototype, "x", void 0);
+__decorate([
+    (0, class_validator_1.IsInt)(),
+    __metadata("design:type", Number)
+], CoordinateDTO.prototype, "y", void 0);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXEdpdGh1YlxcQWxnb29cXGNvcmVcXHNyY1xcZHRvXFxDb29yZGluYXRlRFRPLnRzIiwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7OztBQUNBLCtCQUE0QjtBQUM1QixxREFBb0Q7QUFFcEQsTUFBYSxhQUFjLFNBQVEsU0FBRztJQUVwQyxDQUFDLENBQVM7SUFHVixDQUFDLENBQVM7Q0FDWDtBQU5ELHNDQU1DO0FBSkM7SUFEQyxJQUFBLHVCQUFLLEdBQUU7O3dDQUNFO0FBR1Y7SUFEQyxJQUFBLHVCQUFLLEdBQUU7O3dDQUNFIiwibmFtZXMiOltdLCJzb3VyY2VzIjpbIkM6XFxHaXRodWJcXEFsZ29vXFxjb3JlXFxzcmNcXGR0b1xcQ29vcmRpbmF0ZURUTy50cyJdLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBCYXNlQ29vcmRpbmF0ZSB9IGZyb20gJy4uL2JvYXJkJztcbmltcG9ydCB7IERUTyB9IGZyb20gJy4vRFRPJztcbmltcG9ydCB7IElzSW50LCBJc1Bvc2l0aXZlIH0gZnJvbSAnY2xhc3MtdmFsaWRhdG9yJztcblxuZXhwb3J0IGNsYXNzIENvb3JkaW5hdGVEVE8gZXh0ZW5kcyBEVE8gaW1wbGVtZW50cyBCYXNlQ29vcmRpbmF0ZSB7XG4gIEBJc0ludCgpXG4gIHg6IG51bWJlcjtcblxuICBASXNJbnQoKVxuICB5OiBudW1iZXI7XG59XG4iXSwidmVyc2lvbiI6M30=

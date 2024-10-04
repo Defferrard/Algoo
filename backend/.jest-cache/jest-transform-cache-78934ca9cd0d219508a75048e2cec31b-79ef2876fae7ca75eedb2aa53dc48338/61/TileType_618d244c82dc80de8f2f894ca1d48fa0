@@ -1,0 +1,12 @@
+a73ec86720d5eb226559e538412505bf
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TileType = void 0;
+var TileType;
+(function (TileType) {
+    TileType[TileType["Wall"] = -1] = "Wall";
+    TileType[TileType["Empty"] = 0] = "Empty";
+    TileType[TileType["Floor"] = 1] = "Floor";
+    TileType[TileType["Mud"] = 2] = "Mud";
+})(TileType || (exports.TileType = TileType = {}));
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXEdpdGh1YlxcQWxnb29cXGNvcmVcXHNyY1xcYm9hcmRcXFRpbGVUeXBlLnRzIiwibWFwcGluZ3MiOiI7OztBQUFBLElBQVksUUFNWDtBQU5ELFdBQVksUUFBUTtJQUNsQix3Q0FBUyxDQUFBO0lBQ1QseUNBQVMsQ0FBQTtJQUNULHlDQUFTLENBQUE7SUFFVCxxQ0FBTyxDQUFBO0FBQ1QsQ0FBQyxFQU5XLFFBQVEsd0JBQVIsUUFBUSxRQU1uQiIsIm5hbWVzIjpbXSwic291cmNlcyI6WyJDOlxcR2l0aHViXFxBbGdvb1xcY29yZVxcc3JjXFxib2FyZFxcVGlsZVR5cGUudHMiXSwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0IGVudW0gVGlsZVR5cGUge1xuICBXYWxsID0gLTEsXG4gIEVtcHR5ID0gMCxcbiAgRmxvb3IgPSAxLFxuXG4gIE11ZCA9IDIsXG59XG4iXSwidmVyc2lvbiI6M30=

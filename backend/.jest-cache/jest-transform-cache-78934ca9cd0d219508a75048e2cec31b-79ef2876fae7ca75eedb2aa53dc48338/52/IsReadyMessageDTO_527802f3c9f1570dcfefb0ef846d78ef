@@ -1,0 +1,39 @@
+523f99b69c2df49fc8b830ab74613e95
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.NotReadyMessageDTO = exports.ReadyMessageDTO = void 0;
+const MessageDTO_1 = require("./MessageDTO");
+const TeamDTO_1 = require("./TeamDTO");
+const class_validator_1 = require("class-validator");
+class ReadyMessageDTO extends MessageDTO_1.MessageDTO {
+    isReady;
+    ownTeam;
+}
+exports.ReadyMessageDTO = ReadyMessageDTO;
+__decorate([
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], ReadyMessageDTO.prototype, "isReady", void 0);
+__decorate([
+    (0, class_validator_1.ValidateNested)(),
+    (0, class_validator_1.IsNotEmptyObject)(),
+    __metadata("design:type", TeamDTO_1.TeamDTO)
+], ReadyMessageDTO.prototype, "ownTeam", void 0);
+class NotReadyMessageDTO extends MessageDTO_1.MessageDTO {
+    isReady;
+}
+exports.NotReadyMessageDTO = NotReadyMessageDTO;
+__decorate([
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], NotReadyMessageDTO.prototype, "isReady", void 0);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXEdpdGh1YlxcQWxnb29cXGNvcmVcXHNyY1xcZHRvXFxJc1JlYWR5TWVzc2FnZURUTy50cyIsIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7QUFBQSw2Q0FBMEM7QUFDMUMsdUNBQW9DO0FBQ3BDLHFEQUE4RTtBQUU5RSxNQUFhLGVBQWdCLFNBQVEsdUJBQVU7SUFFN0MsT0FBTyxDQUFPO0lBSWQsT0FBTyxDQUFVO0NBQ2xCO0FBUEQsMENBT0M7QUFMQztJQURDLElBQUEsMkJBQVMsR0FBRTs7Z0RBQ0U7QUFJZDtJQUZDLElBQUEsZ0NBQWMsR0FBRTtJQUNoQixJQUFBLGtDQUFnQixHQUFFOzhCQUNWLGlCQUFPO2dEQUFDO0FBR25CLE1BQWEsa0JBQW1CLFNBQVEsdUJBQVU7SUFFaEQsT0FBTyxDQUFRO0NBQ2hCO0FBSEQsZ0RBR0M7QUFEQztJQURDLElBQUEsMkJBQVMsR0FBRTs7bURBQ0ciLCJuYW1lcyI6W10sInNvdXJjZXMiOlsiQzpcXEdpdGh1YlxcQWxnb29cXGNvcmVcXHNyY1xcZHRvXFxJc1JlYWR5TWVzc2FnZURUTy50cyJdLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBNZXNzYWdlRFRPIH0gZnJvbSAnLi9NZXNzYWdlRFRPJztcbmltcG9ydCB7IFRlYW1EVE8gfSBmcm9tICcuL1RlYW1EVE8nO1xuaW1wb3J0IHsgSXNCb29sZWFuLCBJc05vdEVtcHR5T2JqZWN0LCBWYWxpZGF0ZU5lc3RlZCB9IGZyb20gJ2NsYXNzLXZhbGlkYXRvcic7XG5cbmV4cG9ydCBjbGFzcyBSZWFkeU1lc3NhZ2VEVE8gZXh0ZW5kcyBNZXNzYWdlRFRPIHtcbiAgQElzQm9vbGVhbigpXG4gIGlzUmVhZHk6IHRydWU7XG5cbiAgQFZhbGlkYXRlTmVzdGVkKClcbiAgQElzTm90RW1wdHlPYmplY3QoKVxuICBvd25UZWFtOiBUZWFtRFRPO1xufVxuXG5leHBvcnQgY2xhc3MgTm90UmVhZHlNZXNzYWdlRFRPIGV4dGVuZHMgTWVzc2FnZURUTyB7XG4gIEBJc0Jvb2xlYW4oKVxuICBpc1JlYWR5OiBmYWxzZTtcbn1cblxuZXhwb3J0IHR5cGUgSXNSZWFkeU1lc3NhZ2VEVE8gPSBSZWFkeU1lc3NhZ2VEVE8gfCBOb3RSZWFkeU1lc3NhZ2VEVE87XG4iXSwidmVyc2lvbiI6M30=

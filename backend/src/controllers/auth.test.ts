@@ -1,3 +1,5 @@
+import { JwtDTO } from '@defferrard/algoo-core/src/dto';
+import { transformAndValidate } from 'class-transformer-validator';
 import Status from 'http-status';
 import { useContainer } from 'routing-controllers';
 import request from 'supertest';
@@ -16,11 +18,10 @@ describe(`Base Test ${BASE_URL}`, () => {
   test('Authenticate', async () => {
     await request(app).get(`${BASE_URL}/current`).expect(Status.UNAUTHORIZED);
 
-    let res = await request(app).post(`${BASE_URL}/`).send({
+    const response = await request(app).post(`${BASE_URL}/`).send({
       name: 'test',
     });
-    expect(res.status).toBe(Status.OK);
-    expect(typeof res.body).toBe('string');
-    const jwt = res.body;
+    expect(response.status).toBe(Status.OK);
+    await transformAndValidate(JwtDTO, response.body);
   });
 });

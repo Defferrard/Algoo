@@ -1,0 +1,26 @@
+f32edace0e3fcaee1ebd34e26aaf73b0
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CompleteHeroDTO = void 0;
+const _1 = require("./");
+const class_transformer_1 = require("class-transformer");
+const class_validator_1 = require("class-validator");
+class CompleteHeroDTO extends _1.BaseHeroDTO {
+    spells;
+}
+exports.CompleteHeroDTO = CompleteHeroDTO;
+__decorate([
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => _1.SpellDTO),
+    __metadata("design:type", Array)
+], CompleteHeroDTO.prototype, "spells", void 0);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXEdpdGh1YlxcQWxnb29cXGNvcmVcXHNyY1xcZHRvXFxDb21wbGV0ZUhlcm9EVE8udHMiLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7O0FBQUEseUJBQTJDO0FBQzNDLHlEQUF5QztBQUN6QyxxREFBaUQ7QUFFakQsTUFBYSxlQUFnQixTQUFRLGNBQVc7SUFHOUMsTUFBTSxDQUFhO0NBQ3BCO0FBSkQsMENBSUM7QUFEQztJQUZDLElBQUEsZ0NBQWMsRUFBQyxFQUFFLElBQUksRUFBRSxJQUFJLEVBQUUsQ0FBQztJQUM5QixJQUFBLHdCQUFJLEVBQUMsR0FBRyxFQUFFLENBQUMsV0FBUSxDQUFDOzsrQ0FDRiIsIm5hbWVzIjpbXSwic291cmNlcyI6WyJDOlxcR2l0aHViXFxBbGdvb1xcY29yZVxcc3JjXFxkdG9cXENvbXBsZXRlSGVyb0RUTy50cyJdLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBCYXNlSGVyb0RUTywgU3BlbGxEVE8gfSBmcm9tICcuLyc7XG5pbXBvcnQgeyBUeXBlIH0gZnJvbSAnY2xhc3MtdHJhbnNmb3JtZXInO1xuaW1wb3J0IHsgVmFsaWRhdGVOZXN0ZWQgfSBmcm9tICdjbGFzcy12YWxpZGF0b3InO1xuXG5leHBvcnQgY2xhc3MgQ29tcGxldGVIZXJvRFRPIGV4dGVuZHMgQmFzZUhlcm9EVE8ge1xuICBAVmFsaWRhdGVOZXN0ZWQoeyBlYWNoOiB0cnVlIH0pXG4gIEBUeXBlKCgpID0+IFNwZWxsRFRPKVxuICBzcGVsbHM6IFNwZWxsRFRPW107XG59XG4iXSwidmVyc2lvbiI6M30=

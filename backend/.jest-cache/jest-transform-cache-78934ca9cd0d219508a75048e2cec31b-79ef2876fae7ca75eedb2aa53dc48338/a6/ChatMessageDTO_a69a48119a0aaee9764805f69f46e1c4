@@ -1,0 +1,25 @@
+2a487f9ebb7d9c11c33af1c571c6034c
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ChatMessageDTO = void 0;
+const MessageDTO_1 = require("./MessageDTO");
+const class_validator_1 = require("class-validator");
+class ChatMessageDTO extends MessageDTO_1.MessageDTO {
+    message;
+}
+exports.ChatMessageDTO = ChatMessageDTO;
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], ChatMessageDTO.prototype, "message", void 0);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXEdpdGh1YlxcQWxnb29cXGNvcmVcXHNyY1xcZHRvXFxDaGF0TWVzc2FnZURUTy50cyIsIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7QUFBQSw2Q0FBMEM7QUFDMUMscURBQXVEO0FBRXZELE1BQWEsY0FBZSxTQUFRLHVCQUFVO0lBRzVDLE9BQU8sQ0FBUztDQUNqQjtBQUpELHdDQUlDO0FBREM7SUFGQyxJQUFBLDBCQUFRLEdBQUU7SUFDVixJQUFBLDRCQUFVLEdBQUU7OytDQUNHIiwibmFtZXMiOltdLCJzb3VyY2VzIjpbIkM6XFxHaXRodWJcXEFsZ29vXFxjb3JlXFxzcmNcXGR0b1xcQ2hhdE1lc3NhZ2VEVE8udHMiXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgTWVzc2FnZURUTyB9IGZyb20gJy4vTWVzc2FnZURUTyc7XG5pbXBvcnQgeyBJc05vdEVtcHR5LCBJc1N0cmluZyB9IGZyb20gJ2NsYXNzLXZhbGlkYXRvcic7XG5cbmV4cG9ydCBjbGFzcyBDaGF0TWVzc2FnZURUTyBleHRlbmRzIE1lc3NhZ2VEVE8ge1xuICBASXNTdHJpbmcoKVxuICBASXNOb3RFbXB0eSgpXG4gIG1lc3NhZ2U6IHN0cmluZztcbn1cbiJdLCJ2ZXJzaW9uIjozfQ==

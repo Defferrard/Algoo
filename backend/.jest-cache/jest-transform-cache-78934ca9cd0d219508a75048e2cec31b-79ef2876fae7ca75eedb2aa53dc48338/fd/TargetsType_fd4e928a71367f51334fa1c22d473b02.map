@@ -1,0 +1,1 @@
+{"file":"C:\\Github\\Algoo\\core\\src\\game\\TargetsType.ts","mappings":";;;AAAA,IAAY,WAAc;AAA1B,WAAY,WAAW;AAAE,CAAC,EAAd,WAAW,2BAAX,WAAW,QAAG","names":[],"sources":["C:\\Github\\Algoo\\core\\src\\game\\TargetsType.ts"],"sourcesContent":["export enum TargetsType {}\n"],"version":3}

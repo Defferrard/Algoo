@@ -1,0 +1,31 @@
+05cd6efd30213f276e553f257a9f4d35
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.GameRoomNotFoundException = exports.PlayerAlreadyInGameRoomException = exports.FullGameRoomException = exports.GameRoomException = void 0;
+class GameRoomException extends Error {
+    uuid;
+    constructor(uuid, message) {
+        super(message);
+        this.uuid = uuid;
+    }
+}
+exports.GameRoomException = GameRoomException;
+class FullGameRoomException extends GameRoomException {
+    constructor(uuid) {
+        super(uuid, `Game room ${uuid} is full`);
+    }
+}
+exports.FullGameRoomException = FullGameRoomException;
+class PlayerAlreadyInGameRoomException extends GameRoomException {
+    constructor(player, room) {
+        super(room, `Player ${player} is already in room ${room}`);
+    }
+}
+exports.PlayerAlreadyInGameRoomException = PlayerAlreadyInGameRoomException;
+class GameRoomNotFoundException extends GameRoomException {
+    constructor(room) {
+        super(room, `Game room ${room} not found`);
+    }
+}
+exports.GameRoomNotFoundException = GameRoomNotFoundException;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXEdpdGh1YlxcQWxnb29cXGNvcmVcXHNyY1xcZXhjZXB0aW9uc1xcZ2FtZVJvb20udHMiLCJtYXBwaW5ncyI6Ijs7O0FBQUEsTUFBc0IsaUJBQWtCLFNBQVEsS0FBSztJQUMxQyxJQUFJLENBQVM7SUFDdEIsWUFBc0IsSUFBWSxFQUFFLE9BQWU7UUFDakQsS0FBSyxDQUFDLE9BQU8sQ0FBQyxDQUFDO1FBQ2YsSUFBSSxDQUFDLElBQUksR0FBRyxJQUFJLENBQUM7SUFDbkIsQ0FBQztDQUNGO0FBTkQsOENBTUM7QUFFRCxNQUFhLHFCQUFzQixTQUFRLGlCQUFpQjtJQUMxRCxZQUFZLElBQVk7UUFDdEIsS0FBSyxDQUFDLElBQUksRUFBRSxhQUFhLElBQUksVUFBVSxDQUFDLENBQUM7SUFDM0MsQ0FBQztDQUNGO0FBSkQsc0RBSUM7QUFFRCxNQUFhLGdDQUFpQyxTQUFRLGlCQUFpQjtJQUNyRSxZQUFZLE1BQWMsRUFBRSxJQUFZO1FBQ3RDLEtBQUssQ0FBQyxJQUFJLEVBQUUsVUFBVSxNQUFNLHVCQUF1QixJQUFJLEVBQUUsQ0FBQyxDQUFDO0lBQzdELENBQUM7Q0FDRjtBQUpELDRFQUlDO0FBQ0QsTUFBYSx5QkFBMEIsU0FBUSxpQkFBaUI7SUFDOUQsWUFBWSxJQUFZO1FBQ3RCLEtBQUssQ0FBQyxJQUFJLEVBQUUsYUFBYSxJQUFJLFlBQVksQ0FBQyxDQUFDO0lBQzdDLENBQUM7Q0FDRjtBQUpELDhEQUlDIiwibmFtZXMiOltdLCJzb3VyY2VzIjpbIkM6XFxHaXRodWJcXEFsZ29vXFxjb3JlXFxzcmNcXGV4Y2VwdGlvbnNcXGdhbWVSb29tLnRzIl0sInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCBhYnN0cmFjdCBjbGFzcyBHYW1lUm9vbUV4Y2VwdGlvbiBleHRlbmRzIEVycm9yIHtcbiAgcmVhZG9ubHkgdXVpZDogc3RyaW5nO1xuICBwcm90ZWN0ZWQgY29uc3RydWN0b3IodXVpZDogc3RyaW5nLCBtZXNzYWdlOiBzdHJpbmcpIHtcbiAgICBzdXBlcihtZXNzYWdlKTtcbiAgICB0aGlzLnV1aWQgPSB1dWlkO1xuICB9XG59XG5cbmV4cG9ydCBjbGFzcyBGdWxsR2FtZVJvb21FeGNlcHRpb24gZXh0ZW5kcyBHYW1lUm9vbUV4Y2VwdGlvbiB7XG4gIGNvbnN0cnVjdG9yKHV1aWQ6IHN0cmluZykge1xuICAgIHN1cGVyKHV1aWQsIGBHYW1lIHJvb20gJHt1dWlkfSBpcyBmdWxsYCk7XG4gIH1cbn1cblxuZXhwb3J0IGNsYXNzIFBsYXllckFscmVhZHlJbkdhbWVSb29tRXhjZXB0aW9uIGV4dGVuZHMgR2FtZVJvb21FeGNlcHRpb24ge1xuICBjb25zdHJ1Y3RvcihwbGF5ZXI6IHN0cmluZywgcm9vbTogc3RyaW5nKSB7XG4gICAgc3VwZXIocm9vbSwgYFBsYXllciAke3BsYXllcn0gaXMgYWxyZWFkeSBpbiByb29tICR7cm9vbX1gKTtcbiAgfVxufVxuZXhwb3J0IGNsYXNzIEdhbWVSb29tTm90Rm91bmRFeGNlcHRpb24gZXh0ZW5kcyBHYW1lUm9vbUV4Y2VwdGlvbiB7XG4gIGNvbnN0cnVjdG9yKHJvb206IHN0cmluZykge1xuICAgIHN1cGVyKHJvb20sIGBHYW1lIHJvb20gJHtyb29tfSBub3QgZm91bmRgKTtcbiAgfVxufVxuIl0sInZlcnNpb24iOjN9
