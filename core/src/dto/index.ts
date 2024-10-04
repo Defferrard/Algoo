@@ -17,3 +17,4 @@ export * from './MoveEntityDTO';
 export * from './UuidDTO';
 export * from './CoordinateDTO';
 export * from './SimpleGameRoomDTO';
+export * from './JwtDTO';

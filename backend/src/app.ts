@@ -13,4 +13,8 @@ app
   .get('/api/v1', (_req, res) => {
     res.redirect('/api/v1/docs');
   })
+  .get('/api/v1/docs/json', (_req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(openApiSpec);
+  })
   .use('/api/v1/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(openApiSpec, { explorer: true }));

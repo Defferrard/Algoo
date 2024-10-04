@@ -12,6 +12,7 @@ const jestConfig: JestConfigWithTsJest = {
   },
   testTimeout: 20000,
   testMatch: ['**/*.test.(ts|js)'],
+
   cacheDirectory: '.jest-cache',
   moduleNameMapper: {
     '^~/(.*)$': '<rootDir>/src/$1',

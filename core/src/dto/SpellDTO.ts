@@ -2,6 +2,7 @@ import { Color } from '../game/Color';
 import { Resources } from '../game/characteristics/Characteristics';
 import { ActionStrategy, DistanceStrategy } from '../strategy';
 import { DTO } from './DTO';
+import { Type } from 'class-transformer';
 import { IsDataURI, IsEnum, IsPositive, Length, ValidateNested } from 'class-validator';
 
 export class SpellDTO extends DTO {
@@ -29,6 +30,7 @@ export class SpellDTO extends DTO {
   cost: Resources;
 
   @ValidateNested({ each: true })
+  @Type(() => SpellActionDTO)
   actions: SpellActionDTO[];
 }
 
