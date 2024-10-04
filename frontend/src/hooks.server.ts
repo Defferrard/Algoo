@@ -1,5 +1,6 @@
 import { LOGGER } from '$lib/utils/Logger.server';
 import type { RequestEvent } from '@sveltejs/kit';
+import 'reflect-metadata';
 
 export async function handle({ event, resolve }: { event: RequestEvent; resolve: any }): Promise<Response> {
   LOGGER.info(`${event.request.method} ${event.url.pathname}`);

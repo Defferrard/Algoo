@@ -21,5 +21,12 @@ export const openApiSpec: JsonObject = routingControllersToSpec(getMetadataArgsS
   },
   components: {
     schemas,
+    securitySchemes: {
+      bearerAuth: {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+    },
   },
 });

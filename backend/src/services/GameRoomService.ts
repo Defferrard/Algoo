@@ -68,14 +68,14 @@ export default class GameRoomService {
     socket.broadcast.emit(MessageType.GAME_ROOM_LEAVE, dto);
   }
 
-  async sendMessage({ data: { room, player } }: PlayerSocket, message: ChatMessageDTO) {
+  async sendMessage({ data: { room } }: PlayerSocket, message: ChatMessageDTO) {
     await this.socketRepository.broadcast(room, MessageType.GAME_ROOM_MESSAGE, message);
   }
 
   isReady(socket: PlayerSocket, isReady: boolean) {
     const { room, player } = socket.data;
     // Set the player's ready status
-    let gameRoomReady: boolean = this.gameRoomRepository.setPlayerReady(room, player.user.uuid, isReady);
+    const gameRoomReady: boolean = this.gameRoomRepository.setPlayerReady(room, player.user.uuid, isReady);
     // Broadcast that the player is ready to all players in the room
     let isReadyMessageDTO: IsReadyMessageDTO;
     if (isReady) {

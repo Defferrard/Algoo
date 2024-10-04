@@ -12,4 +12,7 @@ export default defineConfig({
       '/api/v1': 'http://localhost:8080/',
     },
   },
+  ssr: {
+    external: ['reflect-metadata'],
+  },
 });

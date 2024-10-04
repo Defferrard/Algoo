@@ -1,9 +1,8 @@
 import { socket } from '$lib/stores/socket';
 import type { MessageType } from '@defferrard/algoo-core/src/socket';
-import 'reflect-metadata';
 
 const METADATA_ON_EVENT_KEY = 'algoo:anotations:on';
-export type event = { message: MessageType; handler: Function };
+export type event = { message: MessageType; handler: (...args: unknown[]) => unknown };
 export type SocketControllerClass = { events?: event[] };
 
 export function On(eventName: MessageType) {
@@ -18,7 +17,7 @@ export function On(eventName: MessageType) {
 }
 
 export function SocketController() {
-  return function <T extends { new (...args: any[]): {} }>(clazz: T) {
+  return function <T extends { new (...args: any[]): object }>(clazz: T) {
     return class extends clazz {
       constructor(...args: any[]) {
         super(...args); // Call the original constructor

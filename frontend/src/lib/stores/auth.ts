@@ -1,4 +1,5 @@
 import { API_BASE_PATH } from '$lib/utils/Const';
+import { JwtDTO } from '@defferrard/algoo-core/src/dto';
 import { type Writable, writable } from 'svelte/store';
 
 const BASE_URL = API_BASE_PATH + '/auth';
@@ -20,7 +21,8 @@ export function authStore() {
         },
         body: JSON.stringify({ name }),
       });
-      data.set(await response.json());
+      const jwtDTO: JwtDTO = await response.json();
+      data.set(jwtDTO.jwt);
     } catch (e) {
       error.set(e);
     }

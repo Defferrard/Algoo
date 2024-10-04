@@ -6,9 +6,9 @@ import { Request } from 'express';
 import {
   ConnectedSocket,
   EmitOnSuccess,
+  MessageAck,
   MessageBody,
   NspParam,
-  NspParams,
   OnConnect,
   OnDisconnect,
   OnMessage,
@@ -52,8 +52,9 @@ export class GameRoomCtrl {
   }
 
   @OnMessage(MessageType.GAME_ROOM_READY)
-  onReady(@ConnectedSocket() socket: Socket, @MessageBody() dto: IsReadyMessageDTO) {
+  onReady(@ConnectedSocket() socket: Socket, @MessageBody() dto: IsReadyMessageDTO, @MessageAck() ack: () => void) {
     LOGGER.info(`Socket ${socket.id} is ready: ${dto.isReady}`);
-    this.service.isReady(socket, dto.isReady);
+    // this.service.isReady(socket, dto.isReady);
+    ack();
   }
 }

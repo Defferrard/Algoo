@@ -15,7 +15,7 @@ export class SocketRepository {
     socket.join(SOCKET_ROOM_PREFIX + user.uuid);
   }
 
-  async broadcast(room: string, event: MessageType, dto?: DTO | string | number) {
+  async broadcast(room: string, event: MessageType, dto?: DTO) {
     try {
       if (dto && dto instanceof DTO) {
         await dto.validateOrReject();
