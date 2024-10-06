@@ -1,1 +1,0 @@
-{"file":"C:\\Github\\Algoo\\core\\src\\dto\\DTOFriendly.ts","mappings":"","names":[],"sources":["C:\\Github\\Algoo\\core\\src\\dto\\DTOFriendly.ts"],"sourcesContent":["import { DTO } from './DTO';\n\nexport interface DTOFriendly<D extends DTO = DTO> {\n  toDTO(): D;\n}\n"],"version":3}

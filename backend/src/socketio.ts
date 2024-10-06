@@ -26,11 +26,14 @@ export default function init(httpServer: HTTPSServer): Server {
       }
     },
   );
-
-  new SocketControllers({
-    io: io,
-    container: Container,
-    controllers: [__dirname + '/socket/controllers/*Ctrl.*'],
-  });
+  try {
+    new SocketControllers({
+      io: io,
+      container: Container,
+      controllers: [__dirname + '/socket/controllers/*Ctrl.*'],
+    });
+  } catch (e) {
+    console.log(e);
+  }
   return io;
 }

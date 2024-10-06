@@ -1,10 +1,7 @@
-import { DTO } from './DTO';
-import { IsDateString, IsUUID } from 'class-validator';
+import { TimeableDTO } from './TimeableDTO';
+import { IsUUID } from 'class-validator';
 
-export class MessageDTO extends DTO {
-  @IsDateString()
-  datetime: string;
-
+export class MessageDTO extends TimeableDTO {
   @IsUUID()
   playerId: string;
 }

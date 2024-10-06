@@ -1,5 +1,5 @@
-import type { Server as HTTPSServer } from 'http';
 import { createServer } from 'http';
+import type { Server as HTTPSServer } from 'http';
 import 'reflect-metadata';
 import { useContainer } from 'routing-controllers';
 import { Container } from 'typedi';

@@ -91,19 +91,22 @@ export default class GameRoomService {
 
     // If all players are ready
     if (gameRoomReady) {
-      // Tell all players in the room that the game is starting soon
-      this.socketRepository.broadcast(
+      const delay = this.gameRoomRepository.startGame(
+        // Will return the timer before starting the game to players
         room,
-        MessageType.GAME_ROOM_STARTING,
-        this.gameRoomRepository.startGame(
-          // Will return the timer before starting the game to players
-          room,
-          (data) => {
-            // Callback function, called when the game starts
-            this.socketRepository.broadcast(room, MessageType.GAME_ROOM_START, data);
-          },
-        ),
+        (data) => {
+          // Callback function, called when the game starts
+          this.socketRepository.broadcast(room, MessageType.GAME_ROOM_START, data);
+        },
       );
+
+      const timerDTO = plainToInstance(MessageDTO, {
+        datetime: new Date().toISOString(),
+        endtime: new Date(Date.now() + delay).toISOString(),
+      });
+
+      // Tell all players in the room that the game is starting soon
+      this.socketRepository.broadcast(room, MessageType.GAME_ROOM_STARTING, timerDTO);
     } else {
       this.gameRoomRepository.cancelStartGame(
         room,

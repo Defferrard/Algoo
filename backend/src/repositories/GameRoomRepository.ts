@@ -40,7 +40,7 @@ export class GameRoomRepository {
 
   delete(uuid: string): void {
     delete this._rooms[uuid];
-    for (let timeout of Object.values(this._timeouts[uuid])) {
+    for (const timeout of Object.values(this._timeouts[uuid])) {
       clearTimeout(timeout);
     }
     delete this._timeouts[uuid];
@@ -56,7 +56,7 @@ export class GameRoomRepository {
   }
 
   removePlayer(roomUuid: string, uuid: string): void {
-    let gameRoom = this.get(roomUuid);
+    const gameRoom = this.get(roomUuid);
     if (!gameRoom) {
       return;
     }
@@ -73,7 +73,7 @@ export class GameRoomRepository {
   }
 
   setPlayerReady(roomUuid: string, playerUuid: string, isReady: boolean): boolean {
-    let gameRoom = this.get(roomUuid);
+    const gameRoom = this.get(roomUuid);
     if (!gameRoom) {
       return false;
     }
@@ -81,7 +81,7 @@ export class GameRoomRepository {
   }
 
   startGame(roomUuid: string, next: (data: any) => void, delay: number = START_GAME_TIMEOUT.value): number {
-    let gameRoom = this.get(roomUuid);
+    const gameRoom = this.get(roomUuid);
     if (!gameRoom) {
       return -1;
     }

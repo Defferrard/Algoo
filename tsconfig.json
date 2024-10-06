@@ -4,13 +4,13 @@
   },
   "references": [
     {
-      "path": "backend"
+      "path": "./backend"
     },
     {
-      "path": "core"
+      "path": "./core"
     },
     {
-      "path": "frontend"
+      "path": "./frontend"
     }
   ]
 }

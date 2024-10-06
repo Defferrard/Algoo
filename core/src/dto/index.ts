@@ -18,3 +18,5 @@ export * from './UuidDTO';
 export * from './CoordinateDTO';
 export * from './SimpleGameRoomDTO';
 export * from './JwtDTO';
+export * from './TimeableDTO';
+export * from './TimerDTO';

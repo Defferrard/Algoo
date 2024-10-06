@@ -35,20 +35,20 @@ describe(`Socket Base Test ${BASE_URL}`, () => {
     });
 
     socket.connect();
-    let res = await socketOnce(socket, MessageType.CONNECT_ERROR);
-    expect(res.context.statusText.code).toBe('ECONNREFUSED');
+    const response = await socketOnce(socket, MessageType.CONNECT_ERROR);
+    expect(response.context.statusText.code).toBe('ECONNREFUSED');
   });
 
-  test('Authenticate', async () => {
-    // request(app).post(`${AUTH_BASE_URL}`).expect(Status.UNAUTHORIZED);
-    // socket.connect();
-    //
-    // socket = io(`http://localhost/`, {
-    //   retries: 0,
-    // });
-    // socket.once(MessageType.CONNECT_ERROR, (err: any) => {
-    //   expect(err.context.statusText.code).toBe('ECONNREFUSED');
-    //   done();
-    // });
-  });
+  // test('Authenticate', async () => {
+  // request(app).post(`${AUTH_BASE_URL}`).expect(Status.UNAUTHORIZED);
+  // socket.connect();
+  //
+  // socket = io(`http://localhost/`, {
+  //   retries: 0,
+  // });
+  // socket.once(MessageType.CONNECT_ERROR, (err: any) => {
+  //   expect(err.context.statusText.code).toBe('ECONNREFUSED');
+  //   done();
+  // });
+  // });
 });

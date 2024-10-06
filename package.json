@@ -36,6 +36,12 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "module-alias": "^2.2.3",
     "typescript-eslint": "^8.8.0"
+  },
+  "jest": {
+    "projects": [
+      "<rootDir>/backend/jest.config.js"
+    ]
   }
 }

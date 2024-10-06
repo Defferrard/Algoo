@@ -14,3 +14,6 @@
 **/junit.xml
 
 **/.env
+
+**/.jest-cache
+**/.vscode/

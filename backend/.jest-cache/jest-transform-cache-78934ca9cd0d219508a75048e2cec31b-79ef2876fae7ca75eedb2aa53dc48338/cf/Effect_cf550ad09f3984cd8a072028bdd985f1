@@ -1,7 +1,0 @@
-8968b3b39d63d4ca96f88ce18a12c748
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class Effect {
-}
-exports.default = Effect;
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiQzpcXEdpdGh1YlxcQWxnb29cXGNvcmVcXHNyY1xcZ2FtZVxcRWZmZWN0LnRzIiwibWFwcGluZ3MiOiI7O0FBQUEsTUFBcUIsTUFBTTtDQUFHO0FBQTlCLHlCQUE4QiIsIm5hbWVzIjpbXSwic291cmNlcyI6WyJDOlxcR2l0aHViXFxBbGdvb1xcY29yZVxcc3JjXFxnYW1lXFxFZmZlY3QudHMiXSwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0IGRlZmF1bHQgY2xhc3MgRWZmZWN0IHt9XG4iXSwidmVyc2lvbiI6M30=

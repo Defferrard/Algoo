@@ -1,1 +1,0 @@
-{"file":"C:\\Github\\Algoo\\core\\src\\game\\Effect.ts","mappings":";;AAAA,MAAqB,MAAM;CAAG;AAA9B,yBAA8B","names":[],"sources":["C:\\Github\\Algoo\\core\\src\\game\\Effect.ts"],"sourcesContent":["export default class Effect {}\n"],"version":3}

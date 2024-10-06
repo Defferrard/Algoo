@@ -1,11 +1,12 @@
 import { On, SocketController } from '$lib/utils/socket/decorators';
-import type { GameRoomModel, Message } from './GameRoomModel';
+import type { GameRoomModel } from './GameRoomModel';
 import type {
   ChatMessageDTO,
   GameManagerDTO,
   IsReadyMessageDTO,
   MessageDTO,
   PlayerDTO,
+  TimerDTO,
 } from '@defferrard/algoo-core/src/dto';
 import { Player } from '@defferrard/algoo-core/src/game';
 import { MessageType } from '@defferrard/algoo-core/src/socket';
@@ -44,8 +45,8 @@ export class GameRoomSocketController {
   }
 
   @On(MessageType.GAME_ROOM_STARTING)
-  gameRoomStarting(timer: number): void {
-    this._model.gameRoomStarting(timer);
+  gameRoomStarting(timer: TimerDTO): void {
+    this._model.gameRoomStarting(new Date(timer.endtime).getTime() - Date.now());
   }
 
   @On(MessageType.PUT_GAME_ROOM)

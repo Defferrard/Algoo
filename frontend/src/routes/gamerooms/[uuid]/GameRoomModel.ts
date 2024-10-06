@@ -62,7 +62,7 @@ export class GameRoomModel extends Observable<GameRoomModel> {
   }
 
   setGameRoomState(state: Player[]) {
-    for (let player of Object.values(state)) {
+    for (const player of Object.values(state)) {
       this._gameRoom.addPlayer(player);
     }
     this.notify();
