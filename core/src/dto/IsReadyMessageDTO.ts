@@ -1,19 +1,38 @@
-import { MessageDTO } from './MessageDTO';
 import { TeamDTO } from './TeamDTO';
-import { IsBoolean, IsNotEmptyObject, ValidateNested } from 'class-validator';
+import { TimeableDTO } from './TimeableDTO';
+import { IsBoolean, IsNotEmptyObject, IsUUID, ValidateNested } from 'class-validator';
 
-export class ReadyMessageDTO extends MessageDTO {
+/*
+ Client -> Server
+*/
+
+export class ClientReadyMessageDTO extends TimeableDTO {
   @IsBoolean()
-  isReady: true;
+  isReady = true as const;
 
   @ValidateNested()
   @IsNotEmptyObject()
   ownTeam: TeamDTO;
 }
 
-export class NotReadyMessageDTO extends MessageDTO {
+export class ClientNotReadyMessageDTO extends TimeableDTO {
   @IsBoolean()
-  isReady: false;
+  isReady = false as const;
 }
 
-export type IsReadyMessageDTO = ReadyMessageDTO | NotReadyMessageDTO;
+export type ClientIsReadyMessageDTO = ClientReadyMessageDTO | ClientNotReadyMessageDTO;
+
+/*
+ Server -> Clients
+*/
+
+export class ServerReadyMessageDTO extends ClientReadyMessageDTO {
+  @IsUUID()
+  playerId: string;
+}
+
+export class ServerNotReadyMessageDTO extends ClientNotReadyMessageDTO {
+  @IsUUID()
+  playerId: string;
+}
+export type ServerIsReadyMessageDTO = ServerReadyMessageDTO | ServerNotReadyMessageDTO;

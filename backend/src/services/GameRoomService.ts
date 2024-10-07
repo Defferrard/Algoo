@@ -1,15 +1,16 @@
 import {
   ChatMessageDTO,
-  IsReadyMessageDTO,
   MessageDTO,
-  NotReadyMessageDTO,
-  ReadyMessageDTO,
+  ServerIsReadyMessageDTO,
+  ServerNotReadyMessageDTO,
+  ServerReadyMessageDTO,
 } from '@defferrard/algoo-core/src/dto';
 import { GameRoomNotFoundException } from '@defferrard/algoo-core/src/exceptions/gameRoom';
 import { Color, Player } from '@defferrard/algoo-core/src/game';
 import { MessageType, User } from '@defferrard/algoo-core/src/socket';
 import { assertNonNull } from '@defferrard/algoo-core/src/utils/assertions';
 import { plainToInstance } from 'class-transformer';
+import { transformAndValidate } from 'class-transformer-validator';
 import { Socket } from 'socket.io';
 import { Service } from 'typedi';
 import { v4 as uuid } from 'uuid';
@@ -72,21 +73,28 @@ export default class GameRoomService {
     await this.socketRepository.broadcast(room, MessageType.GAME_ROOM_MESSAGE, message);
   }
 
-  isReady(socket: PlayerSocket, isReady: boolean) {
+  async isReady(socket: PlayerSocket, isReady: boolean) {
     const { room, player } = socket.data;
     // Set the player's ready status
     const gameRoomReady: boolean = this.gameRoomRepository.setPlayerReady(room, player.user.uuid, isReady);
+
+    const baseDTO = {
+      datetime: new Date().toISOString(),
+      playerId: player.user.uuid,
+      isReady: isReady,
+    };
+
     // Broadcast that the player is ready to all players in the room
-    let isReadyMessageDTO: IsReadyMessageDTO;
+    let isReadyMessageDTO: ServerIsReadyMessageDTO;
     if (isReady) {
-      isReadyMessageDTO = new ReadyMessageDTO();
+      isReadyMessageDTO = await transformAndValidate(ServerReadyMessageDTO, {
+        ...baseDTO,
+        ownTeam: {},
+      });
       isReadyMessageDTO.ownTeam = {} as any;
     } else {
-      isReadyMessageDTO = new NotReadyMessageDTO();
+      isReadyMessageDTO = await transformAndValidate(ServerNotReadyMessageDTO, baseDTO);
     }
-    isReadyMessageDTO.datetime = new Date().toISOString();
-    isReadyMessageDTO.playerId = player.user.uuid;
-    isReadyMessageDTO.isReady = isReady;
     this.socketRepository.broadcast(room, MessageType.GAME_ROOM_READY, isReadyMessageDTO);
 
     // If all players are ready

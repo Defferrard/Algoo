@@ -3,5 +3,5 @@ import { IsDateString } from 'class-validator';
 
 export class TimeableDTO extends DTO {
   @IsDateString()
-  datetime: string;
+  datetime = new Date().toISOString();
 }

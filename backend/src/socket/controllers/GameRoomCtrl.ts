@@ -1,4 +1,4 @@
-import { ChatMessageDTO, IsReadyMessageDTO } from '@defferrard/algoo-core/src/dto';
+import { ChatMessageDTO, ClientIsReadyMessageDTO } from '@defferrard/algoo-core/src/dto';
 import { MessageType, User } from '@defferrard/algoo-core/src/socket';
 import { assertNonNull } from '@defferrard/algoo-core/src/utils/assertions';
 import { isUUID } from 'class-validator';
@@ -52,7 +52,11 @@ export class GameRoomCtrl {
   }
 
   @OnMessage(MessageType.GAME_ROOM_READY)
-  onReady(@ConnectedSocket() socket: Socket, @MessageBody() dto: IsReadyMessageDTO, @MessageAck() ack: () => void) {
+  onReady(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() dto: ClientIsReadyMessageDTO,
+    @MessageAck() ack: () => void,
+  ) {
     LOGGER.info(`Socket ${socket.id} is ready: ${dto.isReady}`);
     // this.service.isReady(socket, dto.isReady);
     ack();

@@ -3,9 +3,9 @@ import type { GameRoomModel } from './GameRoomModel';
 import type {
   ChatMessageDTO,
   GameManagerDTO,
-  IsReadyMessageDTO,
   MessageDTO,
   PlayerDTO,
+  ServerIsReadyMessageDTO,
   TimerDTO,
 } from '@defferrard/algoo-core/src/dto';
 import { Player } from '@defferrard/algoo-core/src/game';
@@ -35,7 +35,7 @@ export class GameRoomSocketController {
   }
 
   @On(MessageType.GAME_ROOM_READY)
-  setPlayerReady({ playerId, isReady }: IsReadyMessageDTO): void {
+  setPlayerReady({ playerId, isReady }: ServerIsReadyMessageDTO): void {
     this._model.setPlayerReady(playerId, isReady);
   }
 

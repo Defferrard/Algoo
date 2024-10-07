@@ -43,7 +43,7 @@
           {/each}
           {#if Object.keys($model.gameRoom.players).length === 2}
             <br />
-            <button on:click={() => viewModel.flipReady()}>I'm ready !</button>
+            <button on:click={async () => await viewModel.flipReady()}>I'm ready !</button>
           {/if}
         </players>
       </subsection>
