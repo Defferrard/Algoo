@@ -17,7 +17,6 @@
   "dependencies": {
     "@defferrard/algoo-core": "^0.1.0",
     "body-parser": "^1.20.2",
-    "class-transformer-validator": "^0.9.1",
     "class-validator-jsonschema": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",

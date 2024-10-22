@@ -1,5 +1,4 @@
-import { JwtDTO } from '@defferrard/algoo-core/src/dto';
-import { transformAndValidate } from 'class-transformer-validator';
+import { JwtDTO, buildDTO } from '@defferrard/algoo-core/src/dto';
 import Status from 'http-status';
 import { useContainer } from 'routing-controllers';
 import request from 'supertest';
@@ -22,6 +21,6 @@ describe(`Base Test ${BASE_URL}`, () => {
       name: 'test',
     });
     expect(response.status).toBe(Status.OK);
-    await transformAndValidate(JwtDTO, response.body);
+    await buildDTO(JwtDTO, response.body);
   });
 });

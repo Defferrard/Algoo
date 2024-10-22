@@ -6,9 +6,10 @@ import {
   type ClientIsReadyMessageDTO,
   ClientNotReadyMessageDTO,
   ClientReadyMessageDTO,
+  buildDTO,
 } from '@defferrard/algoo-core/src/dto';
+import { Color } from '@defferrard/algoo-core/src/game';
 import { MessageType } from '@defferrard/algoo-core/src/socket';
-import { transformAndValidate } from 'class-transformer-validator';
 import { get } from 'svelte/store';
 
 export class GameRoomViewModel {
@@ -29,11 +30,11 @@ export class GameRoomViewModel {
     const isReady = this._model.flipReady();
     let dto: ClientIsReadyMessageDTO;
     if (isReady) {
-      dto = await transformAndValidate(ClientReadyMessageDTO, {
-        ownTeam: { a: 5 },
+      dto = await buildDTO(ClientReadyMessageDTO, {
+        ownTeam: { heroes: [], color: Color.RED },
       });
     } else {
-      dto = await transformAndValidate(ClientNotReadyMessageDTO, {});
+      dto = await buildDTO(ClientNotReadyMessageDTO, {});
     }
     socket.emit(MessageType.GAME_ROOM_READY, dto);
   }

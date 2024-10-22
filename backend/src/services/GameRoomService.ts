@@ -4,13 +4,13 @@ import {
   ServerIsReadyMessageDTO,
   ServerNotReadyMessageDTO,
   ServerReadyMessageDTO,
+  TimerDTO,
+  buildDTO,
 } from '@defferrard/algoo-core/src/dto';
 import { GameRoomNotFoundException } from '@defferrard/algoo-core/src/exceptions/gameRoom';
 import { Color, Player } from '@defferrard/algoo-core/src/game';
 import { MessageType, User } from '@defferrard/algoo-core/src/socket';
 import { assertNonNull } from '@defferrard/algoo-core/src/utils/assertions';
-import { plainToInstance } from 'class-transformer';
-import { transformAndValidate } from 'class-transformer-validator';
 import { Socket } from 'socket.io';
 import { Service } from 'typedi';
 import { v4 as uuid } from 'uuid';
@@ -53,7 +53,7 @@ export default class GameRoomService {
     }
   }
 
-  leaveRoom(socket: PlayerSocket) {
+  async leaveRoom(socket: PlayerSocket) {
     const {
       data: {
         room,
@@ -65,7 +65,7 @@ export default class GameRoomService {
     // Remove the player from the game room
     this.gameRoomRepository.removePlayer(room, playerId);
     // Broadcast the leave event to all players in the room
-    const dto = plainToInstance(MessageDTO, { playerId, datetime: new Date().toISOString() });
+    const dto = await buildDTO(MessageDTO, { playerId, datetime: new Date().toISOString() });
     socket.broadcast.emit(MessageType.GAME_ROOM_LEAVE, dto);
   }
 
@@ -78,22 +78,13 @@ export default class GameRoomService {
     // Set the player's ready status
     const gameRoomReady: boolean = this.gameRoomRepository.setPlayerReady(room, player.user.uuid, isReady);
 
-    const baseDTO = {
-      datetime: new Date().toISOString(),
-      playerId: player.user.uuid,
-      isReady: isReady,
-    };
-
     // Broadcast that the player is ready to all players in the room
     let isReadyMessageDTO: ServerIsReadyMessageDTO;
     if (isReady) {
-      isReadyMessageDTO = await transformAndValidate(ServerReadyMessageDTO, {
-        ...baseDTO,
-        ownTeam: {},
-      });
+      isReadyMessageDTO = await buildDTO(ServerReadyMessageDTO, { ownTeam: {} });
       isReadyMessageDTO.ownTeam = {} as any;
     } else {
-      isReadyMessageDTO = await transformAndValidate(ServerNotReadyMessageDTO, baseDTO);
+      isReadyMessageDTO = await buildDTO(ServerNotReadyMessageDTO);
     }
     this.socketRepository.broadcast(room, MessageType.GAME_ROOM_READY, isReadyMessageDTO);
 
@@ -108,7 +99,7 @@ export default class GameRoomService {
         },
       );
 
-      const timerDTO = plainToInstance(MessageDTO, {
+      const timerDTO = await buildDTO(TimerDTO, {
         datetime: new Date().toISOString(),
         endtime: new Date(Date.now() + delay).toISOString(),
       });

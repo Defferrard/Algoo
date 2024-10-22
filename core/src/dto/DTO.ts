@@ -1,12 +1,19 @@
-import { Type } from '../utils/Type';
+import { transformAndValidate } from 'class-transformer-validator';
 import { validateOrReject } from 'class-validator';
 
 export abstract class DTO {
   async validateOrReject(): Promise<void> {
     return await validateOrReject(this);
   }
+  constructor() {}
 }
 
-export function buildDTO<T extends DTO>(dtoClass: new () => T, props: Type<T>): T {
-  return Object.assign(new dtoClass(), props);
+type DeepPartial<T> = T extends object
+  ? {
+      [P in keyof T]?: DeepPartial<T[P]>;
+    }
+  : T;
+
+export function buildDTO<T extends DTO>(dtoClass: new () => T, props?: DeepPartial<T>) {
+  return transformAndValidate(dtoClass, props ?? {});
 }
