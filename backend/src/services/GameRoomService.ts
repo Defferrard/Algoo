@@ -1,5 +1,6 @@
 import {
   ChatMessageDTO,
+  ClientIsReadyMessageDTO,
   MessageDTO,
   ServerIsReadyMessageDTO,
   ServerNotReadyMessageDTO,
@@ -25,7 +26,7 @@ export default class GameRoomService {
     public socketRepository: SocketRepository,
   ) {}
 
-  joinRoom(socket: Socket, user: User, room: string) {
+  async joinRoom(socket: Socket, user: User, room: string) {
     try {
       // Fetch the game room. If it doesn't exist, an error will be thrown
       const gameRoom = this.gameRoomRepository.get(room);
@@ -41,7 +42,7 @@ export default class GameRoomService {
       socket.data.room = room;
       this.gameRoomRepository.addPlayer(room, player);
       // Broadcast the join event to all other players in the room
-      socket.broadcast.emit(MessageType.GAME_ROOM_JOIN, player);
+      socket.broadcast.emit(MessageType.GAME_ROOM_JOIN, await player.toDTO());
       return gameRoom.players;
     } catch (e) {
       LOGGER.error(e);
@@ -73,18 +74,21 @@ export default class GameRoomService {
     await this.socketRepository.broadcast(room, MessageType.GAME_ROOM_MESSAGE, message);
   }
 
-  async isReady(socket: PlayerSocket, isReady: boolean) {
+  async isReady(socket: PlayerSocket, dto: ClientIsReadyMessageDTO) {
     const { room, player } = socket.data;
+    if (dto.isReady === this.gameRoomRepository.isPlayerReady(room, player.user.uuid)) {
+      return;
+    }
     // Set the player's ready status
-    const gameRoomReady: boolean = this.gameRoomRepository.setPlayerReady(room, player.user.uuid, isReady);
+    const gameRoomReady: boolean = this.gameRoomRepository.setPlayerReady(room, player.user.uuid, dto.isReady);
 
     // Broadcast that the player is ready to all players in the room
     let isReadyMessageDTO: ServerIsReadyMessageDTO;
-    if (isReady) {
-      isReadyMessageDTO = await buildDTO(ServerReadyMessageDTO, { ownTeam: {} });
-      isReadyMessageDTO.ownTeam = {} as any;
+    if (dto.isReady) {
+      this.gameRoomRepository.setPlayerTeam(room, player.user.uuid, dto.ownTeam);
+      isReadyMessageDTO = await buildDTO(ServerReadyMessageDTO, { playerId: player.user.uuid });
     } else {
-      isReadyMessageDTO = await buildDTO(ServerNotReadyMessageDTO);
+      isReadyMessageDTO = await buildDTO(ServerNotReadyMessageDTO, { playerId: player.user.uuid });
     }
     this.socketRepository.broadcast(room, MessageType.GAME_ROOM_READY, isReadyMessageDTO);
 
@@ -100,7 +104,6 @@ export default class GameRoomService {
       );
 
       const timerDTO = await buildDTO(TimerDTO, {
-        datetime: new Date().toISOString(),
         endtime: new Date(Date.now() + delay).toISOString(),
       });
 

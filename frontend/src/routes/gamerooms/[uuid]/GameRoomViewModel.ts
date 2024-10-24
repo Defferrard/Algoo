@@ -8,7 +8,7 @@ import {
   ClientReadyMessageDTO,
   buildDTO,
 } from '@defferrard/algoo-core/src/dto';
-import { Color } from '@defferrard/algoo-core/src/game';
+import { teamFactory } from '@defferrard/algoo-core/src/factories/TeamFactory';
 import { MessageType } from '@defferrard/algoo-core/src/socket';
 import { get } from 'svelte/store';
 
@@ -31,7 +31,7 @@ export class GameRoomViewModel {
     let dto: ClientIsReadyMessageDTO;
     if (isReady) {
       dto = await buildDTO(ClientReadyMessageDTO, {
-        ownTeam: { heroes: [], color: Color.RED },
+        ownTeam: await teamFactory(),
       });
     } else {
       dto = await buildDTO(ClientNotReadyMessageDTO, {});

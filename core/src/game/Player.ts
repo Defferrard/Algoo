@@ -1,10 +1,10 @@
-import { DTO, DTOFriendly, PlayerDTO } from '../dto';
+import { DTOFriendly, PlayerDTO, buildDTO } from '../dto';
 import { User } from '../socket';
 import { Type } from '../utils/Type';
-import { Color, Team } from './index';
+import { Team } from './index';
 
 export default class Player implements DTOFriendly<PlayerDTO> {
-  readonly team: Team;
+  team: Team;
   readonly user: User;
 
   isReady: boolean = false;
@@ -14,10 +14,11 @@ export default class Player implements DTOFriendly<PlayerDTO> {
     this.team = new Team(team);
     this.isReady = isReady;
   }
-  toDTO() {
-    const dto = new PlayerDTO();
-    dto.user = this.user.toDTO();
-    dto.team = this.team.toDTO();
-    return dto;
+  async toDTO() {
+    return await buildDTO(PlayerDTO, {
+      user: await this.user.toDTO(),
+      team: await this.team.toDTO(),
+      isReady: this.isReady,
+    });
   }
 }

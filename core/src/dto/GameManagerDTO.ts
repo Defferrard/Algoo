@@ -5,7 +5,6 @@ import { Type } from 'class-transformer';
 import { ValidateNested } from 'class-validator';
 
 export class GameManagerDTO extends DTO {
-  @ValidateNested({ each: true })
   @Type(() => TeamDTO)
   tiles: TileType[][];
 

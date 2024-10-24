@@ -1,4 +1,4 @@
-import { CoordinateDTO, DTOFriendly } from '../dto';
+import { CoordinateDTO, DTOFriendly, buildDTO } from '../dto';
 
 export type BaseCoordinate = { x: number; y: number };
 export type SimpleCoordinate = BaseCoordinate;
@@ -100,13 +100,10 @@ export default class Coordinate implements BaseCoordinate, DTOFriendly<Coordinat
     return Math.abs(a.x - b.x) + Math.abs(a.y - b.y) === 1;
   }
 
-  toDTO() {
-    return Coordinate.toDTO(this);
+  async toDTO() {
+    return await Coordinate.toDTO(this);
   }
-  static toDTO(coordinate: SimpleCoordinate) {
-    const dto = new CoordinateDTO();
-    dto.x = coordinate.x;
-    dto.y = coordinate.y;
-    return dto;
+  static async toDTO(coordinate: SimpleCoordinate) {
+    return await buildDTO(CoordinateDTO, coordinate);
   }
 }

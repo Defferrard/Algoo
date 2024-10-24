@@ -3,26 +3,26 @@ import { Resources } from '../game/characteristics/Characteristics';
 import { ActionStrategy, DistanceStrategy } from '../strategy';
 import { DTO } from './DTO';
 import { Type } from 'class-transformer';
-import { IsDataURI, IsEnum, IsPositive, Length, ValidateNested } from 'class-validator';
+import { IsEnum, IsString, Length, Min, ValidateNested } from 'class-validator';
 
 export class SpellDTO extends DTO {
   @Length(3, 20)
   name: string;
   @IsEnum(Color)
   color: Color;
-  @IsDataURI()
+  @IsString()
   iconPath: string;
 
-  @IsPositive()
+  @Min(0)
   minimalRangeTarget: number;
-  @IsPositive()
+  @Min(0)
   maximalRangeTarget: number;
   @IsEnum(DistanceStrategy)
   targetDistanceStrategy?: DistanceStrategy;
 
-  @IsPositive()
+  @Min(0)
   minimalRangeAttacked: number;
-  @IsPositive()
+  @Min(0)
   maximalRangeAttacked: number;
   @IsEnum(DistanceStrategy)
   attackedDistanceStrategy?: DistanceStrategy;
@@ -38,5 +38,5 @@ class SpellActionDTO {
   @IsEnum(ActionStrategy)
   type: ActionStrategy;
 
-  args: { [key in string]: unknown };
+  args: { [key in string]: any };
 }

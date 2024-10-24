@@ -63,9 +63,15 @@ export default class Board {
    * @param y Y axis coordinate.
    */
   pushEntity(entity: Entity<Resources>, coordinate: SimpleCoordinate): void {
-    if (!this.isValidCoordinate(coordinate)) throw new OutOfBoundsException(coordinate);
-    if (this._entities[entity.uuid]) throw new EntityAlreadyExistsException(entity, coordinate);
-    if (this.getTile(coordinate).entity) throw new TileUnavailableException(coordinate);
+    if (!this.isValidCoordinate(coordinate)) {
+      throw new OutOfBoundsException(coordinate);
+    }
+    if (this._entities[entity.uuid]) {
+      throw new EntityAlreadyExistsException(entity, coordinate);
+    }
+    if (this.getTile(coordinate).entity) {
+      throw new TileUnavailableException(coordinate);
+    }
 
     this._entities[entity.uuid] = new Coordinate(coordinate);
     this.getTile(coordinate).entity = entity;

@@ -2,7 +2,7 @@ import { socket } from '$lib/stores/socket';
 import { delay } from '$lib/utils/Functions';
 import type { GameManagerModel } from './GameManagerModel';
 import { Coordinate, type Entity, type SimpleCoordinate } from '@defferrard/algoo-core/src/board';
-import { CastSpellDTO, MoveEntityDTO } from '@defferrard/algoo-core/src/dto';
+import { CastSpellDTO, MoveEntityDTO, buildDTO } from '@defferrard/algoo-core/src/dto';
 import type { HeroEntity, Resources, Spell } from '@defferrard/algoo-core/src/game';
 import { isHeroEntity } from '@defferrard/algoo-core/src/game/hero/HeroEntity';
 import { MessageType } from '@defferrard/algoo-core/src/socket';
@@ -36,20 +36,26 @@ export class GameManagerViewModel {
     socket.emit(MessageType.NEXT_TURN);
   }
 
-  onAction(x: number, y: number) {
+  async onAction(x: number, y: number) {
     const currentSpell = get(this._currentSpell);
     const currentHero = notUndefined(this._model.gameManager.currentHero);
     if (currentSpell) {
-      let spellIndex = currentHero.spells.indexOf(currentSpell);
-      const dto = new CastSpellDTO();
-      dto.spellId = spellIndex;
-      dto.target = Coordinate.toDTO({ x, y });
-      socket.emit(MessageType.CAST_SPELL, dto);
+      const spellIndex = currentHero.spells.indexOf(currentSpell);
+      socket.emit(
+        MessageType.CAST_SPELL,
+        await buildDTO(CastSpellDTO, {
+          spellId: spellIndex,
+          target: await Coordinate.toDTO({ x, y }),
+        }),
+      );
     } else {
-      const dto = new MoveEntityDTO();
-      dto.uuid = currentHero.uuid;
-      dto.path = this._model.path.map((coordinate) => Coordinate.toDTO(coordinate));
-      socket.emit(MessageType.MOVE_ENTITY, dto);
+      socket.emit(
+        MessageType.MOVE_ENTITY,
+        await buildDTO(MoveEntityDTO, {
+          uuid: currentHero.uuid,
+          path: await Promise.all(this._model.path.map((coordinate) => Coordinate.toDTO(coordinate))),
+        }),
+      );
     }
     this._currentSpell.set(undefined);
   }

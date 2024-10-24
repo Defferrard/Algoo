@@ -6,7 +6,7 @@ import { ActionBuffer } from '$lib/game';
 import { delay } from '$lib/utils/Functions';
 import { Observable } from '$lib/utils/socket/ObservableSocketController';
 import { Coordinate, type Entity, type SimpleCoordinate, Tile, TileType } from '@defferrard/algoo-core/src/board';
-import type { GameManagerDTO, SpellDTO } from '@defferrard/algoo-core/src/dto';
+import type { GameManagerDTO } from '@defferrard/algoo-core/src/dto';
 import {
   GameManager,
   RESSOURCES_COLOR,
@@ -212,8 +212,8 @@ class MyGameManager extends GameManager {
     const RESUME: ActionResume[] = super.castSpell(spell, coordinate);
     const CASTER_COORDINATE: SimpleCoordinate = super.board.getEntityCoordinate(super.currentHero!);
     showSpell(CASTER_COORDINATE, spell);
-    for (let resume of RESUME) {
-      for (let update of resume.update!) {
+    for (const resume of RESUME) {
+      for (const update of resume.update!) {
         showValue(update.coordinate as Tile, update.value, RESSOURCES_COLOR[update.type]!);
         if (update.value < 0) shake(500, { x: update.value * 10, y: 0 });
       }

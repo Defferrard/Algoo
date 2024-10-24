@@ -1,6 +1,5 @@
-import { SimpleCoordinate } from '@defferrard/algoo-core/src/board';
 import { CastSpellDTO, MoveEntityDTO } from '@defferrard/algoo-core/src/dto';
-import { MessageType, User } from '@defferrard/algoo-core/src/socket';
+import { MessageType } from '@defferrard/algoo-core/src/socket';
 import { Service } from 'typedi';
 import { GameRoomRepository, SocketRepository } from '~/repositories';
 import PlayerSocket from '~/socket/sockets/PlayerSocket';
@@ -12,15 +11,15 @@ export default class GameRoomService {
     public socketRepository: SocketRepository,
   ) {}
 
-  nextTurn({ data: { room, player } }: PlayerSocket) {
+  nextTurn({ data: { room } }: PlayerSocket) {
     this.socketRepository.broadcast(room, MessageType.NEXT_TURN);
   }
 
-  castSpell({ data: { room, player } }: PlayerSocket, payload: CastSpellDTO) {
+  castSpell({ data: { room } }: PlayerSocket, payload: CastSpellDTO) {
     this.socketRepository.broadcast(room, MessageType.CAST_SPELL, payload);
   }
 
-  moveEntity({ data: { room, player } }: PlayerSocket, payload: MoveEntityDTO) {
+  moveEntity({ data: { room } }: PlayerSocket, payload: MoveEntityDTO) {
     this.socketRepository.broadcast(room, MessageType.MOVE_ENTITY, payload);
   }
 }

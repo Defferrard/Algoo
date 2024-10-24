@@ -58,7 +58,7 @@ export class GameRoomCtrl {
     @MessageAck() ack: () => void,
   ) {
     LOGGER.info(`Socket ${socket.id} is ready: ${dto.isReady}`);
-    // this.service.isReady(socket, dto.isReady);
+    this.service.isReady(socket, dto);
     ack();
   }
 }

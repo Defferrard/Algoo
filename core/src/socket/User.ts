@@ -1,4 +1,4 @@
-import { DTOFriendly, UserDTO } from '../dto';
+import { DTOFriendly, UserDTO, buildDTO } from '../dto';
 import { Type } from '../utils/Type';
 
 export default class User implements DTOFriendly<UserDTO> {
@@ -10,10 +10,10 @@ export default class User implements DTOFriendly<UserDTO> {
     this.name = dto.name;
   }
 
-  toDTO() {
-    const dto = new UserDTO();
-    dto.uuid = this.uuid;
-    dto.name = this.name;
-    return dto;
+  async toDTO() {
+    return await buildDTO(UserDTO, {
+      uuid: this.uuid,
+      name: this.name,
+    });
   }
 }

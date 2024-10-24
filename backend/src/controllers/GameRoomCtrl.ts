@@ -13,7 +13,7 @@ export class GameRoomCtrl {
   @Get()
   @SerializeResponse(SimpleGameRoomDTO)
   async getRooms() {
-    return this.gameRoomRepository.rooms.map((room: GameRoom) => room.toDTO());
+    return await Promise.all(this.gameRoomRepository.rooms.map((room: GameRoom) => room.toDTO()));
   }
 
   @Post()
@@ -21,6 +21,6 @@ export class GameRoomCtrl {
   async createRoom() {
     const room: GameRoom = new GameRoom();
     this.gameRoomRepository.push(room);
-    return room.toDTO();
+    return await room.toDTO();
   }
 }

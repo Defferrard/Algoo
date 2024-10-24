@@ -6,6 +6,7 @@ import type { Node } from '../../pathfinding';
 import type { DistanceStrategyCallable } from '../../strategy';
 import { ACTION_STRATEGIES, ActionStrategy, DISTANCE_STRATEGIES } from '../../strategy';
 import type { ActionResume, ActionStrategyCallable } from '../../strategy';
+import { Type } from '../../utils/Type';
 import { inRange } from 'lodash';
 
 type SpellAction = {
@@ -32,7 +33,7 @@ export default class Spell {
 
   private readonly _actions: SpellAction[];
 
-  constructor(dto: SpellDTO) {
+  constructor(dto: Type<SpellDTO>) {
     this.color = dto.color;
     this.iconPath = dto.iconPath;
     this.name = dto.name;
@@ -61,7 +62,7 @@ export default class Spell {
 
     if (!by.pay(this.cost)) return RESUME;
 
-    for (let action of this._actions) {
+    for (const action of this._actions) {
       RESUME.push(
         action.strategy!(
           this,
@@ -75,18 +76,18 @@ export default class Spell {
     return RESUME;
   }
 
-  targetableTiles(from: SimpleCoordinate, board: Board, _filter: SimpleCoordinate[]): SimpleCoordinate[] {
-    const map: Node[][] = board.mapNodes;
-    let targetable: Coordinate[] = [...map.flat()].filter((n: Node) =>
+  targetableTiles(from: SimpleCoordinate, board: Board, _filter: SimpleCoordinate[]) {
+    const map = board.mapNodes;
+    const targetable = [...map.flat()].filter((n: Node) =>
       inRange(this.targetDistanceStrategy(from, n), this.minimalRangeTarget, this.maximalRangeTarget + 1),
     );
 
     return targetable;
   }
 
-  attackedTiles(from: SimpleCoordinate, to: SimpleCoordinate, board: Board): Coordinate[] {
-    const map: Node[][] = board.mapNodes;
-    let attacked: Coordinate[] = [...map.flat()].filter((n: Node) =>
+  attackedTiles(from: SimpleCoordinate, to: SimpleCoordinate, board: Board) {
+    const map = board.mapNodes;
+    const attacked = [...map.flat()].filter((n: Node) =>
       inRange(this.attackedDistanceStrategy(to, n), this.minimalRangeAttacked, this.maximalRangeAttacked + 1),
     );
 

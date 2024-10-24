@@ -1,16 +1,16 @@
-import type { Coordinate, SimpleCoordinate } from '../board/';
+import { Coordinate, SimpleCoordinate } from '../board/';
 import { Board, Entity, TileType } from '../board/';
 import type { GameManagerDTO } from '../dto/GameManagerDTO';
 import { TeamAlreadyExistsException, TeamNotEmptyException, TeamNotExistsException } from '../exceptions';
 import { InvalidEntityException } from '../exceptions/gameManager';
 import { ActionResume } from '../strategy';
 import { notUndefined } from '../utils/assertions';
-import type { Resources, Spell, StandardResources } from './';
+import type { Resources, Spell } from './';
 import { HeroEntity, ResourceType, Team } from './';
 import { isHeroEntity } from './hero/HeroEntity';
 
 export function generateRandomBoard(width: number, height: number, wallProbability: number): TileType[][] {
-  let map: TileType[][] = [];
+  const map: TileType[][] = [];
   for (let y = 0; y < height; y++) {
     map[y] = new Array(width);
     for (let x = 0; x < width; x++) {
@@ -26,11 +26,17 @@ export default class GameManager {
   // TODO : Use a buffer !
   private readonly _board: Board;
   private _turnIndex: number = 0;
-  private _teams: Team[] = [];
-  private _entities: { [key in string]: Entity<Resources> } = {};
+  private _teams: Team[];
 
   constructor(dto: GameManagerDTO) {
     this._board = new Board(dto.tiles);
+    this._teams = dto.teams.map((t) => new Team(t));
+    let i = 0;
+    for (const team of this._teams) {
+      for (const entity of team.entities) {
+        this.pushEntity(entity, new Coordinate({ x: i++, y: 0 }));
+      }
+    }
   }
 
   pushTeam(team: Team): void {
@@ -44,10 +50,15 @@ export default class GameManager {
   }
 
   pushEntity(entity: Entity<Resources>, coordinate: Coordinate): void {
-    if (!entity.team) throw new InvalidEntityException(entity);
+    console.log(`Push ${entity.uuid} at ${coordinate.x}, ${coordinate.y}`);
+    if (!entity.team) {
+      throw new InvalidEntityException(entity);
+    }
 
     const TEAM = this._teams.find((t) => t.uuid === entity.team?.uuid)!;
-    if (!TEAM) throw new TeamNotExistsException(TEAM);
+    if (!TEAM) {
+      throw new TeamNotExistsException(TEAM);
+    }
 
     this._board.pushEntity(entity, coordinate);
     TEAM.pushEntity(entity);
@@ -57,7 +68,7 @@ export default class GameManager {
     if (!Object.hasOwn(entity.resources, ResourceType.STAMINA)) throw new InvalidEntityException(entity);
 
     while (path.length > 0) {
-      let coordinate = path.pop()!;
+      const coordinate = path.pop()!;
       this.moveEntityTo(entity, coordinate);
     }
   }

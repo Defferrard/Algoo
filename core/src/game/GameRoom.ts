@@ -1,7 +1,8 @@
-import { DTOFriendly } from '../dto';
+import { DTOFriendly, TeamDTO, buildDTO } from '../dto';
 import { SimpleGameRoomDTO } from '../dto/';
 import { FullGameRoomException, PlayerAlreadyInGameRoomException } from '../exceptions/gameRoom';
-import { GameManager, Player } from './index';
+import { Type } from '../utils/Type';
+import { Player, Team } from './index';
 import { v4 as uuidV4 } from 'uuid';
 
 export enum GameRoomState {
@@ -25,14 +26,14 @@ export default class GameRoom implements DTOFriendly<SimpleGameRoomDTO> {
     this.maxPlayers = maxPlayers;
   }
 
-  toDTO() {
-    const dto = new SimpleGameRoomDTO();
-    dto.uuid = this.uuid;
-    dto.maxPlayers = this.maxPlayers;
-    dto.currentPlayers = this.playersCount;
-    dto.state = this.state;
-    dto.owner = this.owner?.user.toDTO();
-    return dto;
+  async toDTO() {
+    return await buildDTO(SimpleGameRoomDTO, {
+      uuid: this.uuid,
+      maxPlayers: this.maxPlayers,
+      currentPlayers: this.playersCount,
+      state: this.state,
+      owner: await this.owner?.user.toDTO(),
+    });
   }
 
   get playersCount(): number {
@@ -70,12 +71,16 @@ export default class GameRoom implements DTOFriendly<SimpleGameRoomDTO> {
    * @param uuid Player UUID
    * @param isReady Player ready state
    */
-  setPlayerReady(uuid: string, isReady: boolean): boolean {
+  setPlayerReady(uuid: string, isReady: boolean) {
     this.players[uuid].isReady = isReady;
     return Object.values(this.players).every((player) => player.isReady);
   }
 
-  startGame(): void {
+  setPlayerTeam(uuid: string, team: Type<TeamDTO>) {
+    this.players[uuid].team = new Team(team);
+  }
+
+  startGame() {
     this.state = GameRoomState.PLAYING;
   }
 }

@@ -1,4 +1,5 @@
-import { BaseHeroDTO, SpellDTO } from './';
+import { BaseHeroDTO } from './BaseHeroDTO';
+import { SpellDTO } from './SpellDTO';
 import { Type } from 'class-transformer';
 import { ValidateNested } from 'class-validator';
 

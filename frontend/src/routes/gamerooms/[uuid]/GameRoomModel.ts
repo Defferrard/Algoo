@@ -52,7 +52,7 @@ export class GameRoomModel extends Observable<GameRoomModel> {
   gameRoomStarting(timer: number): void {
     this._timeouts[TimeoutType.GAME_ROOM_STARTING] = setInterval(() => {
       if (timer > 0) {
-        this.pushMessage('Game starting in ' + timer / 1000 + ' seconds');
+        this.pushMessage('Game starting in ' + Math.round(timer / 1000) + ' seconds');
         timer -= 1000;
       } else {
         clearInterval(this._timeouts[TimeoutType.GAME_ROOM_STARTING]);

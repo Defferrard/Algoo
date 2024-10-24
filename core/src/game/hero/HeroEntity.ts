@@ -1,5 +1,6 @@
 import Entity from '../../board/Entity';
 import { CompleteHeroDTO } from '../../dto/CompleteHeroDTO';
+import { Type } from '../../utils/Type';
 import Effect from '../Effect';
 import { Resources } from '../characteristics/Characteristics';
 import { ResourceType } from '../characteristics/ResourceType';
@@ -27,7 +28,7 @@ export default class HeroEntity extends Entity<StandardResources> {
   readonly effects: Effect[];
   stance: Stance;
 
-  constructor(dto: CompleteHeroDTO) {
+  constructor(dto: Type<CompleteHeroDTO>) {
     super(dto.characteristics);
 
     // TODO : Can we simplify ? (Can we generate maxResources dynamically from dto.characteristics ?)

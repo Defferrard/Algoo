@@ -1,22 +1,29 @@
 import type { Entity } from '../board';
-import { DTOFriendly } from '../dto';
+import { DTOFriendly, buildDTO } from '../dto';
 import { TeamDTO } from '../dto/TeamDTO';
 import { Type } from '../utils/Type';
 import { Color } from './Color';
 import { Resources } from './characteristics/Characteristics';
+import HeroEntity from './hero/HeroEntity';
 
 export default class Team implements DTOFriendly<TeamDTO> {
   readonly color: Color;
   readonly uuid: string;
-  private readonly _entities: Entity<Resources>[] = [];
+  private readonly _entities: Entity<Resources>[];
 
   constructor(dto: Type<TeamDTO>) {
     this.color = dto.color;
     this.uuid = dto.uuid;
+    this._entities = dto.heroes.map((hero) => new HeroEntity(hero));
+    for (const entity of this._entities) {
+      entity.team = this;
+    }
   }
 
   pushEntity(entity: Entity<Resources>): void {
-    this._entities.push(entity);
+    if (this._entities.every((e) => e.uuid !== entity.uuid)) {
+      this._entities.push(entity);
+    }
   }
 
   deleteEntity(entity: Entity<Resources>): void {
@@ -31,10 +38,11 @@ export default class Team implements DTOFriendly<TeamDTO> {
     return this._entities;
   }
 
-  toDTO() {
-    const dto = new TeamDTO();
-    dto.color = this.color;
-    dto.uuid = this.uuid;
-    return dto;
+  async toDTO() {
+    return await buildDTO(TeamDTO, {
+      color: this.color,
+      uuid: this.uuid,
+      heroes: [], // TODO: Include heroes
+    });
   }
 }
